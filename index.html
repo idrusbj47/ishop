@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>iShop — Status Kredit Nasabah</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #07090f;
+  --surface: #0e1117;
+  --surface2: #141820;
+  --surface3: #1c2230;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --text: #f1f5f9;
+  --text2: #94a3b8;
+  --text3: #475569;
+  --green: #10b981;
+  --green-bg: rgba(16,185,129,0.1);
+  --green-border: rgba(16,185,129,0.25);
+  --amber: #f59e0b;
+  --amber-bg: rgba(245,158,11,0.1);
+  --amber-border: rgba(245,158,11,0.25);
+  --blue: #6366f1;
+  --blue-bg: rgba(99,102,241,0.1);
+  --blue-border: rgba(99,102,241,0.25);
+  --cyan: #22d3ee;
+  --cyan-bg: rgba(34,211,238,0.08);
+  --red: #f43f5e;
+  --grad1: linear-gradient(135deg, #6366f1, #22d3ee);
+  --grad2: linear-gradient(135deg, #10b981, #22d3ee);
+  --shadow-lg: 0 25px 60px rgba(0,0,0,0.5);
+  --shadow-glow: 0 0 40px rgba(99,102,241,0.15);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Sora', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* NOISE TEXTURE OVERLAY */
+body::before {
+  content:'';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* BG ORBS */
+.orb {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(100px);
+  pointer-events: none;
+  z-index: 0;
+}
+.orb1 { width:500px; height:500px; background:rgba(99,102,241,0.08); top:-150px; left:-150px; }
+.orb2 { width:400px; height:400px; background:rgba(16,185,129,0.06); bottom:-100px; right:-100px; }
+.orb3 { width:300px; height:300px; background:rgba(34,211,238,0.05); top:40%; left:50%; transform:translate(-50%,-50%); }
+
+/* ============ HEADER ============ */
+header {
+  position: relative;
+  z-index: 10;
+  padding: 56px 24px 48px;
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(99,102,241,0.04) 0%, transparent 100%);
+}
+
+.brand-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 100px;
+  padding: 7px 18px 7px 10px;
+  margin-bottom: 28px;
+}
+.brand-icon {
+  width: 28px; height: 28px;
+  background: var(--grad1);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px;
+}
+.brand-dot {
+  width: 7px; height: 7px;
+  background: var(--green);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--green);
+  animation: blink 2s ease infinite;
+}
+@keyframes blink { 0%,100%{opacity:1;box-shadow:0 0 8px var(--green)} 50%{opacity:.5;box-shadow:0 0 3px var(--green)} }
+.brand-text { font-size: 12px; font-weight: 600; color: var(--text2); letter-spacing: 0.08em; text-transform: uppercase; }
+
+header h1 {
+  font-size: clamp(28px, 6vw, 52px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin-bottom: 12px;
+}
+header h1 span {
+  background: var(--grad1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+header p { color: var(--text2); font-size: 15px; font-weight: 400; }
+
+/* ============ STATS BAR ============ */
+.stats-bar {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 32px;
+  flex-wrap: wrap;
+}
+.stat-chip {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  padding: 6px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.stat-chip .dot { width:6px; height:6px; border-radius:50%; }
+
+/* ============ SEARCH ============ */
+.search-section {
+  position: relative;
+  z-index: 10;
+  max-width: 680px;
+  margin: 48px auto 0;
+  padding: 0 24px;
+}
+.search-glass {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 20px;
+  padding: 6px;
+  display: flex;
+  gap: 6px;
+  box-shadow: var(--shadow-lg), var(--shadow-glow);
+  transition: box-shadow .3s;
+}
+.search-glass:focus-within {
+  box-shadow: var(--shadow-lg), 0 0 0 1px rgba(99,102,241,0.5), 0 0 50px rgba(99,102,241,0.2);
+}
+.search-inner {
+  position: relative;
+  flex: 1;
+}
+.search-ico {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text3);
+  font-size: 16px;
+  pointer-events: none;
+}
+#searchInput {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 14px 16px 14px 46px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  letter-spacing: 0.05em;
+}
+#searchInput::placeholder { color: var(--text3); font-family: 'Sora', sans-serif; letter-spacing: 0; font-weight: 400; font-size: 14px; }
+.btn-search {
+  background: var(--grad1);
+  border: none;
+  border-radius: 14px;
+  padding: 14px 28px;
+  font-family: 'Sora', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: white;
+  cursor: pointer;
+  transition: opacity .2s, transform .15s;
+  white-space: nowrap;
+  letter-spacing: 0.01em;
+}
+.btn-search:hover { opacity: .9; transform: scale(1.02); }
+.btn-search:active { transform: scale(.98); }
+
+/* AUTOCOMPLETE */
+.autocomplete {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0; right: 0;
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  display: none;
+  z-index: 100;
+}
+.autocomplete.open { display: block; }
+.ac-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 18px;
+  cursor: pointer;
+  transition: background .15s;
+  border-bottom: 1px solid var(--border);
+}
+.ac-item:last-child { border-bottom: none; }
+.ac-item:hover { background: var(--surface2); }
+.ac-code { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--cyan); font-weight: 600; }
+.ac-name { font-size: 13px; color: var(--text2); flex: 1; }
+.ac-badge { font-size: 10px; font-weight: 700; padding: 2px 10px; border-radius: 100px; }
+
+/* ============ RESULT ============ */
+.result-zone {
+  position: relative;
+  z-index: 5;
+  max-width: 760px;
+  margin: 36px auto 0;
+  padding: 0 24px;
+}
+
+.empty-state {
+  display: none;
+  text-align: center;
+  padding: 60px 24px;
+}
+.empty-state .es-icon { font-size: 56px; margin-bottom: 16px; opacity: .6; }
+.empty-state h3 { font-size: 18px; color: var(--red); margin-bottom: 6px; }
+.empty-state p { color: var(--text3); font-size: 14px; }
+
+/* MEMBER CARD */
+.member-card {
+  display: none;
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  animation: fadeUp .35s cubic-bezier(.16,1,.3,1);
+}
+@keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+/* Card hero */
+.card-hero {
+  padding: 28px 28px 24px;
+  background: linear-gradient(135deg, var(--surface2) 0%, var(--surface) 100%);
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+.card-hero::before {
+  content:'';
+  position: absolute;
+  top: -60px; right: -60px;
+  width: 200px; height: 200px;
+  border-radius: 50%;
+  background: var(--blue-bg);
+  filter: blur(40px);
+}
+.hero-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.hero-left { display: flex; align-items: center; gap: 16px; }
+.hero-avatar {
+  width: 52px; height: 52px;
+  background: var(--grad1);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  font-weight: 800;
+  color: white;
+  flex-shrink: 0;
+}
+.hero-name { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+.hero-mid {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--cyan);
+  background: var(--cyan-bg);
+  border: 1px solid rgba(34,211,238,0.2);
+  padding: 3px 10px;
+  border-radius: 6px;
+  display: inline-block;
+}
+.status-badge {
+  padding: 8px 18px;
+  border-radius: 100px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.badge-lunas { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
+.badge-aktif { background: var(--blue-bg); color: #818cf8; border: 1px solid var(--blue-border); }
+
+/* Info tiles */
+.info-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1px;
+  background: var(--border);
+  border-radius: 0;
+  margin-top: 24px;
+  border-top: 1px solid var(--border);
+  overflow: hidden;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+}
+.tile {
+  background: var(--surface);
+  padding: 16px 18px;
+}
+.tile-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600; margin-bottom: 5px; }
+.tile-value { font-size: 14px; font-weight: 600; color: var(--text); line-height: 1.3; }
+.tile-value.accent { color: var(--cyan); font-family: 'JetBrains Mono', monospace; }
+.tile-value.warn { color: var(--amber); font-family: 'JetBrains Mono', monospace; }
+
+/* Payments */
+.card-body { padding: 24px 28px 28px; }
+.section-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.section-label::after { content:''; flex:1; height:1px; background:var(--border); }
+
+.pay-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 24px; }
+.pay-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 16px;
+  border-radius: 12px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  transition: border .2s;
+}
+.pay-row:hover { border-color: var(--border2); }
+.pay-num { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text3); min-width: 22px; }
+.pay-date { font-size: 13px; color: var(--text2); flex: 1; }
+.pay-amount { font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 600; color: var(--cyan); }
+.pay-tag {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 100px;
+  white-space: nowrap;
+}
+.tag-lunas { background: var(--green-bg); color: var(--green); }
+.tag-proses { background: var(--amber-bg); color: var(--amber); }
+.tag-dp { background: var(--blue-bg); color: #818cf8; }
+
+/* Toggle status */
+.pay-tag-btn {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 100px;
+  white-space: nowrap;
+  cursor: pointer;
+  border: none;
+  transition: all .2s;
+}
+.pay-tag-btn:hover { transform: scale(1.08); opacity: .85; }
+.pay-tag-btn.tag-lunas { background: var(--green-bg); color: var(--green); }
+.pay-tag-btn.tag-proses { background: var(--amber-bg); color: var(--amber); }
+.pay-tag-btn.tag-dp { background: var(--blue-bg); color: #818cf8; }
+
+/* Tagih WA button */
+.btn-tagih {
+  flex: 1;
+  min-width: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: linear-gradient(135deg, #7c3aed, #4f46e5);
+  color: white;
+  border: none;
+  border-radius: 14px;
+  padding: 15px 24px;
+  font-family: 'Sora', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform .15s, box-shadow .2s;
+}
+.btn-tagih:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(124,58,237,0.3); }
+
+/* Sisa summary box */
+.sisa-box {
+  background: linear-gradient(135deg, rgba(245,158,11,0.08), rgba(245,158,11,0.03));
+  border: 1px solid var(--amber-border);
+  border-radius: 12px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.sisa-label { font-size: 11px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 0.1em; }
+.sisa-value { font-family: 'JetBrains Mono', monospace; font-size: 16px; font-weight: 700; color: var(--amber); }
+
+/* Raw toggle */
+.raw-toggle-btn {
+  background: none;
+  border: none;
+  color: var(--text3);
+  font-size: 12px;
+  cursor: pointer;
+  font-family: 'Sora', sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  margin-bottom: 14px;
+  transition: color .2s;
+}
+.raw-toggle-btn:hover { color: var(--cyan); }
+.raw-box {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  line-height: 1.8;
+  color: var(--text3);
+  white-space: pre-wrap;
+  max-height: 220px;
+  overflow-y: auto;
+  margin-bottom: 20px;
+  display: none;
+}
+
+/* Action buttons */
+.action-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.btn-wa {
+  flex: 1;
+  min-width: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: linear-gradient(135deg, #25D366, #128C7E);
+  color: white;
+  border: none;
+  border-radius: 14px;
+  padding: 15px 24px;
+  font-family: 'Sora', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform .15s, box-shadow .2s;
+}
+.btn-wa:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(37,211,102,0.3); }
+.btn-copy {
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  color: var(--text2);
+  border-radius: 14px;
+  padding: 15px 20px;
+  font-family: 'Sora', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .2s;
+  white-space: nowrap;
+}
+.btn-copy:hover { background: var(--surface3); color: var(--text); }
+.btn-copy.ok { border-color: var(--green); color: var(--green); }
+
+/* ============ MEMBERS SECTION ============ */
+.members-section {
+  position: relative;
+  z-index: 5;
+  max-width: 1100px;
+  margin: 60px auto 80px;
+  padding: 0 24px;
+}
+
+/* Filter bar */
+.filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+.filter-label { font-size: 12px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 0.1em; margin-right: 4px; }
+
+.filter-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  border-radius: 100px;
+  border: 1px solid var(--border2);
+  background: var(--surface2);
+  font-family: 'Sora', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text2);
+  cursor: pointer;
+  transition: all .2s;
+}
+.filter-btn .count {
+  background: var(--surface3);
+  padding: 2px 8px;
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 700;
+  min-width: 24px;
+  text-align: center;
+  transition: all .2s;
+}
+.filter-btn:hover { border-color: var(--border2); background: var(--surface3); color: var(--text); }
+
+.filter-btn.active-all { border-color: rgba(99,102,241,0.5); background: var(--blue-bg); color: #818cf8; }
+.filter-btn.active-all .count { background: rgba(99,102,241,0.2); color: #818cf8; }
+
+.filter-btn.active-lunas { border-color: var(--green-border); background: var(--green-bg); color: var(--green); }
+.filter-btn.active-lunas .count { background: rgba(16,185,129,0.2); color: var(--green); }
+
+.filter-btn.active-aktif { border-color: var(--amber-border); background: var(--amber-bg); color: var(--amber); }
+.filter-btn.active-aktif .count { background: rgba(245,158,11,0.2); color: var(--amber); }
+
+.filter-divider { width: 1px; height: 20px; background: var(--border2); margin: 0 4px; }
+
+/* Members grid */
+.members-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+}
+
+.mc {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all .2s;
+  position: relative;
+  overflow: hidden;
+}
+.mc::before {
+  content:'';
+  position: absolute;
+  inset: 0;
+  background: var(--grad1);
+  opacity: 0;
+  transition: opacity .2s;
+}
+.mc:hover { border-color: rgba(99,102,241,0.4); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+.mc:hover::before { opacity: .04; }
+.mc.hidden { display: none; }
+
+.mc-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.mc-code { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--cyan); font-weight: 600; }
+.mc-pill {
+  font-size: 9px; font-weight: 700;
+  padding: 2px 8px; border-radius: 100px;
+}
+.mc-pill.lunas { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
+.mc-pill.aktif { background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber-border); }
+
+.mc-name { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px; line-height: 1.3; }
+.mc-item { font-size: 11px; color: var(--text3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* ============ FOOTER ============ */
+footer {
+  position: relative;
+  z-index: 5;
+  text-align: center;
+  padding: 28px;
+  color: var(--text3);
+  font-size: 12px;
+  border-top: 1px solid var(--border);
+}
+footer strong { color: var(--text2); }
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: var(--surface); }
+::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: var(--border2); }
+</style>
+</head>
+<body>
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="orb orb3"></div>
+
+<!-- HEADER -->
+<header>
+  <div class="brand-row">
+    <div class="brand-icon">💳</div>
+    <div class="brand-dot"></div>
+    <span class="brand-text">iShop Kredit System</span>
+  </div>
+  <h1>Status <span>Pembayaran</span><br>Nasabah</h1>
+  <p>Cek & kirim status kredit langsung via WhatsApp</p>
+  <div class="stats-bar">
+    <div class="stat-chip"><span class="dot" style="background:var(--blue)"></span> <span id="statTotal">— Member</span></div>
+    <div class="stat-chip"><span class="dot" style="background:var(--green)"></span> <span id="statLunas">— Lunas</span></div>
+    <div class="stat-chip"><span class="dot" style="background:var(--amber)"></span> <span id="statAktif">— Aktif</span></div>
+  </div>
+</header>
+
+<!-- SEARCH -->
+<div class="search-section">
+  <div class="search-glass">
+    <div class="search-inner">
+      <span class="search-ico">🔍</span>
+      <input type="text" id="searchInput" placeholder="Ketik kode atau nama member..." autocomplete="off" spellcheck="false">
+      <div class="autocomplete" id="autocomplete"></div>
+    </div>
+    <button class="btn-search" onclick="cekStatus()">Cek Status</button>
+  </div>
+</div>
+
+<!-- RESULT -->
+<div class="result-zone">
+  <div class="empty-state" id="emptyState">
+    <div class="es-icon">🔎</div>
+    <h3>Member Tidak Ditemukan</h3>
+    <p>Kode tidak terdaftar. Coba periksa kembali.</p>
+  </div>
+
+  <div class="member-card" id="memberCard">
+    <div class="card-hero">
+      <div class="hero-top">
+        <div class="hero-left">
+          <div class="hero-avatar" id="heroAvatar">?</div>
+          <div>
+            <div class="hero-name" id="heroName">—</div>
+            <div class="hero-mid" id="heroMid">—</div>
+          </div>
+        </div>
+        <div class="status-badge" id="heroBadge">—</div>
+      </div>
+      <div class="info-tiles" id="infoTiles"></div>
+    </div>
+    <div class="card-body">
+      <div class="section-label">Detail Pembayaran</div>
+      <div class="pay-list" id="payList"></div>
+      <button class="raw-toggle-btn" onclick="toggleRaw()">
+        <span id="rawArrow">▸</span> Lihat teks asli WhatsApp
+      </button>
+      <div class="raw-box" id="rawBox"></div>
+      <div class="section-label" style="margin-top:8px">Kirim ke Nasabah</div>
+      <div class="action-row">
+        <a class="btn-wa" id="waBtn" href="#" target="_blank">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Kirim via WhatsApp
+        </a>
+        <button class="btn-tagih" onclick="tagihWA()">
+          📨 Tagih via WA
+        </button>
+        <button class="btn-copy" id="copyBtn" onclick="copyText()">📋 Salin Teks</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ALL MEMBERS -->
+<div class="members-section">
+  <div class="filter-bar">
+    <span class="filter-label">Filter</span>
+    <button class="filter-btn active-all" id="fb-all" onclick="filterMembers('all')">
+      🗂 Semua <span class="count" id="cnt-all">—</span>
+    </button>
+    <div class="filter-divider"></div>
+    <button class="filter-btn" id="fb-lunas" onclick="filterMembers('lunas')">
+      ✅ Lunas <span class="count" id="cnt-lunas">—</span>
+    </button>
+    <button class="filter-btn" id="fb-aktif" onclick="filterMembers('aktif')">
+      ⚡ Masih Aktif <span class="count" id="cnt-aktif">—</span>
+    </button>
+  </div>
+  <div class="members-grid" id="membersGrid"></div>
+</div>
+
+<footer>
+  <strong>iShop Kredit System</strong> &mdash; Data nasabah diperbarui dari file Excel
+</footer>
+
+<script>
+const DATA = {"0140392CEC": "*Ishop Member Detail*\n MID : 0140392CEC\n Nama : Cecep Bin Minan\n _T.Tag : *LUNAS*_\n --------------------\n IDB : Vivo Y21T 6/128 GB\n Net : Rp. 2,218,500\n Tgl : 01 Maret 2023\n Tag : Rp. 369,750 X 6\n Mfe : Rp. 50,000\n --------------------\n Detail Pembayaran (Tag+Mfe) :\n 1. ~Apr23 = Rp. 419,750~ (Lunas)\n 2. ~Mei23 = Rp. 419,750~ (Lunas)\n 3. ~Jun23 = Rp. 419,750~ (Lunas)\n 4. ~Jul23 = Rp. 429,750~ (Lunas)\n 5. ~Agt23 = Rp. 409,750~ (Lunas)\n 6. ~Sep23 = Rp. 419,750~ (Lunas)", "0220994MAD": "*Ishop Member Detail*\nMID : 0220994MAD\nNama : Mad Idrus\n_T.Tag : Rp. 10,000_\n--------------------\nIDB : Tagihan TrueCaller\nNet : Rp. 5,000 X 3\nTgl : 13 Setiap Bulan\n--------------------\nDetail Pembayaran (Tag) :\n1. Ika Widyawati 13 Apr 23\n2. Fitri (Ika W) 13 Apr 23\n 3. Bowo 13 Jun 23", "0321632EDE": "*Ishop Member Detail*\nMID : 0321632EDE\nNama : Edeng Suhendar\n_T.Tag3 : Rp. 0_  *Lunas*\n--------------------\nIDB : Hp IPHONE 15 128 BLACK\nNet : Rp. 11,989,500\nTgl : 28 JULI 2025\nDp : ~31Jul25 = Rp. 2,000,000~ (Lunas)\nTag : Rp. 1,248,688 X 8\nJT : Setiap Tgl 30\n--------------------\nDetail Pembayaran (Tag) :\n1. ~15Agt25 = Rp. 1,250,000~ (Lunas)\n2. ~15Sep25 = Rp. 1,250,000~ (Lunas)\n3. ~15Okt25 = Rp. 1,250,000~ (Lunas)\n4. ~15Nov25 = Rp. 1,250,000~ (Lunas)\n5. ~15Des25 = Rp. 1,250,000~ (Lunas)\n6. ~30Jan26 = Rp. 1,250,000~ (Lunas)\n7. ~28Feb26 = Rp. 1,250,000~ (Lunas)\n8. ~30Mar26 = Rp. 1,239,500~ (Lunas)\n> Benefit THR :  30K 🙏🏽", "0440379IDI": "*Ishop Member Detail*\nMID : 0440379IDI\nNama : Idi Muamar\n_T.Tag11 : Rp. 0_\n_T.Tag11 : Rp. 0_ *Lunas*\n--------------------\nIDB : Spining & Reel 4K + Tegeg\nNet : Rp.1,150K + Rp.276,700\nTgl : 17Mar26\nTag : Rp. 383,333 x 3\nJ.T : Setiap Tgl 30\n--------------------\nDetail Pembayaran (Tag) :\n1. ~30Mar26 = Rp. 385,000~ (Lunas)\n> Benefit THR :  30K 🙏🏽\n2. ~30Apr26 = Rp. 355K + 138,350 = 493,350~ (Lunas)\n3. ~30Mei26 = Rp. 380,000 + 138,350 = 518,350~ (Lunas)", "0540430IIN": "*Ishop Member Detail*\nMID : 0540430IIN\nNama : Iing XPDC\n_T.Tag2 : Rp. 0,_ *Lunas*  \n--------------------\nIDB : Vivo Y28 6/128 GB\nNet : Rp. 2,760,000\nTgl : 05 Juni 2024\nTag : Rp. 394,286 X 7\nJ.T : Setiap Tgl 30\n--------------------\nDetail Pembayaran  :\n1. ~30Jun24 = Rp. 400,000~ (Lunas)\n2. ~30Jul24 = Rp. 400,000~ (Lunas)\n3. ~30Agu24 = Rp. 400,000~ (Lunas)\n4. ~30Sep24 = Rp. 400,000~ (Lunas)\n5. ~30Okt24 = Rp. 400,000~ (Lunas)\n6. ~30Nov24/10Des24 = Rp. 300,000~ (Lunas)\n7. ~30Des24 = Rp. 460,000 (Lunas)", "0640255MAM": "*Ishop Member Detail*\nMID : 0640255MAM\nNama : Maman Sulaiman\n_T.Tag : Rp. 0_ *LUNAS*\n--------------------\nIDB : Lp Advance Soulmate 8/128 GB\nNet : Rp. 2,940,000\nTgl : 01 Juni 2023\nTag : Rp. 490,000 X 6\n--------------------\nDetail Pembayaran :\n1. ~Jul23 = Rp. 490,000~ (Lunas)\n2. ~Agt23 = Rp. 490,000~ (Lunas)\n3. ~Sep23 = Rp. 490,000~ (Lunas)\n4. ~Okt23 = Rp. 490,000~ (Lunas)\n5. ~Nov23 = Rp. 491,000~ (Lunas)\n6. ~Des23 = Rp. 490,000~ (Lunas)", "0740360SUP": "*Ishop Member Detail*\nMID : 0740360SUP\nNama : Suparyo\n_T.Tag 3 : Rp. 0_ *Lunas*\n--------------------\nIDB : Samsung A17 5G 8/256GB\nNet : Rp. 4,050,000\nTgl : 14Des2025\nTag : Rp. 675K X 6\nJ.T : Setiap Tgl 30\n--------------------\n_Detail Pembayaran :_\n1. ~30Des25 = Rp. 675,000~ (Lunas)\n2. ~30Jan26 = Rp. 675,000~ (Lunas)\n3. ~28Feb26 = Rp. 675,000~ (Lunas)\n4. ~30Mar26 = Rp. 675,000~ (Lunas)\n> Benefit THR :  30K 🙏🏽\n5. ~30Apr26 = Rp. 645,000~ (Lunas)\n6. ~30Mei26 = Rp. 675,000~ (Lunas)", "0821861SOM": "*Ishop Member Detail*\nMID : 0821861SOM\nNama : Somantri\n_T.Tag2 : Rp. 1,550,000_ \n--------------------\nIDB : Infinix Hot 60 Pro 8/256 GB\nNet : Rp. 3,102,000\nTgl : 18 Jan 2026\nTag : Rp. 310K\" X 6\n--------------------\nDetail Pembayaran :\n1. ~30Jan26 = Rp. 312,000~ (Lunas)\n2. ~28Feb26 = Rp. 310,000~ (Lunas)\n3. ~30Mar26 = Rp. 310,000~ (Lunas) \n> Benefit THR :  30K 🙏🏽\n4. ~30Apr26 = Rp. 280,000~ (Lunas)\n5. ~30Mei26 = Rp. 310,000~ (Lunas)\n6. 30Jun26 = Rp. 310,000 (Proses)\n7. 30Jul26 = Rp. 310,000 (Proses)\n8. 30Agu26 = Rp. 310,000 (Proses)\n9. 30Sep26 = Rp. 310,000 (Proses)\n10. 30Okt26 = Rp. 310,000 (Proses)", "09P180YOG": "*Ishop Member Detail*\nMID : 09P180YOG\nNama : Yoga Andrian\n_T.Tag : Rp. 0_ *Lunas*\n--------------------\nIDB : Oppo A58 6/128 GB\nNet : Rp. 2,700,000\nTgl : 06 Februari 2024\nTag : Rp. 450,000 X 6\nJ.T : Setiap Tgl 15\n--------------------\nDetail Pembayaran (Tag) :\n1. ~15Mar24 = Rp. 450,000~ (Lunas)\n2. ~15Apr24 = Rp. 450,000~ (Lunas)\n3. ~15Mei24 = Rp. 450,000~ (Lunas)\n4. ~15Jun24 = Rp. 450,000~ (Lunas)\n5. ~15Jul24 = Rp. 450,000~ (Lunas)\n6. ~15Agt24 = Rp. 450,000~ (Lunas)", "103019CEC": "*Ishop Member Detail*\nMID : 103019CEC\nNama : Cece Wahyu\n_T.Tag4 : Rp. 0_ *LUNAS*  \n--------------------\nIDB : HP Infinix Hot 40i 8/256 + HP Infinix Hot 40i 8/256\nNet : Rp. 1,940,000 + 1,800,000\nTgl : 26 Juni 2024 + 24 Okt 2024\nDP3 : ~30Jun24 = Rp. 140,000~ (Lunas)\nDP4 : ~23Okt24 = Rp. 500,000~ (Lunas)\nTag : Rp. 360K X 5 + 434K X 3\nJ.T : Setiap Tgl 15 & 30 + Tgl 25\n--------------------\nDetail Pembayaran (Tag) :\n1.1 ~15Jul24 = Rp. 180,000~ (Lunas)\n1.2 ~30Jul24 = Rp. 180,000~ (Lunas)\n2.1 ~15Agt24 = Rp. 180,000~ (Lunas)\n2.2 ~30Agt24 = Rp. 180,000~ (Lunas)\n3.1 ~15Sep24 = Rp. 180,000~ (Lunas)\n3.2 ~30Sep24 = Rp. 180,000~ (Lunas)\n4.1 ~15Okt24 = Rp. 180,000~ (Lunas)\n4.2 ~30Okt24 = Rp. 180,000~ (Lunas)\n5.1 ~15Nov24 = Rp. 180,000~ (Lunas)\n5.2 ~30Nov24 = Rp. 180,000 + 450,000~ (Lunas)\n6. ~30Des24 = Rp. 450,000~ (Lunas)\n7. ~23Jan24 = Rp. 400,000~ (Lunas)", "113028AST": "*Ishop Member Detail*\nMID : 113028AST\nNama : Astim S\n_T.Tag7 : Rp. 1,414,000_    \n--------------------\nIDB : HP Poco C71 4/128 GB\nNet : Rp. 2,020,000\nTgl : 02 Mar 2026\nTag : Rp. 202,000 X 10\nJ.T : Setiap Tgl 30\n--------------------\nDetail Pembayaran (Tag) :\n1. ~30Mar26 = Rp. 202,000~ (Lunas)\n> Benefit THR :  30K 🙏🏽\n2. ~30Apr26 = Rp. 172,000~ (Lunas)\n3. ~30Mei26 = Rp. 202,000~ (Lunas)\n4. 30Jun26 = Rp. 202,000 (Proses)\n5. 30Jul26 = Rp. 202,000 (Proses)\n6. 30Agt26 = Rp. 202,000 (Proses)\n7. 30Sep26 = Rp. 202,000 (Proses)\n8. 30Okt26 = Rp. 202,000 (Proses)\n9. 30Nov26 = Rp. 202,000 (Proses)\n10. 30Des26 = Rp. 202,000 (Proses)", "1240441ONI13": "*Ishop Member Detail*\nMID : 1240441ONI\nNama : ONIM BUDI S\n_T.Tag13 : Rp. 1,727,000_\n--------------------\nIDB : Lp.Lenovo Idpad 1 amd 8/521GB\nNet : Rp.5,921,660\nTgl :  04 Sep 2025\nTag : Rp. 593 x 10\nJ.T : Setiap Tgl 30\n--------------------\nDetail Pembayaran (Tag) :\n1. ~30Okt25 =  Rp. 611,660~ (Lunas)\n2. ~30Nov25 =  Rp. 590,000~ (Lunas)\n3. ~30Des25 =  Rp. 590,000~ (Lunas)\n4. ~30Jan26 =  Rp. 590,000~ (Lunas)\n5. ~28Feb26 =  Rp. 600,000~ (Lunas)\n6. ~30Mar26 =  Rp. 593,000~ (Lunas)\n> Benefit THR :  30K 🙏🏽\n7. ~30Apr26 =  Rp. 590,000~ (Lunas)\n8. 30Mei26 =  Rp. 560,000 (Proses)\n9. 30Jun26 =  Rp. 590,000 (Proses)\n10. 30Jul26 =  Rp. 577,000 (Proses)", "ONIMTAG15": "*Ishop Member Detail*\nMID : 1240441ONI\nNama : ONIM BUDI S\n_T.Tag15 : Rp. 4,397,400_ \n--------------------\nIDB : Hp Samsung A17 5G 8/256Gb \nNet : Rp.4,886K\nTgl :  07Mei2026\nTag : Rp. 488K X 10\nJ.T : Setiap Tgl 30\n--------------------\nDetail Pembayaran (Tag) :\n1. ~25/30Mei26 =  Rp. 488,600~ (Lunas)\n2. 30Jun26 =  Rp. 488,600 (Proses)\n3. 30Jul26 =  Rp. 488,600 (Proses)\n4. 30Agu26 =  Rp. 488,600 (Proses)\n5. 30Sep26 =  Rp. 488,600 (Proses)\n6. 30Okt26 =  Rp. 488,600 (Proses)\n7. 30Nov26 =  Rp. 488,600 (Proses)\n8. 30Des26 =  Rp. 488,600 (Proses)\n9. 30Jan26 =  Rp. 488,600 (Proses)\n10. 28Feb27 =  Rp. 488,600 (Proses)", "ONIMTAG16": "*Ishop Member Detail*\nMID : 1240441ONI\nNama : ONIM BUDI S\n_T.Tag16 : Rp. 6,120,000_ \n-------------------\nIDB : Tv Polytron 50\" Cinamax sounbar\nNet : Rp. 6,800,000\nTgl :  07 Mei 2026\nTag : Rp. 492K x 6\nJ.T : Setiap Tgl 30\n--------------------\nDetail Pembayaran (Tag) :\n1. ~30Mei26 =  Rp. 680,000~ (Lunas)\n2. 30Jun26 =  Rp. 680,000 (Proses)\n3. 30Jul26 =  Rp. 680,0000 (Proses)\n4. 30Agu26 =  Rp. 680,000 (Proses)\n5. 30Sep26 =  Rp. 680,000 (Proses)\n6. 30Okt26 =  Rp. 680,000 (Proses)\n7. 30Nov26 =  Rp. 680,000 (Proses)\n8. 30Des26 =  Rp. 680,000 (Proses)\n9. 30Jan26 =  Rp. 680,000 (Proses)\n10. 28Feb27 =  Rp. 680,000 (Proses)", "1422187MUL": "*Ishop Member Detail*\nMID : 1422187MUL\nNama : Mulyadi\n_T.Tag : Rp. 0_ *Lunas* \n--------------------\nIDB : Ortuseight Mirage no 41\nNet : Rp. 330,000\nTgl : 02 Agustus 2024\n~Dp : Rp, 51,000~ (Lunas)\nTag : Rp. 139,500 X 2\nJ.T : Setiap Tgl 15 & 30\n--------------------\nDetail Pembayaran (Tag) :\n1. ~15Sep24 = Rp. 139,500~ (Lunas)\n2. ~15Oktl24 = Rp. 139,500~ (Lunas)", "1521567WAH": "*Ishop Member Detail*\nMID : 1521567WAH\nNama : Wahyu Saepudin\n_T.Tag4 : Rp. 0_ *Lunas*   \n--------------------\nIDB : Samsung A16 5G 8/256Gb\nNet : Rp. 4,050K\nTgl : 23Jul25\nTag : Rp. 405K X 10 + 345K X 2\nJ.T : Setiap Tgl 30\n--------------------\nDetail Pembayaran (Tag) :\n1.1 ~31Jul25 = Rp. 200,000~ (Lunas)\n1.2 ~15Agt25 = Rp. 205,000~ (Lunas)\n2.1 ~30Agt25 = Rp. 200,000~ (Lunas)\n2.2 ~15Sep25 = Rp. 205,000~ (Lunas)\n3.1 ~30Sep25 = Rp. 200,000~ (Lunas)\n3.2 ~15Okt25 = Rp. 205,000~ (Lunas)\n4.1 ~30Okt25 = Rp. 205,000~ (Lunas)\n4.2 ~15Nov25 = Rp. 200,000~ (Lunas)\n5.1 ~30Nov25 = Rp. 200K+Rp. 175K = Rp. 375K~ (Lunas)\n5.2 ~15Des25 = Rp. 205K+Rp. 170K = Rp. 375K~ (Lunas)\n6.1 ~30Des25 = Rp. 200K+Rp. 345K = Rp. 545K~ (Lunas)\n7. ~30Jan26 = Rp. 405,000~ (Lunas)\n8. ~28Feb26 = Rp. 405,000~ (Lunas)\n9. ~30Mar26 = Rp. 405,000~ (Lunas)\n> Benefit THR :  30K 🙏🏽\n10. ~30Apr26 = Rp. 375,000~ (Lunas)\n11. ~30Mei26 = Rp. 205,000~ (Lunas)", "1621000ISK": "*Ishop Member Detail*\nMID : 1621000ISK\nNama : ISKANDAR\n_T.Tag :Rp.0_ *LUNAS*\n--------------------\nIDB : IKAN MEYLEUS\nNet : Rp. 845,000\nTgl : 26 Desember 2023\nTag : Rp. 140,833 X 6\nJ.T : Setiap Tgl 15 & 30\n--------------------\nDetail Pembayaran (Tag) :\n1. ~30Des23 = Rp. 150,000~ (Lunas)\n2. ~15Jan23 = Rp. 150,000~ (Lunas)\n3. ~31Jan23 = Rp. 150,000~ (Lunas)\n4. ~15Feb23 = Rp. 150,000~ (Lunas)\n5. ~30Feb23 = Rp. 150,000~ (Lunas)\n6. ~15Mar23 = Rp. 95,000~ (Lunas)", "1722058BOW": "*Ishop Member Detail*\nMID : 1722058BOW\nNama : M.WIBOWO\n_T.Tag3 : Rp. 700,000_  \n_T.Tag4 : Rp. 320,000_\n_T.Tag5 : Rp. 265,000_\n--------------------\nIDB : Iphone 13 128GB W + Infinik Hot60 pro+ 8/256GB + Ban Vixion\nNet : Rp. 9,000K + Rp. 3,200K + Rp. 795K\nTgl : 14Jun25 + 21Feb26\nDp : ~10Jun25 = Rp. 2,000K~ (Lunas)\nTag : Rp. 700K X 10 + Rp. 320K X 10 + Rp. 265K X 3 \nJ.T : Setiap Tgl 30\n--------------------\nDetail Pembayaran (Tag) :\n1. ~15Jul25 = Rp. 700,000~ (Lunas)\n2. ~15Agt25 = Rp. 700,000~ (Lunas)\n3. ~15Sep25 = Rp. 700K + Rp. 320K = Rp.1,020K~ (Lunas)\n4. ~15Okt25 = Rp. 700K + Rp. 320K = Rp.1,020K~ (Lunas)\n5. ~15Nov25 = Rp. 700K + Rp. 300K = Rp.1,000K~ (Lunas)\n6. ~15Des25 = Rp. 700K + Rp. 320K = Rp.1,020K~ (Lunas)\n7. ~30Jan26 = Rp. 700K + Rp. 320K = Rp.1,020K~ (Lunas)\n8. ~28Feb26 = Rp. 700K + Rp. 320K + Rp. 265K = Rp.1,285K~ (Lunas)\n9. 30Apr26 = Rp. 700K + Rp. 320K + Rp. 265K - THR 30 = Rp.1,255K (Proses)\n10. 30Mei26 = Rp. 700K + Rp. 320K + Rp. 265K = Rp.1,285K (Proses)\n11. ~30Mei26/31Mar26 = Rp. 340,000~ (Lunas)\n12. ~30Jun26/31Mar26 = Rp. 320,000~ (Lunas)\n> Benefit THR :  30K 🙏🏽", "1822017AND": "*Ishop Member Detail*\nMID : 1822017AND\nNama : Andi Raharjo \n_T.Tag 5 : Rp. 0_  *Lunas*\n--------------------\nIDB : Baseus Bowie E12\nNet :Rp. 150,000\nTgl : 12Des25\nTag : Rp. 50K X 3\nJ.T : Setiap Tgl 30\n--------------------\nDetail Pembayaran (Tag) :\n1.~30Des25 = Rp. 50,000~ (Lunas)\n2.~30Jan26 = Rp. 50,000~ (Lunas)\n3. ~30Feb26 = Rp. 50,000~ (Lunas)", "1940543MUJ": "*Ishop Member Detail*\nMID : 1940543MUJ\nNama : Mujiono (Karu)\n_T.Tag2 : Rp.0_ *Lunas* \n--------------------\nIDB : Sandal K-walk Energy (Dedy mizwar)\nNet : Rp. 1,618,000\nTgl : 20 Januari 2025\nDp : ~31Jan25 = Rp. 100,000~ (Lunas)\nTag : Rp. 404,500 X 4\nJ.T : Setiap Tgl 30\n--------------------\nDetail Pembayaran (Tag) :\n1. ~28Feb25 = Rp. 500,000~ (Lunas)\n2. ~30Mar25 = Rp. 400,000~ (Lunas)\n3. ~30Apr25 = Rp. 500,000~ (Lunas)\n4. ~30Mei25 = Rp. 118,000~ (Lunas)", "2021121KHU": "*Ishop Member Detail*\nMID : 2021121KHU\nNama : Khurnia C (Op)\n_T.Tag : Rp. 0_ *Lunas*\n--------------------\nIDB : Joran Pancing\nNet : Rp. 553,000\nTgl : 20 Juli 2024\nTag : Rp. 276,500 X 2\nJ.T : Setiap Tgl 30\n--------------------\nDetail Pembayaran (Tag) :\n1. ~31Jul24 = Rp. 278,000~ (Lunas)\n2. ~30Agt24 = Rp. 275,000~ (Lunas)", "2121285HEN": "*Ishop Member Detail*\nMID : 2121285HEN\nNama : Hendi (Op)\n_T.Tag : Rp. 0_ *Lunas*\n--------------------\nIDB : Shockbreaker Lexi Ori\nNet : Rp. 320,000\nTgl : 24 Juli 2024\nDp : ~Rp. 100,000~ (Lunas)\nTag : Rp. 110,000\nJ.T : Setiap Tgl 30\n--------------------\nDetail Pembayaran (Tag) :\n1. ~01Agt24 = Rp. 110,000~ (Lunas)\n2. ~15Agt24 = Rp. 110,000~ (Lunas)", "2220824ARA": "*Ishop Member Detail*\nMID : 2220824ARA\nNama : Arafat R (Xpdc)\n_T.Tag6 : Rp. 897,000_ \n--------------------\nIDB : Baju Anak 2, Dewasa POLO + Baju Cardinal 2\nNet : Rp. 1,196,000\nTgl :  10Mar26\nTag :  299K x 4\nJ.T : Setiap Tgl 30\n--------------------\nDetail Pembayaran (Tag) :\n3. ~30Mar26 = Rp. 136,905 + Rp. 3,095 = Rp. 145,000~ (Lunas) _relokasi tag6_\n> Benefit THR :  30K 🙏🏽\n4. ~30Apr26 = Rp. 265,905~ (Lunas)\n5. 30Mei26 = Rp. 299,000 (Proses)\n6. 30Jun26 = Rp. 299,000 (Proses)\n6. 30Jul26 = Rp. 299,000 (Proses)", "2321626IRF": "*Ishop Member Detail*\nMID : 2321626IRF\nNama : Irfan Setiawan (Paletan)\n_T.Tag3 : Rp. 985,000_ \n--------------------\nIDB : Realme C71 4/128\nNet : Rp. 2,175K\nTgl :  20-Okt-25\nTag : Rp. 198K X 11 \nJ.T : Setiap Tgl 30\n--------------------\nDetail Pembayaran (Tag) :\n13.1 ~15Nov25 =  Rp. 198,000~ (Lunas)\n\n14.1 ~23/15Des25 =  Rp. 200,000~ (Lunas)\n\n15. ~30Jan26 =  Rp. 198K + 193K = 391K~ (Lunas)\n16. ~28Feb26/31Mar26 =  Rp. 198K + 191K = 389K~ (Lunas)\n17. ~30Mar26 =  Rp. 198,000~ (Lunas)\n> Benefit THR :  30K 🙏🏽\n18. ~30Apr26 =  Rp. 168,000~ (Lunas)\n19. 30Mei26 =  Rp. 198,000 (Proses)\n20. 30Jun26 =  Rp. 198,000 (Proses)\n21. 30Jul26 =  Rp. 198,000 (Proses)\n22. 30Agt26 =  Rp. 198,000 (Proses)\n23. 30Sep26 =  Rp. 193,000 (Proses)", "2421845AND": "*Ishop Member Detail*\nMID : 2421845AND\nNama : Andang Forisa\n _T.Tag4 : Rp. 530,000_\n--------------------\nIDB : Poco C75 8/256\nNet : Rp. 2,130K\nTgl : 25Okt25\nTag :  213K x 10\nJ.T : Setiap Tgl 15 & 30\n--------------------\nDetail Pembayaran (Tag) :\n11.2 ~30Okt25 = Rp.175K+Rp.111K = Rp. 286K~ (LuAnas)\n12.1 ~15Nov25 = Rp.175K+Rp.111K = Rp. 286K~ (Lunas)\n12.2 ~30Nov25 = Rp.150+Rp.106K = Rp. 256K~  (Lunas)\n13.1 ~15Des25 = Rp. 106,000~ (Lunas)\n13.2 ~30Des25 = Rp. 106,000~ (Lunas)\n14. ~30Jan26 = Rp. 212,000~ (Lunas)\n15. ~30Feb26 = Rp. 212,000~ (Lunas)\n16. ~30Mar26 = Rp. 212,000~ (Lunas)\n> Benefit THR :  30K 🙏🏽\n17. ~30Apr26 = Rp. 182,000~ (Lunas)\n18. ~30Mei26 = Rp. 212,000~ (Lunas)\n19. 30Jun26 = Rp. 212,000 (Proses)\n19. 30Jul26 = Rp. 212,000 (Proses)\n20. 30Agt26 = Rp. 106,000 (Proses)", "2522183YON": "*Ishop Member Detail*\nMID : 2522183YON\nNama : Yongki (adm)\n_T.Tag : Rp. 0_  *Lunas*\n--------------------\nIDB : IPhone XR 64GB\nNet : Rp. 4,793,000\nTgl : 02 Desember 2024\nTag : Rp. 798,833 X 6\nJ.T : Setiap Tgl 30\n--------------------\nDetail Pembayaran (Tag) :\n1. ~30Des24 = Rp. 800,000~ (Lunas)\n2.  ~30Jan25 = Rp. 800,000~ (Lunas)\n3. ~28Feb25 = Rp. 800,000~ (Lunas)\n4. ~30Mar25 = Rp. 800,000~ (Lunas)\n5. ~30Apr25 = Rp. 800,000~ (Lunas)\n6. ~30Mei25 = Rp. 793,000 ~(Lunas)", "2640471IKA": "*Ishop Member Detail*\nMID : 2640471IKA\nNama : IKA W (HRD)\n--------------------\nIDB : 3 x Truecaller\nNet : Rp. 15,000\nTag : Rp. 15,000 X (bulan)\nJ.T : Setiap Tgl 30\n--------------------\nDetail Pembayaran (Tag) :\n1. Jun-Okt ~31Okt25 = Rp. 75,000~ (Lunas)\n2. Nov25-Mar26 ~3Mar26 = Rp. 75,000~ (Lunas)", "2920386JAL": "*Ishop Member Detail*\nMID : 2920386JAL\nNama : Jalal M (Xpdc)\n_T.Tag3 : Rp. 0 *Lunas*_  \n--------------------\nIDB : Sepatu Gats Mp 2605\nNet : Rp. 685,000\nTgl : 16 Des 2025\nTag : Rp. 228K\" x 1\nJ.T : 1 Bulan / tgl 27\n--------------------\nDetail Pembayaran (Tag) :\n1. ~30Des25 = Rp. 300,000~ (Lunas)\n2. ⁠~30Jan26 = Rp. 200,000~ (Lunas)\n3. ~28Feb26 = Rp. 185,000~ (Lunas)", "1722058BOW(ARI)": "*Ishop Member Detail*\nMID : 3022058BOW\nNama : M.WIBOWO/ARI (Brgan)\n_T.Tag1 : Rp. 0_  *Lunas*\n--------------------\nIDB : Infinik Hot60 pro+ 8/256GB\nNet : Rp. 2,900,000\nTgl : 16 Sep 2025\nDp : ~16Sep25 = Rp. 1,500K~ (Lunas)\nTag : Rp. 350K X 4\nJ.T : Setiap Tgl 15\n--------------------\nDetail Pembayaran (Tag) :\n1. ~15Okt25 = Rp. 350,000~ (Lunas)\n2. ~15Nov25 = Rp. 350,000~ (Lunas)\n3. ~15Des25 = Rp. 350,000~ (Lunas)\n4. ~15Jan26 = Rp. 350,000~ (Lunas)", "3121639FIK": "*Ishop Member Detail*\nMID : 3121639FIK\nNama : Fiki J (Xpdc)\n_T.Tag : Rp. 1,368,000_ \n--------------------\nIDB : Samsung A26 8/256GB\nNet : Rp. 4,560,000\nTgl : 19 Nov 2025\nTag : Rp. 456K X 10\nJ.T : Setiap Tgl 30\n--------------------\nDetail Pembayaran (Tag) :\n1. ~30Nov25 = Rp. 456,000~ (Lunas)\n2. ~30Des25 = Rp. 456,000~ (Lunas)\n3. ~30Jan26 = Rp. 456,000~ (Lunas)\n4. ~28Feb26 = Rp. 456,000~ (Lunas)\n5. ~30Mar26 = Rp. 456,000~ (Lunas)\n> Benefit THR :  30K 🙏🏽\n6. ~30Apr26 = Rp. 426,000~ (Lunas)\n7. ~30Mei26 = Rp. 456,000~ (Lunas)\n8. 30Jun26 = Rp. 456,000 (Proses)\n9. 30Jul26 = Rp. 456,000 (Proses)\n10. 30Agt26 = Rp. 456,000 (Proses)", "3240567AGU": "*Ishop Member Detail*\nMID : 3240567AGU\nNama : Agung (Pacces)\n_T.Tag : Rp. 975,000_ \n--------------------\nIDB : Tecno Camon 8/256GB\nNet : Rp. 3,900,000\nTgl : 09 Jan 2026\nTag : Rp. 487K X 8\nJ.T : Setiap Tgl 30\n--------------------\nDetail Pembayaran (Tag) :\n1. ~30Jan26 = Rp. 487,500~ (Lunas)\n2. ~30Feb26 = Rp. 487,500~ (Lunas)\n3. ~30Mar26 = Rp. 487,500~ (Lunas)\n4. ~30Apr26 = Rp. 487,500 (Lunas)~\n> Benefit THR :  30K 🙏🏽\n5. ~30Mei26 = Rp. 457,500~ (Lunas)\n6. ~30Jun26 = Rp. 487,500~ (Lunas)\n7. 30Jul26 = Rp. 487,500 (Proses)\n8. 30Agt26 = Rp. 487,500 (Proses)", "3322837AND": "*Ishop Member Detail*\nMID : 3322837AND\nNama : Andriansyah (Sanpak)\n_T.Tag : Rp. 2,730,000_ \n--------------------\nIDB : Showcase Plytron SCN-280 5RAK\nNet : Rp. 4,550,000\nTgl : 17 Feb 2026\nTag : Rp. 455K X 10\nJ.T : Setiap Tgl 30\n--------------------\nDetail Pembayaran (Tag) :\n1. ~28Feb26 = Rp. 455,000~ (Lunas)\n2. ~30Mar26 = Rp. 455,000~ (Lunas)\n> Benefit THR :  30K 🙏🏽\n3. ~30Apr26 = Rp. 425,000~ (Lunas)\n4. ~30Mei26 = Rp. 455,000~ (Lunas)\n5. 30Jun26 = Rp. 455,000 (Proses)\n6. 30Jul26 = Rp. 455,000 (Proses)\n7. 30Agt26 = Rp. 455,000 (Proses)\n8. 30Sep26 = Rp. 455,000 (Proses)\n9. 30Okt26 = Rp. 455,000 (Proses)\n10. 30Nov26 = Rp. 455,000 (Proses)", "2740578BAH": "Ishop Member Detail\nMID : 2740578BAH\nNama : Baha (adm)\n_T.Tag : Rp. 0_ *Lunas*\n--------------------\nIDB : Samsung A06 4/128Gb\nNet : Rp. 2,000,000\nTgl : 06 Januari 2025\nDp : ~06Jan25 = Rp. 25,000~ (Lunas)\nTag : Rp. 329,166 X 6\nJ.T : Setiap Tgl 30\n--------------------\nDetail Pembayaran (Tag) :\n1.  ~30Jan25 = Rp. 330,000~ (Lunas)\n2. ~28Feb25 = Rp. 330,000~ (Lunas)\n3. ~30Mar25 = Rp. 330,000~ (Lunas)\n4. ~30Apr25 = Rp. 330,000~ (Lunas)\n5. ~30Mei25 = Rp. 330,000~ (Lunas)\n6. ~30Jun25 = Rp. 325,000~ (Lunas)", "2821007SUB": "Ishop Member Detail\nMID : 2821007SUB\nNama : Subodro (Part&Layer)\n_T.Tag : Rp. 0 _ *Lunas*\n--------------------\nIDB : Itel P65 8/128Gb\nNet : Rp. 1,720,000\nTgl : 22 Januari 2025\nDp : ~31Jan25 = Rp. 300,000~  (Lunas)\nTag : Rp. 573,333 X 3\nJ.T : Setiap Tgl 30\n--------------------\nDetail Pembayaran (Tag) :\n1.1 ~15Feb25 = Rp. 300,000~ (Lunas)\n1.2 ~28Feb25/19Feb25 = Rp. 300,000~ (Lunas)\n2. ~30Mar25/20Feb25 = Rp. 480,000~ (Lunas)\n3. ~30Apr25/28Feb25 = Rp. 340,000~ (Lunas)"};
+
+// ─── PARSERS ──────────────────────────────────────────────
+function parseName(raw) { const m = raw.match(/Nama\s*:\s*(.+)/); return m ? m[1].trim() : '-'; }
+function parseMid(raw)  { const m = raw.match(/MID\s*:\s*(\S+)/);  return m ? m[1].trim() : '-'; }
+function parseItem(raw) { const m = raw.match(/IDB\s*:\s*(.+)/);   return m ? m[1].trim() : '-'; }
+function parseNet(raw)  { const m = raw.match(/Net\s*:\s*(.+)/);   return m ? m[1].trim() : '-'; }
+function parseTgl(raw)  { const m = raw.match(/Tgl\s*:\s*(.+)/);   return m ? m[1].trim() : '-'; }
+function parseTag(raw)  { const m = raw.match(/Tag\s*:\s*(.+)/);   return m ? m[1].trim() : '-'; }
+function parseJT(raw)   { const m = raw.match(/J\.T\s*:\s*(.+)/);  return m ? m[1].trim() : null; }
+function parseSisa(raw) {
+  const matches = [...raw.matchAll(/_T\.Tag[\w\d\s]*:\s*([^_]+)_/g)];
+  if (!matches.length) return null;
+  const last = matches[matches.length-1][1].trim();
+  if (last.match(/0[,.]?\s*$/) || last.includes('0_ *L')) return null;
+  return last;
+}
+
+function getStatus(raw) {
+  const u = raw.toUpperCase();
+  if (u.includes('*LUNAS*') || raw.includes('*Lunas*') || raw.includes('Rp. 0_ *Lunas') ||
+      raw.includes('Rp.0_ *Lunas') || raw.includes('Rp. 0 _ *Lunas') ||
+      raw.match(/T\.Tag[\w\d\s]*:\s*Rp\.?\s*0[^\d].*\*[Ll]unas\*/)) return 'lunas';
+  return 'aktif';
+}
+
+function parsePayments(raw) {
+  return raw.split('\n').reduce((acc, line) => {
+    const m = line.match(/^\s*(\d+[\d.]*)\s*[.)]\s*(.+)/);
+    if (!m) return acc;
+    const rest = m[2];
+    if (!rest.includes('Rp') && !rest.includes('rp')) return acc;
+    const isLunas = rest.includes('~') || /lunas/i.test(rest);
+    const isDp = /\bdp\b/i.test(rest);
+    let date = rest.replace(/[~*]/g,'').split('=')[0].replace(/^[-→>▸\s]+/,'').trim();
+    const amtM = rest.match(/Rp\.?\s*([\d.,]+(?:\s*[KkM])?)/);
+    const amount = amtM ? 'Rp. '+amtM[1] : '';
+    // Parse numeric value for sisa calculation
+    let numVal = 0;
+    if (amtM) {
+      let v = amtM[1].replace(/\./g,'').replace(',','.');
+      if (/[Kk]$/.test(v)) { v = parseFloat(v)*1000; }
+      else if (/M$/.test(v)) { v = parseFloat(v)*1000000; }
+      else { v = parseFloat(v); }
+      numVal = isNaN(v) ? 0 : v;
+    }
+    let status = isLunas ? 'lunas' : isDp ? 'dp' : 'proses';
+    acc.push({ num:m[1], date, amount, status, numVal });
+    return acc;
+  }, []);
+}
+
+// ─── STATE: edited payment statuses per key ────────────────
+const editedStatus = {}; // { key: { idx: 'lunas'|'proses' } }
+
+function getCurrentPays(key) {
+  const raw = DATA[key];
+  const pays = parsePayments(raw);
+  if (editedStatus[key]) {
+    Object.keys(editedStatus[key]).forEach(i => {
+      if (pays[i]) pays[i].status = editedStatus[key][i];
+    });
+  }
+  return pays;
+}
+
+function calcSisa(pays) {
+  return pays.filter(p => p.status === 'proses').reduce((s, p) => s + p.numVal, 0);
+}
+
+function formatRp(n) {
+  return 'Rp. ' + Math.round(n).toLocaleString('id-ID');
+}
+
+// ─── DISPLAY ──────────────────────────────────────────────
+let currentKey = null;
+
+function cekStatus(code) {
+  const q = (code || document.getElementById('searchInput').value).trim().toUpperCase();
+  document.getElementById('autocomplete').classList.remove('open');
+
+  let key = DATA[q] ? q : Object.keys(DATA).find(k => k.toUpperCase() === q);
+  if (!key && q.length > 2) {
+    key = Object.keys(DATA).find(k => parseName(DATA[k]).toUpperCase().includes(q));
+  }
+
+  const empty = document.getElementById('emptyState');
+  const card  = document.getElementById('memberCard');
+
+  if (!key) { empty.style.display='block'; card.style.display='none'; return; }
+  empty.style.display='none'; card.style.display='block';
+
+  currentKey = key;
+  renderCard(key);
+  card.scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+function renderCard(key) {
+  const raw  = DATA[key];
+  const name = parseName(raw);
+  const mid  = parseMid(raw);
+  const item = parseItem(raw);
+  const net  = parseNet(raw);
+  const tgl  = parseTgl(raw);
+  const tag  = parseTag(raw);
+  const jt   = parseJT(raw);
+  const st   = getStatus(raw);
+  const pays = getCurrentPays(key);
+
+  // Avatar
+  const initials = name.split(' ').slice(0,2).map(w=>w[0]||'').join('').toUpperCase() || '?';
+  document.getElementById('heroAvatar').textContent = initials;
+  document.getElementById('heroName').textContent = name;
+  document.getElementById('heroMid').textContent = mid;
+
+  const badge = document.getElementById('heroBadge');
+  if (st === 'lunas') {
+    badge.innerHTML = '✓ LUNAS';
+    badge.className = 'status-badge badge-lunas';
+  } else {
+    badge.innerHTML = '⚡ AKTIF';
+    badge.className = 'status-badge badge-aktif';
+  }
+
+  // Sisa calculated from proses rows
+  const sisaCalc = calcSisa(pays);
+  const sisaRaw  = parseSisa(raw);
+
+  // Tiles
+  const tiles = [
+    { l:'Barang / Item', v: item },
+    { l:'Harga Net',     v: net,  cls:'accent' },
+    { l:'Tgl Mulai',    v: tgl },
+    { l:'Angsuran',     v: tag },
+    ...(jt ? [{ l:'Jatuh Tempo', v: jt }] : []),
+    ...(sisaRaw ? [{ l:'Sisa (raw)', v: sisaRaw, cls:'warn' }] : []),
+  ];
+  document.getElementById('infoTiles').innerHTML = tiles.map(t =>
+    `<div class="tile"><div class="tile-label">${t.l}</div><div class="tile-value ${t.cls||''}">${t.v}</div></div>`
+  ).join('');
+
+  // Sisa box
+  const pl = document.getElementById('payList');
+  let sisaHtml = '';
+  if (sisaCalc > 0) {
+    const prosesCount = pays.filter(p => p.status === 'proses').length;
+    sisaHtml = `<div class="sisa-box">
+      <div>
+        <div class="sisa-label">Sisa Tagihan (${prosesCount} angsuran)</div>
+      </div>
+      <div class="sisa-value">${formatRp(sisaCalc)}</div>
+    </div>`;
+  }
+
+  // Payments with toggle button
+  const paysHtml = pays.length
+    ? pays.map((p, i) => `
+        <div class="pay-row" id="pr-${i}">
+          <span class="pay-num">${p.num}.</span>
+          <span class="pay-date">${p.date}</span>
+          <span class="pay-amount">${p.amount}</span>
+          <button class="pay-tag-btn tag-${p.status}" onclick="togglePayStatus('${key}',${i})" title="Klik untuk ganti status">
+            ${p.status==='lunas'?'✓ Lunas':p.status==='dp'?'DP':'⏳ Proses'}
+          </button>
+        </div>`).join('')
+    : '<div class="pay-row"><span style="color:var(--text3);font-size:12px">Tidak ada data pembayaran terstruktur</span></div>';
+
+  pl.innerHTML = sisaHtml + paysHtml;
+
+  document.getElementById('rawBox').textContent = raw;
+  document.getElementById('waBtn').href = `https://wa.me/?text=${encodeURIComponent(raw)}`;
+  const cb = document.getElementById('copyBtn');
+  cb.dataset.raw = raw; cb.textContent = '📋 Salin Teks'; cb.classList.remove('ok');
+}
+
+function togglePayStatus(key, idx) {
+  if (!editedStatus[key]) editedStatus[key] = {};
+  const pays = getCurrentPays(key);
+  const cur = pays[idx].status;
+  if (cur === 'proses') {
+    editedStatus[key][idx] = 'lunas';
+  } else if (cur === 'lunas') {
+    editedStatus[key][idx] = 'proses';
+  }
+  renderCard(key);
+}
+
+// ─── TAGIH WA ─────────────────────────────────────────────
+function tagihWA() {
+  if (!currentKey) return;
+  const raw  = DATA[currentKey];
+  const name = parseName(raw);
+  const mid  = parseMid(raw);
+  const item = parseItem(raw);
+  const net  = parseNet(raw);
+  const tgl  = parseTgl(raw);
+  const tag  = parseTag(raw);
+  const jt   = parseJT(raw);
+  const pays = getCurrentPays(currentKey);
+  const sisaCalc = calcSisa(pays);
+
+  // Build T.Tag sisa line
+  const sisaLine = sisaCalc > 0 ? `_T.Tag : ${formatRp(sisaCalc)}_` : `_T.Tag : Rp. 0_ *Lunas*`;
+
+  // Build payment detail lines
+  const payLines = pays.map((p, i) => {
+    const num = p.num + '.';
+    if (p.status === 'lunas') {
+      return `${num} ~${p.date} = ${p.amount}~ (Lunas)`;
+    } else {
+      return `${num} ${p.date} = ${p.amount} (Proses)`;
+    }
+  }).join('\n');
+
+  const teks =
+`Assalamualaikum ...
+Mau ngingetin hari ini / besok ada tagihan ya, Pembayaran boleh *Cash* atau *Transfer* ke
+BCA : 4995141451 atas nama _MAD IDRUS_
+terimakasih
+Lampiran tagihan ⬇️ :
+
+*Ishop Member Detail*
+MID : ${mid}
+Nama : ${name}
+${sisaLine}
+--------------------
+IDB : ${item}
+Net : ${net}
+Tgl : ${tgl}
+Tag : ${tag}
+${jt ? `J.T : ${jt}` : ''}
+--------------------
+Detail Pembayaran (Tag) :
+${payLines}`;
+
+  window.open(`https://wa.me/?text=${encodeURIComponent(teks.trim())}`, '_blank');
+}
+
+function toggleRaw() {
+  const box = document.getElementById('rawBox');
+  const arr = document.getElementById('rawArrow');
+  const vis = box.style.display === 'block';
+  box.style.display = vis ? 'none' : 'block';
+  arr.textContent = vis ? '▸' : '▾';
+}
+
+function copyText() {
+  const cb = document.getElementById('copyBtn');
+  navigator.clipboard.writeText(cb.dataset.raw).then(() => {
+    cb.textContent = '✓ Tersalin!'; cb.classList.add('ok');
+    setTimeout(() => { cb.textContent = '📋 Salin Teks'; cb.classList.remove('ok'); }, 2000);
+  });
+}
+
+// ─── AUTOCOMPLETE ─────────────────────────────────────────
+const inp = document.getElementById('searchInput');
+const ac  = document.getElementById('autocomplete');
+
+inp.addEventListener('input', () => {
+  const q = inp.value.trim().toUpperCase();
+  if (q.length < 2) { ac.classList.remove('open'); return; }
+  const hits = Object.keys(DATA).filter(k =>
+    k.toUpperCase().includes(q) || parseName(DATA[k]).toUpperCase().includes(q)
+  ).slice(0, 7);
+  if (!hits.length) { ac.classList.remove('open'); return; }
+  ac.innerHTML = hits.map(k => {
+    const st = getStatus(DATA[k]);
+    const cls = st==='lunas' ? 'tag-lunas' : 'tag-proses';
+    const lbl = st==='lunas' ? '✓ Lunas' : '⚡ Aktif';
+    return `<div class="ac-item" onclick="pickAc('${k}')">
+      <span class="ac-code">${k}</span>
+      <span class="ac-name">${parseName(DATA[k])}</span>
+      <span class="ac-badge ${cls}">${lbl}</span>
+    </div>`;
+  }).join('');
+  ac.classList.add('open');
+});
+
+inp.addEventListener('keydown', e => { if(e.key==='Enter') cekStatus(); });
+document.addEventListener('click', e => { if(!e.target.closest('.search-section')) ac.classList.remove('open'); });
+
+function pickAc(k) {
+  inp.value = k;
+  ac.classList.remove('open');
+  cekStatus(k);
+}
+
+// ─── FILTER ───────────────────────────────────────────────
+let currentFilter = 'all';
+
+function filterMembers(f) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => {
+    b.className = 'filter-btn';
+    const id = b.id.replace('fb-','');
+    if (id === f) b.classList.add('active-'+f);
+  });
+  document.querySelectorAll('.mc').forEach(el => {
+    const st = el.dataset.status;
+    const show = f==='all' || st===f;
+    el.classList.toggle('hidden', !show);
+  });
+}
+
+// ─── BUILD GRID ───────────────────────────────────────────
+function buildGrid() {
+  const keys = Object.keys(DATA);
+  let cntL = 0, cntA = 0;
+
+  const grid = document.getElementById('membersGrid');
+  grid.innerHTML = keys.map(k => {
+    const raw  = DATA[k];
+    const st   = getStatus(raw);
+    const name = parseName(raw);
+    const item = parseItem(raw);
+    if (st === 'lunas') cntL++; else cntA++;
+    const pillCls = st==='lunas' ? 'lunas' : 'aktif';
+    const pillLbl = st==='lunas' ? '✓ Lunas' : '⚡ Aktif';
+    return `<div class="mc" data-status="${st}" onclick="pickAc('${k}')">
+      <div class="mc-header">
+        <span class="mc-code">${k}</span>
+        <span class="mc-pill ${pillCls}">${pillLbl}</span>
+      </div>
+      <div class="mc-name">${name}</div>
+      <div class="mc-item">${item}</div>
+    </div>`;
+  }).join('');
+
+  // Stats
+  document.getElementById('statTotal').textContent = keys.length + ' Member';
+  document.getElementById('statLunas').textContent = cntL + ' Lunas';
+  document.getElementById('statAktif').textContent = cntA + ' Aktif';
+  document.getElementById('cnt-all').textContent   = keys.length;
+  document.getElementById('cnt-lunas').textContent = cntL;
+  document.getElementById('cnt-aktif').textContent = cntA;
+}
+
+buildGrid();
+</script>
+</body>
+</html>
