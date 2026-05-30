@@ -365,21 +365,20 @@ header p { color: var(--text2); font-size: 15px; font-weight: 400; }
 .pay-row {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   padding: 12px 14px;
   background: var(--surface2);
   border: 1px solid var(--border);
   border-radius: 14px;
   transition: background .15s, border-color .15s;
-  min-height: 48px;
-  overflow: hidden;
 }
 .pay-row:hover { background: var(--surface3); border-color: var(--border2); }
 .pay-row:nth-child(even) { background: var(--surface); }
 .pay-row:nth-child(even):hover { background: var(--surface3); }
+.pay-main { flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .pay-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text3); min-width: 20px; flex-shrink: 0; }
-.pay-date { font-size: 14px; font-weight: 600; color: var(--text); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.pay-amount { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700; color: var(--cyan); white-space: nowrap; flex-shrink: 0; margin-right: 2px; }
+.pay-date { font-size: 13px; font-weight: 600; color: var(--text); flex: 1; white-space: nowrap; overflow: visible; min-width: 80px; }
+.pay-amount { font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; color: var(--cyan); white-space: nowrap; flex-shrink: 0; }
 .pay-tag {
   font-size: 10px;
   font-weight: 700;
@@ -395,14 +394,14 @@ header p { color: var(--text2); font-size: 15px; font-weight: 400; }
 .pay-tag-btn {
   font-size: 10px;
   font-weight: 700;
-  padding: 5px 11px;
+  padding: 5px 10px;
   border-radius: 100px;
   white-space: nowrap;
   cursor: pointer;
   border: none;
   transition: all .2s;
   flex-shrink: 0;
-  min-width: 72px;
+  min-width: 68px;
   text-align: center;
 }
 .pay-tag-btn:hover { transform: scale(1.08); opacity: .85; }
@@ -896,8 +895,10 @@ function renderCard(key) {
     ? pays.map((p, i) => `
         <div class="pay-row" id="pr-${i}">
           <span class="pay-num">${p.num}.</span>
-          <span class="pay-date">${p.date}</span>
-          <span class="pay-amount">${p.amount}</span>
+          <div class="pay-main">
+            <span class="pay-date">${p.date}</span>
+            <span class="pay-amount">${p.amount}</span>
+          </div>
           <button class="pay-tag-btn tag-${p.status}" onclick="togglePayStatus('${key}',${i})" title="Klik untuk ganti status">
             ${p.status==='lunas'?'✓ Lunas':p.status==='dp'?'DP':'⏳ Proses'}
           </button>
