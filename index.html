@@ -361,21 +361,25 @@ header p { color: var(--text2); font-size: 15px; font-weight: 400; }
 }
 .section-label::after { content:''; flex:1; height:1px; background:var(--border); }
 
-.pay-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 24px; }
+.pay-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px; }
 .pay-row {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 11px 16px;
-  border-radius: 12px;
+  gap: 8px;
+  padding: 12px 14px;
   background: var(--surface2);
   border: 1px solid var(--border);
-  transition: border .2s;
+  border-radius: 14px;
+  transition: background .15s, border-color .15s;
+  min-height: 48px;
+  overflow: hidden;
 }
-.pay-row:hover { border-color: var(--border2); }
-.pay-num { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text3); min-width: 22px; }
-.pay-date { font-size: 13px; color: var(--text2); flex: 1; }
-.pay-amount { font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 600; color: var(--cyan); }
+.pay-row:hover { background: var(--surface3); border-color: var(--border2); }
+.pay-row:nth-child(even) { background: var(--surface); }
+.pay-row:nth-child(even):hover { background: var(--surface3); }
+.pay-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text3); min-width: 20px; flex-shrink: 0; }
+.pay-date { font-size: 14px; font-weight: 600; color: var(--text); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pay-amount { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700; color: var(--cyan); white-space: nowrap; flex-shrink: 0; margin-right: 2px; }
 .pay-tag {
   font-size: 10px;
   font-weight: 700;
@@ -391,12 +395,15 @@ header p { color: var(--text2); font-size: 15px; font-weight: 400; }
 .pay-tag-btn {
   font-size: 10px;
   font-weight: 700;
-  padding: 3px 9px;
+  padding: 5px 11px;
   border-radius: 100px;
   white-space: nowrap;
   cursor: pointer;
   border: none;
   transition: all .2s;
+  flex-shrink: 0;
+  min-width: 72px;
+  text-align: center;
 }
 .pay-tag-btn:hover { transform: scale(1.08); opacity: .85; }
 .pay-tag-btn.tag-lunas { background: var(--green-bg); color: var(--green); }
@@ -767,14 +774,13 @@ function parsePayments(raw) {
     let date = rest.replace(/[~*]/g,'').split('=')[0].replace(/^[-→>▸\s]+/,'').trim();
     const amtM = rest.match(/Rp\.?\s*([\d.,]+(?:\s*[KkM])?)/);
     const amount = amtM ? 'Rp. '+amtM[1] : '';
-    // Parse numeric value for sisa calculation
+    // Parse numeric value for sisa calculation - fix: hapus koma (ribuan) bukan ganti jadi titik
     let numVal = 0;
     if (amtM) {
-      let v = amtM[1].replace(/\./g,'').replace(',','.');
-      if (/[Kk]$/.test(v)) { v = parseFloat(v)*1000; }
-      else if (/M$/.test(v)) { v = parseFloat(v)*1000000; }
-      else { v = parseFloat(v); }
-      numVal = isNaN(v) ? 0 : v;
+      let v = amtM[1].replace(/,/g, ''); // hapus koma pemisah ribuan
+      if (/[Kk]$/.test(v)) { numVal = parseFloat(v) * 1000; }
+      else if (/M$/.test(v)) { numVal = parseFloat(v) * 1000000; }
+      else { numVal = parseFloat(v) || 0; }
     }
     let status = isLunas ? 'lunas' : isDp ? 'dp' : 'proses';
     acc.push({ num:m[1], date, amount, status, numVal });
@@ -801,7 +807,8 @@ function calcSisa(pays) {
 }
 
 function formatRp(n) {
-  return 'Rp. ' + Math.round(n).toLocaleString('id-ID');
+  // Format: Rp. 792,000 — gunakan koma sebagai pemisah ribuan (gaya WA)
+  return 'Rp. ' + Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 
 // ─── DISPLAY ──────────────────────────────────────────────
@@ -899,8 +906,12 @@ function renderCard(key) {
 
   pl.innerHTML = sisaHtml + paysHtml;
 
-  document.getElementById('rawBox').textContent = raw;
-  document.getElementById('waBtn').href = `https://wa.me/?text=${encodeURIComponent(raw)}`;
+  // Generate teks yang reflect status edit (untuk waBtn & rawBox)
+  const editedTeks = generateEditedTeks(key, pays);
+  document.getElementById('rawBox').textContent = editedTeks;
+  // Update waBtn juga pakai teks yang sudah di-edit (sama dengan tagihWA tapi tanpa header pengingat)
+  const waTeks = raw; // tetap kirim raw asli untuk tombol "Kirim via WhatsApp"
+  document.getElementById('waBtn').href = `https://wa.me/?text=${encodeURIComponent(editedTeks)}`;
   const cb = document.getElementById('copyBtn');
   cb.dataset.raw = raw; cb.textContent = '📋 Salin Teks'; cb.classList.remove('ok');
 }
@@ -917,6 +928,46 @@ function togglePayStatus(key, idx) {
   renderCard(key);
 }
 
+// ─── GENERATE EDITED TEXT (reflect toggle changes) ────────
+function generateEditedTeks(key, pays) {
+  const raw = DATA[key];
+  // Split raw into header (before "Detail Pembayaran") and payment lines
+  const detailIdx = raw.search(/Detail Pembayaran/i);
+  if (detailIdx === -1) return raw;
+
+  const header = raw.substring(0, detailIdx);
+  // Find the "Detail Pembayaran..." label line
+  const detailMatch = raw.substring(detailIdx).match(/^[^\n]*/);
+  const detailLabel = detailMatch ? detailMatch[0] : 'Detail Pembayaran (Tag) :';
+
+  // Rebuild payment lines from parsed pays (with edited statuses)
+  const sisaCalc = calcSisa(pays);
+  
+  // Update T.Tag line in header with calculated sisa
+  let updatedHeader = header;
+  if (sisaCalc === 0) {
+    updatedHeader = header.replace(/_T\.Tag[\w\d\s]*\s*:\s*[^_]+_/g, match => {
+      // Replace last T.Tag with Rp. 0_ *Lunas*
+      return match.replace(/Rp\.[^_]+/, 'Rp. 0_ *Lunas*').replace(/_$/, '');
+    });
+  } else {
+    updatedHeader = header.replace(/_T\.Tag([\w\d\s]*)\s*:\s*[^_]+_/g, (match, tagNum) => {
+      return `_T.Tag${tagNum} : ${formatRp(sisaCalc)}_`;
+    });
+  }
+
+  const payLines = pays.map(p => {
+    const num = p.num + '.';
+    if (p.status === 'lunas') {
+      return `${num} ~${p.date} = ${p.amount}~ (Lunas)`;
+    } else {
+      return `${num} ${p.date} = ${p.amount} (Proses)`;
+    }
+  }).join('\n');
+
+  return `${updatedHeader}${detailLabel}\n${payLines}`;
+}
+
 // ─── TAGIH WA ─────────────────────────────────────────────
 function tagihWA() {
   if (!currentKey) return;
@@ -931,11 +982,15 @@ function tagihWA() {
   const pays = getCurrentPays(currentKey);
   const sisaCalc = calcSisa(pays);
 
-  // Build T.Tag sisa line
-  const sisaLine = sisaCalc > 0 ? `_T.Tag : ${formatRp(sisaCalc)}_` : `_T.Tag : Rp. 0_ *Lunas*`;
+  // T.Tag line: ambil nama tag dari raw (misal T.Tag7), update nominalnya
+  const tagMatch = raw.match(/_T\.Tag([\w\d\s]*):\s*[^_]+_/);
+  const tagNum = tagMatch ? tagMatch[1] : '';
+  const sisaLine = sisaCalc > 0
+    ? `_T.Tag${tagNum}: ${formatRp(sisaCalc)}_`
+    : `_T.Tag${tagNum}: Rp. 0_ *Lunas*`;
 
-  // Build payment detail lines
-  const payLines = pays.map((p, i) => {
+  // Build payment detail lines — reflect edited statuses
+  const payLines = pays.map(p => {
     const num = p.num + '.';
     if (p.status === 'lunas') {
       return `${num} ~${p.date} = ${p.amount}~ (Lunas)`;
@@ -959,8 +1014,7 @@ ${sisaLine}
 IDB : ${item}
 Net : ${net}
 Tgl : ${tgl}
-Tag : ${tag}
-${jt ? `J.T : ${jt}` : ''}
+Tag : ${tag}${jt ? '\nJ.T : ' + jt : ''}
 --------------------
 Detail Pembayaran (Tag) :
 ${payLines}`;
