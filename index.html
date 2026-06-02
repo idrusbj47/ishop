@@ -655,6 +655,10 @@ footer strong { color: var(--text2); }
     <div class="stat-chip"><span class="dot" style="background:var(--green)"></span> <span id="statLunas">— Lunas</span></div>
     <div class="stat-chip"><span class="dot" style="background:var(--amber)"></span> <span id="statAktif">— Aktif</span></div>
   </div>
+  <div id="loadStatus" style="margin-top:12px;font-size:12px;color:var(--text3);transition:opacity 1s;">
+    ⏳ Memuat data dari CSV...
+  </div>
+  <button onclick="loadCSV()" style="margin-top:8px;background:none;border:1px solid var(--border2);color:var(--text3);padding:4px 14px;border-radius:100px;font-size:11px;cursor:pointer;font-family:inherit;" title="Muat ulang data CSV">🔄 Reload CSV</button>
 </header>
 
 <!-- SEARCH -->
@@ -732,11 +736,87 @@ footer strong { color: var(--text2); }
 </div>
 
 <footer>
-  <strong>iShop Kredit System</strong> &mdash; Data nasabah diperbarui dari file Excel
+  <strong>iShop Kredit System</strong> &mdash; Data nasabah dimuat langsung dari <code style="font-family:monospace;color:var(--cyan)">sts_kredit.csv</code>
 </footer>
 
 <script>
-const DATA = {"0140392CEC": "*Ishop Member Detail*\n MID : 0140392CEC\n Nama : Cecep Bin Minan\n _T.Tag : *LUNAS*_\n --------------------\n IDB : Vivo Y21T 6/128 GB\n Net : Rp. 2,218,500\n Tgl : 01 Maret 2023\n Tag : Rp. 369,750 X 6\n Mfe : Rp. 50,000\n --------------------\n Detail Pembayaran (Tag+Mfe) :\n 1. ~Apr23 = Rp. 419,750~ (Lunas)\n 2. ~Mei23 = Rp. 419,750~ (Lunas)\n 3. ~Jun23 = Rp. 419,750~ (Lunas)\n 4. ~Jul23 = Rp. 429,750~ (Lunas)\n 5. ~Agt23 = Rp. 409,750~ (Lunas)\n 6. ~Sep23 = Rp. 419,750~ (Lunas)", "0220994MAD": "*Ishop Member Detail*\nMID : 0220994MAD\nNama : Mad Idrus\n_T.Tag : Rp. 10,000_\n--------------------\nIDB : Tagihan TrueCaller\nNet : Rp. 5,000 X 3\nTgl : 13 Setiap Bulan\n--------------------\nDetail Pembayaran (Tag) :\n1. Ika Widyawati 13 Apr 23\n2. Fitri (Ika W) 13 Apr 23\n 3. Bowo 13 Jun 23", "0321632EDE": "*Ishop Member Detail*\nMID : 0321632EDE\nNama : Edeng Suhendar\n_T.Tag3 : Rp. 0_  *Lunas*\n--------------------\nIDB : Hp IPHONE 15 128 BLACK\nNet : Rp. 11,989,500\nTgl : 28 JULI 2025\nDp : ~31Jul25 = Rp. 2,000,000~ (Lunas)\nTag : Rp. 1,248,688 X 8\nJT : Setiap Tgl 30\n--------------------\nDetail Pembayaran (Tag) :\n1. ~15Agt25 = Rp. 1,250,000~ (Lunas)\n2. ~15Sep25 = Rp. 1,250,000~ (Lunas)\n3. ~15Okt25 = Rp. 1,250,000~ (Lunas)\n4. ~15Nov25 = Rp. 1,250,000~ (Lunas)\n5. ~15Des25 = Rp. 1,250,000~ (Lunas)\n6. ~30Jan26 = Rp. 1,250,000~ (Lunas)\n7. ~28Feb26 = Rp. 1,250,000~ (Lunas)\n8. ~30Mar26 = Rp. 1,239,500~ (Lunas)\n> Benefit THR :  30K 🙏🏽", "0440379IDI": "*Ishop Member Detail*\nMID : 0440379IDI\nNama : Idi Muamar\n_T.Tag11 : Rp. 0_\n_T.Tag11 : Rp. 0_ *Lunas*\n--------------------\nIDB : Spining & Reel 4K + Tegeg\nNet : Rp.1,150K + Rp.276,700\nTgl : 17Mar26\nTag : Rp. 383,333 x 3\nJ.T : Setiap Tgl 30\n--------------------\nDetail Pembayaran (Tag) :\n1. ~30Mar26 = Rp. 385,000~ (Lunas)\n> Benefit THR :  30K 🙏🏽\n2. ~30Apr26 = Rp. 355K + 138,350 = 493,350~ (Lunas)\n3. ~30Mei26 = Rp. 380,000 + 138,350 = 518,350~ (Lunas)", "0540430IIN": "*Ishop Member Detail*\nMID : 0540430IIN\nNama : Iing XPDC\n_T.Tag2 : Rp. 0,_ *Lunas*  \n--------------------\nIDB : Vivo Y28 6/128 GB\nNet : Rp. 2,760,000\nTgl : 05 Juni 2024\nTag : Rp. 394,286 X 7\nJ.T : Setiap Tgl 30\n--------------------\nDetail Pembayaran  :\n1. ~30Jun24 = Rp. 400,000~ (Lunas)\n2. ~30Jul24 = Rp. 400,000~ (Lunas)\n3. ~30Agu24 = Rp. 400,000~ (Lunas)\n4. ~30Sep24 = Rp. 400,000~ (Lunas)\n5. ~30Okt24 = Rp. 400,000~ (Lunas)\n6. ~30Nov24/10Des24 = Rp. 300,000~ (Lunas)\n7. ~30Des24 = Rp. 460,000 (Lunas)", "0640255MAM": "*Ishop Member Detail*\nMID : 0640255MAM\nNama : Maman Sulaiman\n_T.Tag : Rp. 0_ *LUNAS*\n--------------------\nIDB : Lp Advance Soulmate 8/128 GB\nNet : Rp. 2,940,000\nTgl : 01 Juni 2023\nTag : Rp. 490,000 X 6\n--------------------\nDetail Pembayaran :\n1. ~Jul23 = Rp. 490,000~ (Lunas)\n2. ~Agt23 = Rp. 490,000~ (Lunas)\n3. ~Sep23 = Rp. 490,000~ (Lunas)\n4. ~Okt23 = Rp. 490,000~ (Lunas)\n5. ~Nov23 = Rp. 491,000~ (Lunas)\n6. ~Des23 = Rp. 490,000~ (Lunas)", "0740360SUP": "*Ishop Member Detail*\nMID : 0740360SUP\nNama : Suparyo\n_T.Tag 3 : Rp. 0_ *Lunas*\n--------------------\nIDB : Samsung A17 5G 8/256GB\nNet : Rp. 4,050,000\nTgl : 14Des2025\nTag : Rp. 675K X 6\nJ.T : Setiap Tgl 30\n--------------------\n_Detail Pembayaran :_\n1. ~30Des25 = Rp. 675,000~ (Lunas)\n2. ~30Jan26 = Rp. 675,000~ (Lunas)\n3. ~28Feb26 = Rp. 675,000~ (Lunas)\n4. ~30Mar26 = Rp. 675,000~ (Lunas)\n> Benefit THR :  30K 🙏🏽\n5. ~30Apr26 = Rp. 645,000~ (Lunas)\n6. ~30Mei26 = Rp. 675,000~ (Lunas)", "0821861SOM": "*Ishop Member Detail*\nMID : 0821861SOM\nNama : Somantri\n_T.Tag2 : Rp. 1,550,000_ \n--------------------\nIDB : Infinix Hot 60 Pro 8/256 GB\nNet : Rp. 3,102,000\nTgl : 18 Jan 2026\nTag : Rp. 310K\" X 6\n--------------------\nDetail Pembayaran :\n1. ~30Jan26 = Rp. 312,000~ (Lunas)\n2. ~28Feb26 = Rp. 310,000~ (Lunas)\n3. ~30Mar26 = Rp. 310,000~ (Lunas) \n> Benefit THR :  30K 🙏🏽\n4. ~30Apr26 = Rp. 280,000~ (Lunas)\n5. ~30Mei26 = Rp. 310,000~ (Lunas)\n6. 30Jun26 = Rp. 310,000 (Proses)\n7. 30Jul26 = Rp. 310,000 (Proses)\n8. 30Agu26 = Rp. 310,000 (Proses)\n9. 30Sep26 = Rp. 310,000 (Proses)\n10. 30Okt26 = Rp. 310,000 (Proses)", "09P180YOG": "*Ishop Member Detail*\nMID : 09P180YOG\nNama : Yoga Andrian\n_T.Tag : Rp. 0_ *Lunas*\n--------------------\nIDB : Oppo A58 6/128 GB\nNet : Rp. 2,700,000\nTgl : 06 Februari 2024\nTag : Rp. 450,000 X 6\nJ.T : Setiap Tgl 15\n--------------------\nDetail Pembayaran (Tag) :\n1. ~15Mar24 = Rp. 450,000~ (Lunas)\n2. ~15Apr24 = Rp. 450,000~ (Lunas)\n3. ~15Mei24 = Rp. 450,000~ (Lunas)\n4. ~15Jun24 = Rp. 450,000~ (Lunas)\n5. ~15Jul24 = Rp. 450,000~ (Lunas)\n6. ~15Agt24 = Rp. 450,000~ (Lunas)", "103019CEC": "*Ishop Member Detail*\nMID : 103019CEC\nNama : Cece Wahyu\n_T.Tag4 : Rp. 0_ *LUNAS*  \n--------------------\nIDB : HP Infinix Hot 40i 8/256 + HP Infinix Hot 40i 8/256\nNet : Rp. 1,940,000 + 1,800,000\nTgl : 26 Juni 2024 + 24 Okt 2024\nDP3 : ~30Jun24 = Rp. 140,000~ (Lunas)\nDP4 : ~23Okt24 = Rp. 500,000~ (Lunas)\nTag : Rp. 360K X 5 + 434K X 3\nJ.T : Setiap Tgl 15 & 30 + Tgl 25\n--------------------\nDetail Pembayaran (Tag) :\n1.1 ~15Jul24 = Rp. 180,000~ (Lunas)\n1.2 ~30Jul24 = Rp. 180,000~ (Lunas)\n2.1 ~15Agt24 = Rp. 180,000~ (Lunas)\n2.2 ~30Agt24 = Rp. 180,000~ (Lunas)\n3.1 ~15Sep24 = Rp. 180,000~ (Lunas)\n3.2 ~30Sep24 = Rp. 180,000~ (Lunas)\n4.1 ~15Okt24 = Rp. 180,000~ (Lunas)\n4.2 ~30Okt24 = Rp. 180,000~ (Lunas)\n5.1 ~15Nov24 = Rp. 180,000~ (Lunas)\n5.2 ~30Nov24 = Rp. 180,000 + 450,000~ (Lunas)\n6. ~30Des24 = Rp. 450,000~ (Lunas)\n7. ~23Jan24 = Rp. 400,000~ (Lunas)", "113028AST": "*Ishop Member Detail*\nMID : 113028AST\nNama : Astim S\n_T.Tag7 : Rp. 1,414,000_    \n--------------------\nIDB : HP Poco C71 4/128 GB\nNet : Rp. 2,020,000\nTgl : 02 Mar 2026\nTag : Rp. 202,000 X 10\nJ.T : Setiap Tgl 30\n--------------------\nDetail Pembayaran (Tag) :\n1. ~30Mar26 = Rp. 202,000~ (Lunas)\n> Benefit THR :  30K 🙏🏽\n2. ~30Apr26 = Rp. 172,000~ (Lunas)\n3. ~30Mei26 = Rp. 202,000~ (Lunas)\n4. 30Jun26 = Rp. 202,000 (Proses)\n5. 30Jul26 = Rp. 202,000 (Proses)\n6. 30Agt26 = Rp. 202,000 (Proses)\n7. 30Sep26 = Rp. 202,000 (Proses)\n8. 30Okt26 = Rp. 202,000 (Proses)\n9. 30Nov26 = Rp. 202,000 (Proses)\n10. 30Des26 = Rp. 202,000 (Proses)", "1240441ONI13": "*Ishop Member Detail*\nMID : 1240441ONI\nNama : ONIM BUDI S\n_T.Tag13 : Rp. 1,727,000_\n--------------------\nIDB : Lp.Lenovo Idpad 1 amd 8/521GB\nNet : Rp.5,921,660\nTgl :  04 Sep 2025\nTag : Rp. 593 x 10\nJ.T : Setiap Tgl 30\n--------------------\nDetail Pembayaran (Tag) :\n1. ~30Okt25 =  Rp. 611,660~ (Lunas)\n2. ~30Nov25 =  Rp. 590,000~ (Lunas)\n3. ~30Des25 =  Rp. 590,000~ (Lunas)\n4. ~30Jan26 =  Rp. 590,000~ (Lunas)\n5. ~28Feb26 =  Rp. 600,000~ (Lunas)\n6. ~30Mar26 =  Rp. 593,000~ (Lunas)\n> Benefit THR :  30K 🙏🏽\n7. ~30Apr26 =  Rp. 590,000~ (Lunas)\n8. 30Mei26 =  Rp. 560,000 (Proses)\n9. 30Jun26 =  Rp. 590,000 (Proses)\n10. 30Jul26 =  Rp. 577,000 (Proses)", "ONIMTAG15": "*Ishop Member Detail*\nMID : 1240441ONI\nNama : ONIM BUDI S\n_T.Tag15 : Rp. 4,397,400_ \n--------------------\nIDB : Hp Samsung A17 5G 8/256Gb \nNet : Rp.4,886K\nTgl :  07Mei2026\nTag : Rp. 488K X 10\nJ.T : Setiap Tgl 30\n--------------------\nDetail Pembayaran (Tag) :\n1. ~25/30Mei26 =  Rp. 488,600~ (Lunas)\n2. 30Jun26 =  Rp. 488,600 (Proses)\n3. 30Jul26 =  Rp. 488,600 (Proses)\n4. 30Agu26 =  Rp. 488,600 (Proses)\n5. 30Sep26 =  Rp. 488,600 (Proses)\n6. 30Okt26 =  Rp. 488,600 (Proses)\n7. 30Nov26 =  Rp. 488,600 (Proses)\n8. 30Des26 =  Rp. 488,600 (Proses)\n9. 30Jan26 =  Rp. 488,600 (Proses)\n10. 28Feb27 =  Rp. 488,600 (Proses)", "ONIMTAG16": "*Ishop Member Detail*\nMID : 1240441ONI\nNama : ONIM BUDI S\n_T.Tag16 : Rp. 6,120,000_ \n-------------------\nIDB : Tv Polytron 50\" Cinamax sounbar\nNet : Rp. 6,800,000\nTgl :  07 Mei 2026\nTag : Rp. 492K x 6\nJ.T : Setiap Tgl 30\n--------------------\nDetail Pembayaran (Tag) :\n1. ~30Mei26 =  Rp. 680,000~ (Lunas)\n2. 30Jun26 =  Rp. 680,000 (Proses)\n3. 30Jul26 =  Rp. 680,0000 (Proses)\n4. 30Agu26 =  Rp. 680,000 (Proses)\n5. 30Sep26 =  Rp. 680,000 (Proses)\n6. 30Okt26 =  Rp. 680,000 (Proses)\n7. 30Nov26 =  Rp. 680,000 (Proses)\n8. 30Des26 =  Rp. 680,000 (Proses)\n9. 30Jan26 =  Rp. 680,000 (Proses)\n10. 28Feb27 =  Rp. 680,000 (Proses)", "1422187MUL": "*Ishop Member Detail*\nMID : 1422187MUL\nNama : Mulyadi\n_T.Tag : Rp. 0_ *Lunas* \n--------------------\nIDB : Ortuseight Mirage no 41\nNet : Rp. 330,000\nTgl : 02 Agustus 2024\n~Dp : Rp, 51,000~ (Lunas)\nTag : Rp. 139,500 X 2\nJ.T : Setiap Tgl 15 & 30\n--------------------\nDetail Pembayaran (Tag) :\n1. ~15Sep24 = Rp. 139,500~ (Lunas)\n2. ~15Oktl24 = Rp. 139,500~ (Lunas)", "1521567WAH": "*Ishop Member Detail*\nMID : 1521567WAH\nNama : Wahyu Saepudin\n_T.Tag4 : Rp. 0_ *Lunas*   \n--------------------\nIDB : Samsung A16 5G 8/256Gb\nNet : Rp. 4,050K\nTgl : 23Jul25\nTag : Rp. 405K X 10 + 345K X 2\nJ.T : Setiap Tgl 30\n--------------------\nDetail Pembayaran (Tag) :\n1.1 ~31Jul25 = Rp. 200,000~ (Lunas)\n1.2 ~15Agt25 = Rp. 205,000~ (Lunas)\n2.1 ~30Agt25 = Rp. 200,000~ (Lunas)\n2.2 ~15Sep25 = Rp. 205,000~ (Lunas)\n3.1 ~30Sep25 = Rp. 200,000~ (Lunas)\n3.2 ~15Okt25 = Rp. 205,000~ (Lunas)\n4.1 ~30Okt25 = Rp. 205,000~ (Lunas)\n4.2 ~15Nov25 = Rp. 200,000~ (Lunas)\n5.1 ~30Nov25 = Rp. 200K+Rp. 175K = Rp. 375K~ (Lunas)\n5.2 ~15Des25 = Rp. 205K+Rp. 170K = Rp. 375K~ (Lunas)\n6.1 ~30Des25 = Rp. 200K+Rp. 345K = Rp. 545K~ (Lunas)\n7. ~30Jan26 = Rp. 405,000~ (Lunas)\n8. ~28Feb26 = Rp. 405,000~ (Lunas)\n9. ~30Mar26 = Rp. 405,000~ (Lunas)\n> Benefit THR :  30K 🙏🏽\n10. ~30Apr26 = Rp. 375,000~ (Lunas)\n11. ~30Mei26 = Rp. 205,000~ (Lunas)", "1621000ISK": "*Ishop Member Detail*\nMID : 1621000ISK\nNama : ISKANDAR\n_T.Tag :Rp.0_ *LUNAS*\n--------------------\nIDB : IKAN MEYLEUS\nNet : Rp. 845,000\nTgl : 26 Desember 2023\nTag : Rp. 140,833 X 6\nJ.T : Setiap Tgl 15 & 30\n--------------------\nDetail Pembayaran (Tag) :\n1. ~30Des23 = Rp. 150,000~ (Lunas)\n2. ~15Jan23 = Rp. 150,000~ (Lunas)\n3. ~31Jan23 = Rp. 150,000~ (Lunas)\n4. ~15Feb23 = Rp. 150,000~ (Lunas)\n5. ~30Feb23 = Rp. 150,000~ (Lunas)\n6. ~15Mar23 = Rp. 95,000~ (Lunas)", "1722058BOW": "*Ishop Member Detail*\nMID : 1722058BOW\nNama : M.WIBOWO\n_T.Tag3 : Rp. 700,000_  \n_T.Tag4 : Rp. 320,000_\n_T.Tag5 : Rp. 265,000_\n--------------------\nIDB : Iphone 13 128GB W + Infinik Hot60 pro+ 8/256GB + Ban Vixion\nNet : Rp. 9,000K + Rp. 3,200K + Rp. 795K\nTgl : 14Jun25 + 21Feb26\nDp : ~10Jun25 = Rp. 2,000K~ (Lunas)\nTag : Rp. 700K X 10 + Rp. 320K X 10 + Rp. 265K X 3 \nJ.T : Setiap Tgl 30\n--------------------\nDetail Pembayaran (Tag) :\n1. ~15Jul25 = Rp. 700,000~ (Lunas)\n2. ~15Agt25 = Rp. 700,000~ (Lunas)\n3. ~15Sep25 = Rp. 700K + Rp. 320K = Rp.1,020K~ (Lunas)\n4. ~15Okt25 = Rp. 700K + Rp. 320K = Rp.1,020K~ (Lunas)\n5. ~15Nov25 = Rp. 700K + Rp. 300K = Rp.1,000K~ (Lunas)\n6. ~15Des25 = Rp. 700K + Rp. 320K = Rp.1,020K~ (Lunas)\n7. ~30Jan26 = Rp. 700K + Rp. 320K = Rp.1,020K~ (Lunas)\n8. ~28Feb26 = Rp. 700K + Rp. 320K + Rp. 265K = Rp.1,285K~ (Lunas)\n9. 30Apr26 = Rp. 700K + Rp. 320K + Rp. 265K - THR 30 = Rp.1,255K (Proses)\n10. 30Mei26 = Rp. 700K + Rp. 320K + Rp. 265K = Rp.1,285K (Proses)\n11. ~30Mei26/31Mar26 = Rp. 340,000~ (Lunas)\n12. ~30Jun26/31Mar26 = Rp. 320,000~ (Lunas)\n> Benefit THR :  30K 🙏🏽", "1822017AND": "*Ishop Member Detail*\nMID : 1822017AND\nNama : Andi Raharjo \n_T.Tag 5 : Rp. 0_  *Lunas*\n--------------------\nIDB : Baseus Bowie E12\nNet :Rp. 150,000\nTgl : 12Des25\nTag : Rp. 50K X 3\nJ.T : Setiap Tgl 30\n--------------------\nDetail Pembayaran (Tag) :\n1.~30Des25 = Rp. 50,000~ (Lunas)\n2.~30Jan26 = Rp. 50,000~ (Lunas)\n3. ~30Feb26 = Rp. 50,000~ (Lunas)", "1940543MUJ": "*Ishop Member Detail*\nMID : 1940543MUJ\nNama : Mujiono (Karu)\n_T.Tag2 : Rp.0_ *Lunas* \n--------------------\nIDB : Sandal K-walk Energy (Dedy mizwar)\nNet : Rp. 1,618,000\nTgl : 20 Januari 2025\nDp : ~31Jan25 = Rp. 100,000~ (Lunas)\nTag : Rp. 404,500 X 4\nJ.T : Setiap Tgl 30\n--------------------\nDetail Pembayaran (Tag) :\n1. ~28Feb25 = Rp. 500,000~ (Lunas)\n2. ~30Mar25 = Rp. 400,000~ (Lunas)\n3. ~30Apr25 = Rp. 500,000~ (Lunas)\n4. ~30Mei25 = Rp. 118,000~ (Lunas)", "2021121KHU": "*Ishop Member Detail*\nMID : 2021121KHU\nNama : Khurnia C (Op)\n_T.Tag : Rp. 0_ *Lunas*\n--------------------\nIDB : Joran Pancing\nNet : Rp. 553,000\nTgl : 20 Juli 2024\nTag : Rp. 276,500 X 2\nJ.T : Setiap Tgl 30\n--------------------\nDetail Pembayaran (Tag) :\n1. ~31Jul24 = Rp. 278,000~ (Lunas)\n2. ~30Agt24 = Rp. 275,000~ (Lunas)", "2121285HEN": "*Ishop Member Detail*\nMID : 2121285HEN\nNama : Hendi (Op)\n_T.Tag : Rp. 0_ *Lunas*\n--------------------\nIDB : Shockbreaker Lexi Ori\nNet : Rp. 320,000\nTgl : 24 Juli 2024\nDp : ~Rp. 100,000~ (Lunas)\nTag : Rp. 110,000\nJ.T : Setiap Tgl 30\n--------------------\nDetail Pembayaran (Tag) :\n1. ~01Agt24 = Rp. 110,000~ (Lunas)\n2. ~15Agt24 = Rp. 110,000~ (Lunas)", "2220824ARA": "*Ishop Member Detail*\nMID : 2220824ARA\nNama : Arafat R (Xpdc)\n_T.Tag6 : Rp. 897,000_ \n--------------------\nIDB : Baju Anak 2, Dewasa POLO + Baju Cardinal 2\nNet : Rp. 1,196,000\nTgl :  10Mar26\nTag :  299K x 4\nJ.T : Setiap Tgl 30\n--------------------\nDetail Pembayaran (Tag) :\n3. ~30Mar26 = Rp. 136,905 + Rp. 3,095 = Rp. 145,000~ (Lunas) _relokasi tag6_\n> Benefit THR :  30K 🙏🏽\n4. ~30Apr26 = Rp. 265,905~ (Lunas)\n5. 30Mei26 = Rp. 299,000 (Proses)\n6. 30Jun26 = Rp. 299,000 (Proses)\n6. 30Jul26 = Rp. 299,000 (Proses)", "2321626IRF": "*Ishop Member Detail*\nMID : 2321626IRF\nNama : Irfan Setiawan (Paletan)\n_T.Tag3 : Rp. 985,000_ \n--------------------\nIDB : Realme C71 4/128\nNet : Rp. 2,175K\nTgl :  20-Okt-25\nTag : Rp. 198K X 11 \nJ.T : Setiap Tgl 30\n--------------------\nDetail Pembayaran (Tag) :\n13.1 ~15Nov25 =  Rp. 198,000~ (Lunas)\n\n14.1 ~23/15Des25 =  Rp. 200,000~ (Lunas)\n\n15. ~30Jan26 =  Rp. 198K + 193K = 391K~ (Lunas)\n16. ~28Feb26/31Mar26 =  Rp. 198K + 191K = 389K~ (Lunas)\n17. ~30Mar26 =  Rp. 198,000~ (Lunas)\n> Benefit THR :  30K 🙏🏽\n18. ~30Apr26 =  Rp. 168,000~ (Lunas)\n19. 30Mei26 =  Rp. 198,000 (Proses)\n20. 30Jun26 =  Rp. 198,000 (Proses)\n21. 30Jul26 =  Rp. 198,000 (Proses)\n22. 30Agt26 =  Rp. 198,000 (Proses)\n23. 30Sep26 =  Rp. 193,000 (Proses)", "2421845AND": "*Ishop Member Detail*\nMID : 2421845AND\nNama : Andang Forisa\n _T.Tag4 : Rp. 530,000_\n--------------------\nIDB : Poco C75 8/256\nNet : Rp. 2,130K\nTgl : 25Okt25\nTag :  213K x 10\nJ.T : Setiap Tgl 15 & 30\n--------------------\nDetail Pembayaran (Tag) :\n11.2 ~30Okt25 = Rp.175K+Rp.111K = Rp. 286K~ (LuAnas)\n12.1 ~15Nov25 = Rp.175K+Rp.111K = Rp. 286K~ (Lunas)\n12.2 ~30Nov25 = Rp.150+Rp.106K = Rp. 256K~  (Lunas)\n13.1 ~15Des25 = Rp. 106,000~ (Lunas)\n13.2 ~30Des25 = Rp. 106,000~ (Lunas)\n14. ~30Jan26 = Rp. 212,000~ (Lunas)\n15. ~30Feb26 = Rp. 212,000~ (Lunas)\n16. ~30Mar26 = Rp. 212,000~ (Lunas)\n> Benefit THR :  30K 🙏🏽\n17. ~30Apr26 = Rp. 182,000~ (Lunas)\n18. ~30Mei26 = Rp. 212,000~ (Lunas)\n19. 30Jun26 = Rp. 212,000 (Proses)\n19. 30Jul26 = Rp. 212,000 (Proses)\n20. 30Agt26 = Rp. 106,000 (Proses)", "2522183YON": "*Ishop Member Detail*\nMID : 2522183YON\nNama : Yongki (adm)\n_T.Tag : Rp. 0_  *Lunas*\n--------------------\nIDB : IPhone XR 64GB\nNet : Rp. 4,793,000\nTgl : 02 Desember 2024\nTag : Rp. 798,833 X 6\nJ.T : Setiap Tgl 30\n--------------------\nDetail Pembayaran (Tag) :\n1. ~30Des24 = Rp. 800,000~ (Lunas)\n2.  ~30Jan25 = Rp. 800,000~ (Lunas)\n3. ~28Feb25 = Rp. 800,000~ (Lunas)\n4. ~30Mar25 = Rp. 800,000~ (Lunas)\n5. ~30Apr25 = Rp. 800,000~ (Lunas)\n6. ~30Mei25 = Rp. 793,000 ~(Lunas)", "2640471IKA": "*Ishop Member Detail*\nMID : 2640471IKA\nNama : IKA W (HRD)\n--------------------\nIDB : 3 x Truecaller\nNet : Rp. 15,000\nTag : Rp. 15,000 X (bulan)\nJ.T : Setiap Tgl 30\n--------------------\nDetail Pembayaran (Tag) :\n1. Jun-Okt ~31Okt25 = Rp. 75,000~ (Lunas)\n2. Nov25-Mar26 ~3Mar26 = Rp. 75,000~ (Lunas)", "2920386JAL": "*Ishop Member Detail*\nMID : 2920386JAL\nNama : Jalal M (Xpdc)\n_T.Tag3 : Rp. 0 *Lunas*_  \n--------------------\nIDB : Sepatu Gats Mp 2605\nNet : Rp. 685,000\nTgl : 16 Des 2025\nTag : Rp. 228K\" x 1\nJ.T : 1 Bulan / tgl 27\n--------------------\nDetail Pembayaran (Tag) :\n1. ~30Des25 = Rp. 300,000~ (Lunas)\n2. ⁠~30Jan26 = Rp. 200,000~ (Lunas)\n3. ~28Feb26 = Rp. 185,000~ (Lunas)", "1722058BOW(ARI)": "*Ishop Member Detail*\nMID : 3022058BOW\nNama : M.WIBOWO/ARI (Brgan)\n_T.Tag1 : Rp. 0_  *Lunas*\n--------------------\nIDB : Infinik Hot60 pro+ 8/256GB\nNet : Rp. 2,900,000\nTgl : 16 Sep 2025\nDp : ~16Sep25 = Rp. 1,500K~ (Lunas)\nTag : Rp. 350K X 4\nJ.T : Setiap Tgl 15\n--------------------\nDetail Pembayaran (Tag) :\n1. ~15Okt25 = Rp. 350,000~ (Lunas)\n2. ~15Nov25 = Rp. 350,000~ (Lunas)\n3. ~15Des25 = Rp. 350,000~ (Lunas)\n4. ~15Jan26 = Rp. 350,000~ (Lunas)", "3121639FIK": "*Ishop Member Detail*\nMID : 3121639FIK\nNama : Fiki J (Xpdc)\n_T.Tag : Rp. 1,368,000_ \n--------------------\nIDB : Samsung A26 8/256GB\nNet : Rp. 4,560,000\nTgl : 19 Nov 2025\nTag : Rp. 456K X 10\nJ.T : Setiap Tgl 30\n--------------------\nDetail Pembayaran (Tag) :\n1. ~30Nov25 = Rp. 456,000~ (Lunas)\n2. ~30Des25 = Rp. 456,000~ (Lunas)\n3. ~30Jan26 = Rp. 456,000~ (Lunas)\n4. ~28Feb26 = Rp. 456,000~ (Lunas)\n5. ~30Mar26 = Rp. 456,000~ (Lunas)\n> Benefit THR :  30K 🙏🏽\n6. ~30Apr26 = Rp. 426,000~ (Lunas)\n7. ~30Mei26 = Rp. 456,000~ (Lunas)\n8. 30Jun26 = Rp. 456,000 (Proses)\n9. 30Jul26 = Rp. 456,000 (Proses)\n10. 30Agt26 = Rp. 456,000 (Proses)", "3240567AGU": "*Ishop Member Detail*\nMID : 3240567AGU\nNama : Agung (Pacces)\n_T.Tag : Rp. 975,000_ \n--------------------\nIDB : Tecno Camon 8/256GB\nNet : Rp. 3,900,000\nTgl : 09 Jan 2026\nTag : Rp. 487K X 8\nJ.T : Setiap Tgl 30\n--------------------\nDetail Pembayaran (Tag) :\n1. ~30Jan26 = Rp. 487,500~ (Lunas)\n2. ~30Feb26 = Rp. 487,500~ (Lunas)\n3. ~30Mar26 = Rp. 487,500~ (Lunas)\n4. ~30Apr26 = Rp. 487,500 (Lunas)~\n> Benefit THR :  30K 🙏🏽\n5. ~30Mei26 = Rp. 457,500~ (Lunas)\n6. ~30Jun26 = Rp. 487,500~ (Lunas)\n7. 30Jul26 = Rp. 487,500 (Proses)\n8. 30Agt26 = Rp. 487,500 (Proses)", "3322837AND": "*Ishop Member Detail*\nMID : 3322837AND\nNama : Andriansyah (Sanpak)\n_T.Tag : Rp. 2,730,000_ \n--------------------\nIDB : Showcase Plytron SCN-280 5RAK\nNet : Rp. 4,550,000\nTgl : 17 Feb 2026\nTag : Rp. 455K X 10\nJ.T : Setiap Tgl 30\n--------------------\nDetail Pembayaran (Tag) :\n1. ~28Feb26 = Rp. 455,000~ (Lunas)\n2. ~30Mar26 = Rp. 455,000~ (Lunas)\n> Benefit THR :  30K 🙏🏽\n3. ~30Apr26 = Rp. 425,000~ (Lunas)\n4. ~30Mei26 = Rp. 455,000~ (Lunas)\n5. 30Jun26 = Rp. 455,000 (Proses)\n6. 30Jul26 = Rp. 455,000 (Proses)\n7. 30Agt26 = Rp. 455,000 (Proses)\n8. 30Sep26 = Rp. 455,000 (Proses)\n9. 30Okt26 = Rp. 455,000 (Proses)\n10. 30Nov26 = Rp. 455,000 (Proses)", "2740578BAH": "Ishop Member Detail\nMID : 2740578BAH\nNama : Baha (adm)\n_T.Tag : Rp. 0_ *Lunas*\n--------------------\nIDB : Samsung A06 4/128Gb\nNet : Rp. 2,000,000\nTgl : 06 Januari 2025\nDp : ~06Jan25 = Rp. 25,000~ (Lunas)\nTag : Rp. 329,166 X 6\nJ.T : Setiap Tgl 30\n--------------------\nDetail Pembayaran (Tag) :\n1.  ~30Jan25 = Rp. 330,000~ (Lunas)\n2. ~28Feb25 = Rp. 330,000~ (Lunas)\n3. ~30Mar25 = Rp. 330,000~ (Lunas)\n4. ~30Apr25 = Rp. 330,000~ (Lunas)\n5. ~30Mei25 = Rp. 330,000~ (Lunas)\n6. ~30Jun25 = Rp. 325,000~ (Lunas)", "2821007SUB": "Ishop Member Detail\nMID : 2821007SUB\nNama : Subodro (Part&Layer)\n_T.Tag : Rp. 0 _ *Lunas*\n--------------------\nIDB : Itel P65 8/128Gb\nNet : Rp. 1,720,000\nTgl : 22 Januari 2025\nDp : ~31Jan25 = Rp. 300,000~  (Lunas)\nTag : Rp. 573,333 X 3\nJ.T : Setiap Tgl 30\n--------------------\nDetail Pembayaran (Tag) :\n1.1 ~15Feb25 = Rp. 300,000~ (Lunas)\n1.2 ~28Feb25/19Feb25 = Rp. 300,000~ (Lunas)\n2. ~30Mar25/20Feb25 = Rp. 480,000~ (Lunas)\n3. ~30Apr25/28Feb25 = Rp. 340,000~ (Lunas)"};
+let DATA = {};
+let DATA_TAG = {};
+let csvLoaded = false;
+
+async function loadCSV() {
+  // Try to load from same directory (GitHub Pages)
+  const csvUrl = 'sts_kredit.csv';
+  try {
+    const resp = await fetch(csvUrl);
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    const text = await resp.text();
+    parseCSV(text);
+    csvLoaded = true;
+    buildGrid();
+    showLoadStatus('ok');
+  } catch(e) {
+    showLoadStatus('error', e.message);
+    console.error('CSV load failed:', e);
+  }
+}
+
+function parseCSV(text) {
+  DATA = {};
+  DATA_TAG = {};
+  // RFC 4180 parser: handles quoted cells with embedded real newlines
+  const rows = [];
+  let inQuote = false, cur = '';
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (ch === '"') {
+      // Check for escaped quote ""
+      if (inQuote && text[i+1] === '"') { cur += '"'; i++; }
+      else { inQuote = !inQuote; }
+    } else if ((ch === '\n' || ch === '\r') && !inQuote) {
+      // Row separator (skip \r in \r\n)
+      if (ch === '\r' && text[i+1] === '\n') i++;
+      rows.push(cur);
+      cur = '';
+    } else {
+      cur += ch;
+    }
+  }
+  if (cur.trim()) rows.push(cur);
+
+  // Skip header row (row 0 = column names)
+  for (let r = 1; r < rows.length; r++) {
+    const row = rows[r];
+    if (!row.trim()) continue;
+    // Split only on first comma (key, rest-is-value)
+    const commaIdx = row.indexOf(',');
+    if (commaIdx === -1) continue;
+    const key = row.substring(0, commaIdx).trim().replace(/^"|"$/g, '');
+    let val = row.substring(commaIdx + 1).trim();
+    // Remove outer quotes (already unescaped by parser above)
+    if (val.startsWith('"') && val.endsWith('"')) {
+      val = val.slice(1, -1);
+    }
+    if (!key) continue;
+    if (key.endsWith('TAG')) {
+      if (!DATA_TAG[key]) DATA_TAG[key] = val;
+    } else {
+      if (!DATA[key]) DATA[key] = val; // keep first on duplicate keys
+    }
+  }
+}
+
+function showLoadStatus(state, msg) {
+  const el = document.getElementById('loadStatus');
+  if (!el) return;
+  if (state === 'ok') {
+    const cnt = Object.keys(DATA).length;
+    el.innerHTML = `<span style="color:var(--green)">✓ ${cnt} member dimuat dari CSV</span>`;
+    setTimeout(() => el.style.opacity = '0', 3000);
+  } else {
+    el.innerHTML = `<span style="color:var(--red)">⚠ Gagal memuat CSV: ${msg}. Pastikan file sts_kredit.csv ada di folder yang sama.</span>`;
+  }
+}
 
 // ─── PARSERS ──────────────────────────────────────────────
 function parseName(raw) { const m = raw.match(/Nama\s*:\s*(.+)/); return m ? m[1].trim() : '-'; }
@@ -972,6 +1052,12 @@ function generateEditedTeks(key, pays) {
 // ─── TAGIH WA ─────────────────────────────────────────────
 function tagihWA() {
   if (!currentKey) return;
+  // Use TAG version if available (from CSV TAG rows)
+  const tagKey = currentKey + 'TAG';
+  if (DATA_TAG[tagKey]) {
+    window.open(`https://wa.me/?text=${encodeURIComponent(DATA_TAG[tagKey].trim())}`, '_blank');
+    return;
+  }
   const raw  = DATA[currentKey];
   const name = parseName(raw);
   const mid  = parseMid(raw);
@@ -1122,7 +1208,8 @@ function buildGrid() {
   document.getElementById('cnt-aktif').textContent = cntA;
 }
 
-buildGrid();
+// Load data from CSV on page start
+loadCSV();
 </script>
 </body>
 </html>
