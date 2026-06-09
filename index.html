@@ -742,6 +742,7 @@ footer strong { color: var(--text2); }
 <script>
 let DATA = {};
 let DATA_TAG = {};
+let DATA_PHONE = {};
 let csvLoaded = false;
 
 async function loadCSV() {
@@ -764,44 +765,57 @@ async function loadCSV() {
 function parseCSV(text) {
   DATA = {};
   DATA_TAG = {};
-  // RFC 4180 parser: handles quoted cells with embedded real newlines
-  const rows = [];
-  let inQuote = false, cur = '';
-  for (let i = 0; i < text.length; i++) {
-    const ch = text[i];
-    if (ch === '"') {
-      // Check for escaped quote ""
-      if (inQuote && text[i+1] === '"') { cur += '"'; i++; }
-      else { inQuote = !inQuote; }
-    } else if ((ch === '\n' || ch === '\r') && !inQuote) {
-      // Row separator (skip \r in \r\n)
-      if (ch === '\r' && text[i+1] === '\n') i++;
-      rows.push(cur);
-      cur = '';
-    } else {
-      cur += ch;
-    }
-  }
-  if (cur.trim()) rows.push(cur);
+  DATA_PHONE = {};
 
-  // Skip header row (row 0 = column names)
-  for (let r = 1; r < rows.length; r++) {
-    const row = rows[r];
-    if (!row.trim()) continue;
-    // Split only on first comma (key, rest-is-value)
-    const commaIdx = row.indexOf(',');
-    if (commaIdx === -1) continue;
-    const key = row.substring(0, commaIdx).trim().replace(/^"|"$/g, '');
-    let val = row.substring(commaIdx + 1).trim();
-    // Remove outer quotes (already unescaped by parser above)
-    if (val.startsWith('"') && val.endsWith('"')) {
-      val = val.slice(1, -1);
+  // RFC 4180 multi-column parser
+  function parseRows(txt) {
+    const rows = [];
+    let cols = [], inQuote = false, cur = '';
+    for (let i = 0; i < txt.length; i++) {
+      const ch = txt[i];
+      if (ch === '"') {
+        if (inQuote && txt[i+1] === '"') { cur += '"'; i++; }
+        else { inQuote = !inQuote; }
+      } else if (ch === ',' && !inQuote) {
+        cols.push(cur); cur = '';
+      } else if ((ch === '\n' || ch === '\r') && !inQuote) {
+        if (ch === '\r' && txt[i+1] === '\n') i++;
+        cols.push(cur); cur = '';
+        rows.push(cols); cols = [];
+      } else {
+        cur += ch;
+      }
     }
+    if (cur.trim() || cols.length) { cols.push(cur); rows.push(cols); }
+    return rows;
+  }
+
+  const rows = parseRows(text);
+
+  // Skip header row (row 0)
+  for (let r = 1; r < rows.length; r++) {
+    const cols = rows[r];
+    if (!cols.length) continue;
+    const key = cols[0].trim().replace(/^"|"$/g, '');
     if (!key) continue;
+
+    let val = (cols[1] || '').trim();
+    if (val.startsWith('"') && val.endsWith('"')) val = val.slice(1, -1);
+
+    // Kolom D (index 3) = nomor WhatsApp
+    const rawPhone = (cols[3] || '').trim().replace(/^"|"$/g, '');
+    const phone = rawPhone.replace(/[\s\-]/g, ''); // hapus spasi dan strip
+
     if (key.endsWith('TAG')) {
       if (!DATA_TAG[key]) DATA_TAG[key] = val;
     } else {
-      if (!DATA[key]) DATA[key] = val; // keep first on duplicate keys
+      if (!DATA[key]) DATA[key] = val;
+    }
+
+    // Simpan nomor HP untuk key dasar (tanpa TAG)
+    if (phone) {
+      const baseKey = key.endsWith('TAG') ? key.slice(0, -3) : key;
+      if (!DATA_PHONE[baseKey]) DATA_PHONE[baseKey] = phone;
     }
   }
 }
@@ -990,11 +1004,16 @@ function renderCard(key) {
   // Generate teks yang reflect status edit (untuk waBtn & rawBox)
   const editedTeks = generateEditedTeks(key, pays);
   document.getElementById('rawBox').textContent = editedTeks;
-  // Update waBtn juga pakai teks yang sudah di-edit (sama dengan tagihWA tapi tanpa header pengingat)
-  const waTeks = raw; // tetap kirim raw asli untuk tombol "Kirim via WhatsApp"
-  document.getElementById('waBtn').href = `https://wa.me/?text=${encodeURIComponent(editedTeks)}`;
+
+  // Ambil nomor WA dari DATA_PHONE
+  const phone = getWaPhone(key);
+
+  // Update tombol "Kirim via WhatsApp" → langsung ke nomor nasabah
+  const waBtn = document.getElementById('waBtn');
+  waBtn.href = buildWaUrl(phone, editedTeks);
+
   const cb = document.getElementById('copyBtn');
-  cb.dataset.raw = raw; cb.textContent = '📋 Salin Teks'; cb.classList.remove('ok');
+  cb.dataset.raw = editedTeks; cb.textContent = '📋 Salin Teks'; cb.classList.remove('ok');
 }
 
 function togglePayStatus(key, idx) {
@@ -1049,13 +1068,32 @@ function generateEditedTeks(key, pays) {
   return `${updatedHeader}${detailLabel}\n${payLines}`;
 }
 
+// ─── HELPER: nomor WA & URL ────────────────────────────────
+function getWaPhone(key) {
+  return DATA_PHONE[key] || '';
+}
+
+function buildWaUrl(phone, teks) {
+  // Normalisasi nomor: 08xx → 628xx, 628xx tetap, +628xx → 628xx
+  let num = phone.replace(/[\s\-\(\)]/g, '');
+  if (num.startsWith('+')) num = num.slice(1);
+  if (num.startsWith('08')) num = '62' + num.slice(1);
+  if (num && num.length > 6) {
+    return `https://wa.me/${num}?text=${encodeURIComponent(teks)}`;
+  }
+  // Fallback: tanpa nomor spesifik (pilih kontak manual)
+  return `https://wa.me/?text=${encodeURIComponent(teks)}`;
+}
+
 // ─── TAGIH WA ─────────────────────────────────────────────
 function tagihWA() {
   if (!currentKey) return;
+  const phone = getWaPhone(currentKey);
+
   // Use TAG version if available (from CSV TAG rows)
   const tagKey = currentKey + 'TAG';
   if (DATA_TAG[tagKey]) {
-    window.open(`https://wa.me/?text=${encodeURIComponent(DATA_TAG[tagKey].trim())}`, '_blank');
+    window.open(buildWaUrl(phone, DATA_TAG[tagKey].trim()), '_blank');
     return;
   }
   const raw  = DATA[currentKey];
@@ -1106,7 +1144,7 @@ Tag : ${tag}${jt ? '\nJ.T : ' + jt : ''}
 Detail Pembayaran (Tag) :
 ${payLines}`;
 
-  window.open(`https://wa.me/?text=${encodeURIComponent(teks.trim())}`, '_blank');
+  window.open(buildWaUrl(phone, teks.trim()), '_blank');
 }
 
 function toggleRaw() {
