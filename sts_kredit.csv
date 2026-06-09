@@ -696,7 +696,7 @@ Detail Pembayaran (Tag) :
 20. 30Jun26 =  Rp. 198,000 (Proses)
 21. 30Jul26 =  Rp. 198,000 (Proses)
 22. 30Agt26 =  Rp. 198,000 (Proses)
-23. 30Sep26 =  Rp. 193,000 (Proses)
+23. 30Sep26 =  Rp. 191,000 (Proses)
 "
 2321626IRFTAG,"Assalamualaikum ...
 Mau ngingetin hari ini / besok ada tagihan ya, Pembayaran boleh *Cash* atau *Transfer* ke 
@@ -729,7 +729,7 @@ Detail Pembayaran (Tag) :
 20. 30Jun26 =  Rp. 198,000 (Proses)
 21. 30Jul26 =  Rp. 198,000 (Proses)
 22. 30Agt26 =  Rp. 198,000 (Proses)
-23. 30Sep26 =  Rp. 193,000 (Proses)
+23. 30Sep26 =  Rp. 191,000 (Proses)
 "
 1422187MUL,"*Ishop Member Detail*
 MID : 1422187MUL
@@ -1301,6 +1301,8 @@ J.T : Setiap Tgl 30
 Detail Pembayaran (Tag) :
 1. Jun-Okt ~31Okt25 = Rp. 75,000~ (Lunas)
 2. Nov25-Mar26 ~3Mar26 = Rp. 75,000~ (Lunas)
+3. Ba IKA (2) Apr26-Des26 ~9Jun26= Rp. 90,000~ (Lunas)
+4. Ba FITRI (1) Apr26-Jun26 ~9Jun26= Rp. 15,000~ (Lunas)
 
 
 "
@@ -1322,6 +1324,8 @@ J.T : Setiap Tgl 30
 Detail Pembayaran (Tag) :
 1. Jun-Okt ~31Okt25 = Rp. 75,000~ (Lunas)
 2. Nov25-Mar26 ~3Mar26 = Rp. 75,000~ (Lunas)
+3. Ba IKA (2) Apr26-Des26 ~9Jun26= Rp. 90,000~ (Lunas)
+4. Ba FITRI (1) Apr26-Jun26 ~9Jun26= Rp. 15,000~ (Lunas)
 
 
 "
