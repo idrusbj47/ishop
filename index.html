@@ -871,7 +871,7 @@ footer strong { color: var(--text2); }
   <div id="loadStatus" style="margin-top:12px;font-size:12px;color:var(--text3);transition:opacity 1s;">
     ⏳ Memuat data...
   </div>
-  <button class="btn-mini" onclick="openNew()">＋ Transaksi Baru</button><button class="btn-mini" onclick="loadData()">🔄 Muat Ulang</button><button class="btn-mini" onclick="unduhExcel()">📥 Unduh Excel</button><button class="btn-mini" onclick="doLogout()">🚪 Keluar</button>
+  <button class="btn-mini" onclick="openNew()">＋ Transaksi Baru</button><button class="btn-mini" onclick="loadData()">🔄 Muat Ulang</button><button class="btn-mini" onclick="unduhExcel()">📥 Unduh Excel</button><button class="btn-mini" onclick="unduhPDF()">📄 Unduh PDF</button><button class="btn-mini" onclick="doLogout()">🚪 Keluar</button>
 </header>
 <div class="tabs">
   <button class="tab active" id="tab-cari" onclick="showTab('cari')">🔍 Cari Nasabah</button>
@@ -1011,6 +1011,8 @@ footer strong { color: var(--text2); }
 if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(console.error));
 </script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 // ═══ KONFIGURASI — ganti dengan milik project Supabase kamu ═══
@@ -1470,6 +1472,61 @@ function unduhExcel() {
   ], [16, 24, 16, 22, 20, 18], [4]);
 
   XLSX.writeFile(wb, 'ishop-kredit-' + now.toISOString().slice(0, 10) + '.xlsx');
+}
+
+// ─── UNDUH PDF ────────────────────────────────────────────
+function unduhPDF() {
+  if (!window.jspdf || typeof window.jspdf.jsPDF.API.autoTable !== 'function') return alert('Library PDF belum termuat. Cek koneksi internet lalu coba lagi.');
+  const E = dashEntries(), now = new Date(), curYM = now.getFullYear() * 12 + now.getMonth();
+  const sum = a => a.reduce((s, e) => s + e.nominal, 0), rp = formatRp;
+  const lunas = E.filter(e => e.status === 'lunas'), proses = E.filter(e => e.status === 'proses');
+  const overdue = proses.filter(e => e.ym !== null && e.ym < curYM);
+  const thisAll = E.filter(e => e.ym === curYM), members = Object.values(DATA);
+  const bulanIni = BLN_FULL[now.getMonth()] + ' ' + now.getFullYear();
+  const doc = new window.jspdf.jsPDF({ unit: 'pt', format: 'a4' });
+  const W = doc.internal.pageSize.getWidth(), H = doc.internal.pageSize.getHeight();
+  let y = 48;
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(17); doc.text('iShop Kredit - Laporan Ringkasan', 40, y);
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(110); doc.text('Dibuat: ' + now.toLocaleString('id-ID'), 40, y + 16); doc.setTextColor(0);
+  y += 36;
+  const section = (title, head, body, cols) => {
+    if (y > H - 120) { doc.addPage(); y = 48; }
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(11); doc.text(title, 40, y);
+    doc.autoTable({ startY: y + 8, head: [head], body, theme: 'striped', margin: { left: 40, right: 40 }, styles: { fontSize: 8, cellPadding: 3.5 },
+      headStyles: { fillColor: [99, 102, 241] }, columnStyles: cols || {} });
+    y = doc.lastAutoTable.finalY + 22;
+  };
+
+  section('Ringkasan', ['Keterangan', 'Nilai'], [
+    ['Sisa Seluruh Hutang', rp(sum(proses))], ['Total Sudah Diterima (termasuk DP)', rp(sum(lunas))],
+    ['Pemasukan ' + bulanIni, rp(sum(thisAll.filter(e => e.status === 'lunas')))], ['Target ' + bulanIni, rp(sum(thisAll))],
+    ['Tunggakan', rp(sum(overdue)) + '  (' + overdue.length + ' cicilan)'],
+    ['Member', members.length + ' total / ' + members.filter(m => m.status !== 'lunas').length + ' aktif / ' + members.filter(m => m.status === 'lunas').length + ' lunas']
+  ], { 1: { halign: 'right' } });
+
+  const pb = {}; E.filter(e => e.ym !== null).forEach(e => { const r = (pb[e.ym] ??= { L: 0, P: 0 }); e.status === 'lunas' ? r.L += e.nominal : r.P += e.nominal; });
+  section('Rekap per Bulan (berdasarkan bulan jatuh tempo)', ['Bulan', 'Diterima', 'Belum Diterima', 'Target'],
+    Object.keys(pb).map(Number).sort((a, b) => a - b).map(ym => [BLN_FULL[ym % 12] + ' ' + Math.floor(ym / 12), rp(pb[ym].L), rp(pb[ym].P), rp(pb[ym].L + pb[ym].P)]),
+    { 1: { halign: 'right' }, 2: { halign: 'right' }, 3: { halign: 'right' } });
+
+  const tg = {}; overdue.forEach(e => { const r = (tg[e.k.kode] ??= { k: e.k, n: 0, s: 0, old: e }); r.n++; r.s += e.nominal; if (e.ym < r.old.ym) r.old = e; });
+  const tgl = Object.values(tg).sort((a, b) => b.s - a.s);
+  if (tgl.length) section('Tunggakan', ['Nama', 'Kode', 'No. WA', 'Cicilan', 'Total', 'Tertua'],
+    tgl.map(r => [r.k.nama, r.k.kode, r.k.phone || '-', r.n, rp(r.s), r.old.label]), { 3: { halign: 'center' }, 4: { halign: 'right' } });
+  else { doc.setFont('helvetica', 'bold'); doc.setFontSize(11); doc.text('Tunggakan: tidak ada', 40, y); y += 24; }
+
+  const aktif = members.filter(m => m.status !== 'lunas').map(k => {
+    const mine = E.filter(e => e.k === k);
+    return { k, paid: sum(mine.filter(e => e.status === 'lunas')), left: sum(mine.filter(e => e.status === 'proses')) };
+  }).sort((a, b) => b.left - a.left);
+  section('Daftar Nasabah Aktif (' + aktif.length + ')', ['Kode', 'Nama', 'Barang', 'Angsuran', 'Sudah Dibayar', 'Sisa Tagihan'],
+    aktif.map(r => [r.k.kode, r.k.nama, r.k.item || '-', r.k.tag_info || '-', rp(r.paid), rp(r.left)]), { 4: { halign: 'right' }, 5: { halign: 'right' } });
+
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(110);
+  doc.setFontSize(7.5);
+  const n = doc.getNumberOfPages();
+  for (let i = 1; i <= n; i++) { doc.setPage(i); doc.text('iShop Kredit - Halaman ' + i + ' / ' + n, W - 40, H - 22, { align: 'right' }); }
+  doc.save('ishop-kredit-' + now.toISOString().slice(0, 10) + '.pdf');
 }
 
 boot();
