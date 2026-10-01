@@ -1,8 +1,8 @@
 // Service Worker iShop Kredit
 // Naikkan VERSION setiap kali index.html diubah agar cache lama diganti.
-const VERSION = 'v5';
+const VERSION = 'v6';
 const CACHE = 'ishop-' + VERSION;
-const SHELL = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png', './apple-touch-icon.png'];
+const SHELL = ['./', './index.html', './index2.html', './manifest.json', './icon-192.png', './icon-512.png', './apple-touch-icon.png'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));
