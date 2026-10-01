@@ -871,7 +871,7 @@ footer strong { color: var(--text2); }
   <div id="loadStatus" style="margin-top:12px;font-size:12px;color:var(--text3);transition:opacity 1s;">
     ⏳ Memuat data...
   </div>
-  <button class="btn-mini" onclick="openNew()">＋ Transaksi Baru</button><button class="btn-mini" onclick="loadData()">🔄 Muat Ulang</button><button class="btn-mini" onclick="doLogout()">🚪 Keluar</button>
+  <button class="btn-mini" onclick="openNew()">＋ Transaksi Baru</button><button class="btn-mini" onclick="loadData()">🔄 Muat Ulang</button><button class="btn-mini" onclick="unduhExcel()">📥 Unduh Excel</button><button class="btn-mini" onclick="doLogout()">🚪 Keluar</button>
 </header>
 <div class="tabs">
   <button class="tab active" id="tab-cari" onclick="showTab('cari')">🔍 Cari Nasabah</button>
@@ -1010,6 +1010,7 @@ footer strong { color: var(--text2); }
 <script>
 if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(console.error));
 </script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 // ═══ KONFIGURASI — ganti dengan milik project Supabase kamu ═══
@@ -1334,13 +1335,13 @@ function dashEntries() {                           // semua cicilan + DP sebagai
     k.pays.forEach(p => {
       if (!(p.nominal > 0)) return;
       const b = parseBulan(p.label);
-      E.push({ k, label: p.label, nominal: Number(p.nominal), status: p.status === 'proses' ? 'proses' : 'lunas', ym: b ? b.y * 12 + b.m : null });
+      E.push({ k, no: p.no, paid: p.paid_at, label: p.label, nominal: Number(p.nominal), status: p.status === 'proses' ? 'proses' : 'lunas', ym: b ? b.y * 12 + b.m : null });
     });
     (k.extra || '').split('\n').forEach(l => {
       if (!/^\s*dp\d*\s*:/i.test(l)) return;
       const am = l.match(/Rp\.?\s*([\d.,]+)\s*([Kk]?)/); if (!am) return;
       const lb = l.replace(/^[^:]*:/, '').split('=')[0].replace(/[~*]/g, '').trim(), b = parseBulan(lb);
-      E.push({ k, label: 'DP ' + lb, nominal: parseInt(am[1].replace(/[.,]/g, ''), 10) * (am[2] ? 1000 : 1), status: /~|lunas/i.test(l) ? 'lunas' : 'proses', ym: b ? b.y * 12 + b.m : null });
+      E.push({ k, no: 'DP', paid: null, label: 'DP ' + lb, nominal: parseInt(am[1].replace(/[.,]/g, ''), 10) * (am[2] ? 1000 : 1), status: /~|lunas/i.test(l) ? 'lunas' : 'proses', ym: b ? b.y * 12 + b.m : null });
     });
   });
   return E;
@@ -1410,6 +1411,65 @@ function renderDash() {
     <div><h2>Sisa Hutang Terbesar</h2><div class="dpanel">${mlist(byMember(proses))}</div></div>
   </div>
   <div class="dnote">Pemasukan dihitung per <b>bulan jatuh tempo</b> (tanggal/label di tiap cicilan), hanya cicilan berstatus Lunas, ditambah DP. Tunggakan = cicilan berstatus Proses yang bulan jatuh temponya sudah lewat. Data tanpa nominal (mis. tagihan TrueCaller) tidak dihitung.</div>`;
+}
+
+// ─── UNDUH EXCEL ──────────────────────────────────────────
+function unduhExcel() {
+  if (!window.XLSX) return alert('Library Excel belum termuat. Cek koneksi internet lalu coba lagi.');
+  const E = dashEntries(), now = new Date(), curYM = now.getFullYear() * 12 + now.getMonth();
+  const sum = a => a.reduce((s, e) => s + e.nominal, 0);
+  const lunas = E.filter(e => e.status === 'lunas'), proses = E.filter(e => e.status === 'proses');
+  const overdue = proses.filter(e => e.ym !== null && e.ym < curYM);
+  const thisAll = E.filter(e => e.ym === curYM), members = Object.values(DATA);
+  const bulanIni = BLN_FULL[now.getMonth()] + ' ' + now.getFullYear();
+  const ymLabel = ym => BLN_FULL[ym % 12] + ' ' + Math.floor(ym / 12);
+  const wb = XLSX.utils.book_new();
+  const add = (name, aoa, widths, numCols) => {
+    const ws = XLSX.utils.aoa_to_sheet(aoa); ws['!cols'] = widths.map(w => ({ wch: w }));
+    const r = XLSX.utils.decode_range(ws['!ref']);
+    for (let R = 0; R <= r.e.r; R++) numCols.forEach(C => { const c = ws[XLSX.utils.encode_cell({ r: R, c: C })]; if (c && typeof c.v === 'number') c.z = '#,##0'; });
+    XLSX.utils.book_append_sheet(wb, ws, name);
+  };
+
+  // 1. Ringkasan + rekap per bulan
+  const perBulan = {};
+  E.filter(e => e.ym !== null).forEach(e => { const r = (perBulan[e.ym] ??= { L: 0, P: 0 }); e.status === 'lunas' ? r.L += e.nominal : r.P += e.nominal; });
+  add('Ringkasan', [
+    ['iShop Kredit — Ringkasan'], ['Dibuat', now.toLocaleString('id-ID')], [],
+    ['Sisa Seluruh Hutang', sum(proses)], ['Total Sudah Diterima (termasuk DP)', sum(lunas)],
+    ['Pemasukan ' + bulanIni, sum(thisAll.filter(e => e.status === 'lunas'))], ['Target ' + bulanIni, sum(thisAll)],
+    ['Tunggakan', sum(overdue)], ['Jumlah Member', members.length],
+    ['Member Aktif', members.filter(m => m.status !== 'lunas').length], ['Member Lunas', members.filter(m => m.status === 'lunas').length], [],
+    ['Rekap per Bulan (berdasarkan bulan jatuh tempo)'], ['Bulan', 'Diterima', 'Belum Diterima', 'Target'],
+    ...Object.keys(perBulan).map(Number).sort((a, b) => a - b).map(ym => [ymLabel(ym), perBulan[ym].L, perBulan[ym].P, perBulan[ym].L + perBulan[ym].P])
+  ], [44, 18, 18, 18], [1, 2, 3]);
+
+  // 2. Nasabah
+  add('Nasabah', [
+    ['Kode', 'MID', 'Nama', 'No. WhatsApp', 'Barang', 'Harga Net', 'Tgl Mulai', 'Angsuran', 'Jatuh Tempo', 'Status', 'Jml Cicilan', 'Cicilan Lunas', 'Cicilan Proses', 'Sudah Dibayar (Rp)', 'Sisa Tagihan (Rp)'],
+    ...members.map(k => {
+      const mine = E.filter(e => e.k === k), np = k.pays.filter(p => p.nominal > 0);
+      return [k.kode, k.mid || k.kode, k.nama, k.phone || '', k.item || '', k.net || '', k.tgl || '', k.tag_info || '', k.jt || '', k.status === 'lunas' ? 'Lunas' : 'Aktif',
+        np.length, np.filter(p => p.status !== 'proses').length, np.filter(p => p.status === 'proses').length, sum(mine.filter(e => e.status === 'lunas')), sum(mine.filter(e => e.status === 'proses'))];
+    })
+  ], [16, 16, 24, 16, 26, 16, 16, 18, 20, 8, 11, 13, 14, 18, 17], [13, 14]);
+
+  // 3. Semua cicilan
+  add('Cicilan', [
+    ['Kode', 'Nama', 'No', 'Tanggal / Label', 'Bulan Jatuh Tempo', 'Nominal (Rp)', 'Status', 'Tgl Dibayar'],
+    ...E.map(e => [e.k.kode, e.k.nama, e.no, e.label, e.ym !== null ? Math.floor(e.ym / 12) + '-' + String(e.ym % 12 + 1).padStart(2, '0') : '', e.nominal,
+      e.status === 'lunas' ? 'Lunas' : 'Proses', e.paid ? new Date(e.paid).toLocaleDateString('id-ID') : ''])
+  ], [16, 24, 6, 22, 18, 16, 9, 14], [5]);
+
+  // 4. Tunggakan
+  const tg = {};
+  overdue.forEach(e => { const r = (tg[e.k.kode] ??= { k: e.k, n: 0, sum: 0, old: e }); r.n++; r.sum += e.nominal; if (e.ym < r.old.ym) r.old = e; });
+  add('Tunggakan', [
+    ['Kode', 'Nama', 'No. WhatsApp', 'Jml Cicilan Tertunggak', 'Total Tunggakan (Rp)', 'Cicilan Tertua'],
+    ...Object.values(tg).sort((a, b) => b.sum - a.sum).map(r => [r.k.kode, r.k.nama, r.k.phone || '', r.n, r.sum, r.old.label])
+  ], [16, 24, 16, 22, 20, 18], [4]);
+
+  XLSX.writeFile(wb, 'ishop-kredit-' + now.toISOString().slice(0, 10) + '.xlsx');
 }
 
 boot();
