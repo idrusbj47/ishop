@@ -790,6 +790,40 @@ footer strong { color: var(--text2); }
 .pay-edit:hover{opacity:1;background:var(--surface3)}
 .modal select{width:100%;margin-top:4px;background:var(--surface2);border:1px solid var(--border2);border-radius:10px;padding:10px 12px;color:var(--text);font-size:13px}
 .full{grid-column:1/-1}
+.tabs{position:relative;z-index:10;display:flex;justify-content:center;gap:8px;margin-top:28px;padding:0 24px}
+.tab{background:var(--surface2);border:1px solid var(--border2);color:var(--text2);padding:10px 22px;border-radius:100px;font-family:'Sora',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s}
+.tab:hover{color:var(--text)}
+.tab.active{background:var(--grad1);border-color:transparent;color:#fff}
+.dash{display:none;position:relative;z-index:5;max-width:1100px;margin:36px auto 80px;padding:0 24px}
+.dash h2{font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.12em;margin:32px 0 14px;display:flex;align-items:center;gap:10px}
+.dash h2::after{content:'';flex:1;height:1px;background:var(--border)}
+.dash-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.dcard{background:var(--surface);border:1px solid var(--border2);border-radius:18px;padding:18px 20px}
+.dc-l{font-size:11px;color:var(--text3);font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
+.dc-v{font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;color:var(--text)}
+.dc-v.g{color:var(--green)}.dc-v.a{color:var(--amber)}.dc-v.r{color:var(--red)}.dc-v.c{color:var(--cyan)}
+.dc-s{font-size:12px;color:var(--text3);margin-top:6px}
+.dpanel{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:18px 20px}
+.dsel{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.dsel select{background:var(--surface2);border:1px solid var(--border2);color:var(--text);border-radius:10px;padding:8px 12px;font-family:'Sora',sans-serif;font-size:13px}
+.dprog{height:8px;background:var(--surface3);border-radius:100px;overflow:hidden;margin:10px 0 4px}
+.dprog>div{height:100%;background:var(--grad2)}
+.bars{display:flex;gap:6px;align-items:flex-end;overflow-x:auto;padding-bottom:4px}
+.bar{flex:1;min-width:42px;cursor:pointer;text-align:center;padding:4px 2px;border-radius:10px;border:1px solid transparent}
+.bar:hover{background:var(--surface2)}.bar.sel{border-color:rgba(99,102,241,.5);background:var(--blue-bg)}
+.bv{height:130px;display:flex;flex-direction:column;justify-content:flex-end;gap:1px}
+.bp{background:var(--amber);border-radius:4px 4px 0 0;opacity:.85}.bl{background:var(--green);border-radius:4px}
+.bn{font-size:11px;font-weight:700;color:var(--text2);margin-top:6px}.bt{font-size:9px;color:var(--text3);font-family:'JetBrains Mono',monospace}
+.dlegend{font-size:11px;color:var(--text3);margin-top:10px;display:flex;gap:14px;flex-wrap:wrap}
+.dlegend i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:5px}
+.dcols{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:12px}
+.drow{display:flex;align-items:center;gap:10px;padding:10px 4px;border-bottom:1px solid var(--border);cursor:pointer}
+.drow:last-child{border-bottom:none}.drow:hover{background:var(--surface2)}
+.drow>div:first-child{flex:1;min-width:0}.drow b{font-size:13px;display:block}
+.drow span:not(.pay-tag){font-size:11px;color:var(--text3)}
+.drow .amt{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--cyan);white-space:nowrap}
+.dempty{color:var(--text3);font-size:13px;padding:14px 4px}
+.dnote{font-size:11px;color:var(--text3);margin-top:28px;line-height:1.6}
 </style>
 </head>
 <body>
@@ -839,6 +873,10 @@ footer strong { color: var(--text2); }
   </div>
   <button class="btn-mini" onclick="openNew()">＋ Transaksi Baru</button><button class="btn-mini" onclick="loadData()">🔄 Muat Ulang</button><button class="btn-mini" onclick="doLogout()">🚪 Keluar</button>
 </header>
+<div class="tabs">
+  <button class="tab active" id="tab-cari" onclick="showTab('cari')">🔍 Cari Nasabah</button>
+  <button class="tab" id="tab-dash" onclick="showTab('dash')">📊 Dasbor</button>
+</div>
 
 <!-- SEARCH -->
 <div class="search-section">
@@ -916,6 +954,8 @@ footer strong { color: var(--text2); }
   </div>
   <div class="members-grid" id="membersGrid"></div>
 </div>
+
+<div id="dashView" class="dash"></div>
 
 <footer>
   <strong>iShop Kredit System</strong> &mdash; Data tersimpan di Supabase
@@ -1165,6 +1205,7 @@ function buildGrid() {
   $('statTotal').textContent = keys.length + ' Member'; $('statLunas').textContent = cL + ' Lunas'; $('statAktif').textContent = cA + ' Aktif';
   $('cnt-all').textContent = keys.length; $('cnt-lunas').textContent = cL; $('cnt-aktif').textContent = cA;
   filterMembers(currentFilter);
+  renderDash();
 }
 
 // ─── TRANSAKSI BARU ───────────────────────────────────────
@@ -1276,6 +1317,99 @@ async function delPay() {
     x.no = i + 1;
   }
   await syncStatus(k); closePay(); renderCard(currentKey); buildGrid();
+}
+
+// ─── DASBOR ───────────────────────────────────────────────
+const BLN_IDX = { jan:0, feb:1, mar:2, apr:3, mei:4, jun:5, jul:6, agu:7, agt:7, aug:7, sep:8, okt:9, oct:9, nov:10, des:11, dec:11 };
+let dashY = null, dashM = null;
+
+function parseBulan(label) {                       // "30Okt26" / "Apr23" / "13 Apr 23" → bulan & tahun
+  const m = String(label).match(/([A-Za-z]{3,9})\s*'?(\d{2})(?!\d)/); if (!m) return null;
+  const mo = BLN_IDX[m[1].slice(0, 3).toLowerCase()]; if (mo === undefined) return null;
+  return { y: 2000 + +m[2], m: mo };
+}
+function dashEntries() {                           // semua cicilan + DP sebagai satu daftar
+  const E = [];
+  Object.values(DATA).forEach(k => {
+    k.pays.forEach(p => {
+      if (!(p.nominal > 0)) return;
+      const b = parseBulan(p.label);
+      E.push({ k, label: p.label, nominal: Number(p.nominal), status: p.status === 'proses' ? 'proses' : 'lunas', ym: b ? b.y * 12 + b.m : null });
+    });
+    (k.extra || '').split('\n').forEach(l => {
+      if (!/^\s*dp\d*\s*:/i.test(l)) return;
+      const am = l.match(/Rp\.?\s*([\d.,]+)\s*([Kk]?)/); if (!am) return;
+      const lb = l.replace(/^[^:]*:/, '').split('=')[0].replace(/[~*]/g, '').trim(), b = parseBulan(lb);
+      E.push({ k, label: 'DP ' + lb, nominal: parseInt(am[1].replace(/[.,]/g, ''), 10) * (am[2] ? 1000 : 1), status: /~|lunas/i.test(l) ? 'lunas' : 'proses', ym: b ? b.y * 12 + b.m : null });
+    });
+  });
+  return E;
+}
+const shortRp = n => n >= 1e6 ? (n / 1e6).toFixed(1).replace('.0', '') + 'jt' : n >= 1e3 ? Math.round(n / 1e3) + 'rb' : n ? String(n) : '';
+function goMember(k) { showTab('cari'); pickAc(k); }
+function showTab(t) {
+  const d = t === 'dash';
+  document.querySelectorAll('.search-section,.result-zone,.members-section').forEach(e => e.style.display = d ? 'none' : '');
+  $('dashView').style.display = d ? 'block' : 'none';
+  $('tab-cari').classList.toggle('active', !d); $('tab-dash').classList.toggle('active', d);
+  if (d) renderDash();
+}
+function setDash(y, m) { if (y !== null) dashY = y; if (m !== null) dashM = m; renderDash(); }
+
+function renderDash() {
+  const el = $('dashView'); if (!el) return;
+  const E = dashEntries(), now = new Date(), curYM = now.getFullYear() * 12 + now.getMonth();
+  if (dashY === null) { dashY = now.getFullYear(); dashM = now.getMonth(); }
+  const sum = a => a.reduce((s, e) => s + e.nominal, 0), rp = formatRp;
+  const lunas = E.filter(e => e.status === 'lunas'), proses = E.filter(e => e.status === 'proses');
+  const overdue = proses.filter(e => e.ym !== null && e.ym < curYM);
+  const thisAll = E.filter(e => e.ym === curYM), thisL = thisAll.filter(e => e.status === 'lunas');
+  const sel = dashY * 12 + dashM, inSel = E.filter(e => e.ym === sel);
+  const selL = inSel.filter(e => e.status === 'lunas'), selP = inSel.filter(e => e.status === 'proses');
+  const pct = inSel.length ? Math.round(sum(selL) / sum(inSel) * 100) : 0;
+  const nMem = new Set(proses.map(e => e.k.kode)).size;
+  const card = (ic, lb, v, s, c) => `<div class="dcard"><div class="dc-l">${ic} ${lb}</div><div class="dc-v ${c || ''}">${v}</div><div class="dc-s">${s}</div></div>`;
+  const byMember = arr => { const m = {}; arr.forEach(e => { const r = (m[e.k.kode] ??= { k: e.k, sum: 0, n: 0 }); r.sum += e.nominal; r.n++; }); return Object.values(m).sort((a, b) => b.sum - a.sum).slice(0, 8); };
+  const mlist = arr => arr.length ? arr.map(r => `<div class="drow" data-k="${esc(r.k.kode)}" onclick="goMember(this.dataset.k)"><div><b>${esc(r.k.nama)}</b><span>${esc(r.k.kode)} · ${r.n} cicilan</span></div><div class="amt">${rp(r.sum)}</div></div>`).join('') : '<div class="dempty">Tidak ada 🎉</div>';
+  const years = [...new Set(E.filter(e => e.ym !== null).map(e => Math.floor(e.ym / 12)).concat(now.getFullYear(), dashY))].sort();
+  const bars = Array.from({ length: 12 }, (_, i) => { const a = E.filter(e => e.ym === dashY * 12 + i); return { i, L: sum(a.filter(e => e.status === 'lunas')), P: sum(a.filter(e => e.status === 'proses')) }; });
+  const mx = Math.max(1, ...bars.map(b => b.L + b.P));
+  const chart = bars.map(b => `<div class="bar ${b.i === dashM ? 'sel' : ''}" onclick="setDash(null,${b.i})" title="${BLN_FULL[b.i]} ${dashY}\nDiterima ${rp(b.L)}\nBelum ${rp(b.P)}"><div class="bv"><div class="bp" style="height:${b.P / mx * 100}%"></div><div class="bl" style="height:${b.L / mx * 100}%"></div></div><div class="bn">${BLN[b.i]}</div><div class="bt">${shortRp(b.L + b.P) || '-'}</div></div>`).join('');
+  const rows = [...selP, ...selL].map(e => `<div class="drow" data-k="${esc(e.k.kode)}" onclick="goMember(this.dataset.k)"><div><b>${esc(e.k.nama)}</b><span>${esc(e.k.kode)} · ${esc(e.label)}</span></div><div class="amt">${rp(e.nominal)}</div><span class="pay-tag ${e.status === 'lunas' ? 'tag-lunas' : 'tag-proses'}">${e.status === 'lunas' ? '✓ Lunas' : '⏳ Proses'}</span></div>`).join('');
+
+  el.innerHTML = `
+  <div class="dash-cards">
+    ${card('💰', 'Sisa Seluruh Hutang', rp(sum(proses)), `${proses.length} cicilan · ${nMem} member masih aktif`, 'a')}
+    ${card('✅', 'Total Sudah Diterima', rp(sum(lunas)), `${lunas.length} pembayaran (termasuk DP)`, 'g')}
+    ${card('📅', 'Pemasukan ' + BLN_FULL[now.getMonth()] + ' ' + now.getFullYear(), rp(sum(thisL)), `dari target ${rp(sum(thisAll))} · ${thisL.length}/${thisAll.length} cicilan`, 'c')}
+    ${card('⚠️', 'Tunggakan (lewat bulan jatuh tempo)', rp(sum(overdue)), `${overdue.length} cicilan · ${new Set(overdue.map(e => e.k.kode)).size} member`, overdue.length ? 'r' : 'g')}
+  </div>
+
+  <h2>Rekap per Bulan</h2>
+  <div class="dpanel">
+    <div class="dsel">
+      <select onchange="setDash(null,+this.value)">${BLN_FULL.map((n, i) => `<option value="${i}" ${i === dashM ? 'selected' : ''}>${n}</option>`).join('')}</select>
+      <select onchange="setDash(+this.value,null)">${years.map(y => `<option ${y === dashY ? 'selected' : ''}>${y}</option>`).join('')}</select>
+    </div>
+    <div class="dash-cards">
+      ${card('✅', 'Diterima', rp(sum(selL)), `${selL.length} cicilan lunas`, 'g')}
+      ${card('⏳', 'Belum Diterima', rp(sum(selP)), `${selP.length} cicilan proses`, 'a')}
+      ${card('🎯', 'Target Bulan Ini', rp(sum(inSel)), `${inSel.length} cicilan · ${pct}% tercapai`, 'c')}
+    </div>
+    <div class="dprog"><div style="width:${pct}%"></div></div>
+    <div class="dc-s" style="margin-bottom:18px">${pct}% dari target ${BLN_FULL[dashM]} ${dashY} sudah diterima</div>
+    <div class="bars">${chart}</div>
+    <div class="dlegend"><span><i style="background:var(--green)"></i>Diterima</span><span><i style="background:var(--amber)"></i>Belum diterima</span><span>Klik batang untuk pilih bulan · tahun ${dashY}</span></div>
+  </div>
+
+  <h2>Cicilan ${BLN_FULL[dashM]} ${dashY} (${inSel.length})</h2>
+  <div class="dpanel">${rows || '<div class="dempty">Tidak ada cicilan di bulan ini.</div>'}</div>
+
+  <div class="dcols">
+    <div><h2>Tunggakan Terbesar</h2><div class="dpanel">${mlist(byMember(overdue))}</div></div>
+    <div><h2>Sisa Hutang Terbesar</h2><div class="dpanel">${mlist(byMember(proses))}</div></div>
+  </div>
+  <div class="dnote">Pemasukan dihitung per <b>bulan jatuh tempo</b> (tanggal/label di tiap cicilan), hanya cicilan berstatus Lunas, ditambah DP. Tunggakan = cicilan berstatus Proses yang bulan jatuh temponya sudah lewat. Data tanpa nominal (mis. tagihan TrueCaller) tidak dihitung.</div>`;
 }
 
 boot();
