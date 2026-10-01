@@ -3,6 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#07090f">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="iShop Kredit">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <title>iShop — Status Kredit Nasabah</title>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -764,6 +772,58 @@ footer strong { color: var(--text2); }
   80%{transform:translateX(4px)}
 }
 #appContent { display: none; }
+
+.btn-mini{background:none;border:1px solid var(--border2);color:var(--text2);padding:5px 14px;border-radius:100px;font-size:11px;cursor:pointer;font-family:inherit;margin:10px 3px 0}
+.btn-mini:hover{color:var(--cyan);border-color:var(--cyan)}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9000;align-items:center;justify-content:center;padding:16px}
+.modal.open{display:flex}
+.modal-box{background:var(--surface);border:1px solid var(--border2);border-radius:20px;padding:24px;width:100%;max-width:560px;max-height:92vh;overflow:auto}
+.modal-box h3{font-size:18px;margin-bottom:4px}
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
+.modal label{display:block;font-size:11px;color:var(--text3);font-weight:600;margin-bottom:10px}
+.mgrid label{margin-bottom:0}
+.modal input,.modal textarea{width:100%;margin-top:4px;background:var(--surface2);border:1px solid var(--border2);border-radius:10px;padding:10px 12px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:13px;outline:none}
+.modal input:focus,.modal textarea:focus{border-color:rgba(99,102,241,.6)}
+.modal .btn-copy{margin:4px 0 12px}
+@media(max-width:520px){.mgrid{grid-template-columns:1fr}}
+.pay-edit{background:none;border:1px solid var(--border2);border-radius:8px;cursor:pointer;padding:4px 7px;font-size:12px;flex-shrink:0;opacity:.6}
+.pay-edit:hover{opacity:1;background:var(--surface3)}
+.modal select{width:100%;margin-top:4px;background:var(--surface2);border:1px solid var(--border2);border-radius:10px;padding:10px 12px;color:var(--text);font-size:13px}
+.full{grid-column:1/-1}
+.tabs{position:relative;z-index:10;display:flex;justify-content:center;gap:8px;margin-top:28px;padding:0 24px}
+.tab{background:var(--surface2);border:1px solid var(--border2);color:var(--text2);padding:10px 22px;border-radius:100px;font-family:'Sora',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s}
+.tab:hover{color:var(--text)}
+.tab.active{background:var(--grad1);border-color:transparent;color:#fff}
+.dash{display:none;position:relative;z-index:5;max-width:1100px;margin:36px auto 80px;padding:0 24px}
+.dash h2{font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.12em;margin:32px 0 14px;display:flex;align-items:center;gap:10px}
+.dash h2::after{content:'';flex:1;height:1px;background:var(--border)}
+.dash-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.dcard{background:var(--surface);border:1px solid var(--border2);border-radius:18px;padding:18px 20px}
+.dc-l{font-size:11px;color:var(--text3);font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
+.dc-v{font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;color:var(--text)}
+.dc-v.g{color:var(--green)}.dc-v.a{color:var(--amber)}.dc-v.r{color:var(--red)}.dc-v.c{color:var(--cyan)}
+.dc-s{font-size:12px;color:var(--text3);margin-top:6px}
+.dpanel{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:18px 20px}
+.dsel{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.dsel select{background:var(--surface2);border:1px solid var(--border2);color:var(--text);border-radius:10px;padding:8px 12px;font-family:'Sora',sans-serif;font-size:13px}
+.dprog{height:8px;background:var(--surface3);border-radius:100px;overflow:hidden;margin:10px 0 4px}
+.dprog>div{height:100%;background:var(--grad2)}
+.bars{display:flex;gap:6px;align-items:flex-end;overflow-x:auto;padding-bottom:4px}
+.bar{flex:1;min-width:42px;cursor:pointer;text-align:center;padding:4px 2px;border-radius:10px;border:1px solid transparent}
+.bar:hover{background:var(--surface2)}.bar.sel{border-color:rgba(99,102,241,.5);background:var(--blue-bg)}
+.bv{height:130px;display:flex;flex-direction:column;justify-content:flex-end;gap:1px}
+.bp{background:var(--amber);border-radius:4px 4px 0 0;opacity:.85}.bl{background:var(--green);border-radius:4px}
+.bn{font-size:11px;font-weight:700;color:var(--text2);margin-top:6px}.bt{font-size:9px;color:var(--text3);font-family:'JetBrains Mono',monospace}
+.dlegend{font-size:11px;color:var(--text3);margin-top:10px;display:flex;gap:14px;flex-wrap:wrap}
+.dlegend i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:5px}
+.dcols{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:12px}
+.drow{display:flex;align-items:center;gap:10px;padding:10px 4px;border-bottom:1px solid var(--border);cursor:pointer}
+.drow:last-child{border-bottom:none}.drow:hover{background:var(--surface2)}
+.drow>div:first-child{flex:1;min-width:0}.drow b{font-size:13px;display:block}
+.drow span:not(.pay-tag){font-size:11px;color:var(--text3)}
+.drow .amt{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--cyan);white-space:nowrap}
+.dempty{color:var(--text3);font-size:13px;padding:14px 4px}
+.dnote{font-size:11px;color:var(--text3);margin-top:28px;line-height:1.6}
 </style>
 </head>
 <body>
@@ -775,13 +835,16 @@ footer strong { color: var(--text2); }
   <div class="login-box">
     <div class="login-logo">💳</div>
     <div class="login-title">iShop <span>Kredit</span></div>
-    <div class="login-sub">Masukkan password untuk melanjutkan</div>
+    <div class="login-sub">Masuk dengan akun Supabase kamu</div>
+    <div class="login-field">
+      <input type="email" id="loginEmail" placeholder="Email..." autocomplete="username" style="letter-spacing:0;font-size:15px" onkeydown="if(event.key==='Enter')$('loginInput').focus()">
+    </div>
     <div class="login-field">
       <input type="password" id="loginInput" placeholder="Password..." autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
       <button class="login-eye" onclick="toggleLoginEye()" id="loginEyeBtn" title="Tampilkan/sembunyikan">👁</button>
     </div>
     <button class="btn-login" onclick="doLogin()">🔓 Masuk</button>
-    <div class="login-error" id="loginError">❌ Password salah. Coba lagi.</div>
+    <div class="login-error" id="loginError"></div>
   </div>
 </div>
 
@@ -806,10 +869,14 @@ footer strong { color: var(--text2); }
     <div class="stat-chip"><span class="dot" style="background:var(--amber)"></span> <span id="statAktif">— Aktif</span></div>
   </div>
   <div id="loadStatus" style="margin-top:12px;font-size:12px;color:var(--text3);transition:opacity 1s;">
-    ⏳ Memuat data dari CSV...
+    ⏳ Memuat data...
   </div>
-  <button onclick="loadCSV()" style="margin-top:8px;background:none;border:1px solid var(--border2);color:var(--text3);padding:4px 14px;border-radius:100px;font-size:11px;cursor:pointer;font-family:inherit;" title="Muat ulang data CSV">🔄 Reload CSV</button>
+  <button class="btn-mini" onclick="openNew()">＋ Transaksi Baru</button><button class="btn-mini" onclick="loadData()">🔄 Muat Ulang</button><button class="btn-mini" onclick="unduhExcel()">📥 Unduh Excel</button><button class="btn-mini" onclick="unduhPDF()">📄 Unduh PDF</button><button class="btn-mini" onclick="doLogout()">🚪 Keluar</button>
 </header>
+<div class="tabs">
+  <button class="tab active" id="tab-cari" onclick="showTab('cari')">🔍 Cari Nasabah</button>
+  <button class="tab" id="tab-dash" onclick="showTab('dash')">📊 Dasbor</button>
+</div>
 
 <!-- SEARCH -->
 <div class="search-section">
@@ -862,6 +929,9 @@ footer strong { color: var(--text2); }
           📨 Tagih via WA
         </button>
         <button class="btn-copy" id="copyBtn" onclick="copyText()">📋 Salin Teks</button>
+        <button class="btn-copy" onclick="openEdit()">✏️ Edit Data</button>
+        <button class="btn-copy" onclick="editPhone()">📞 No. WA</button>
+        <button class="btn-copy" onclick="hapusMember()">🗑 Hapus</button>
       </div>
     </div>
   </div>
@@ -885,577 +955,581 @@ footer strong { color: var(--text2); }
   <div class="members-grid" id="membersGrid"></div>
 </div>
 
+<div id="dashView" class="dash"></div>
+
 <footer>
-  <strong>iShop Kredit System</strong> &mdash; Data nasabah dimuat langsung dari <code style="font-family:monospace;color:var(--cyan)">sts_kredit.csv</code>
+  <strong>iShop Kredit System</strong> &mdash; Data tersimpan di Supabase
 </footer>
 
+<div id="newModal" class="modal"><div class="modal-box">
+  <h3>＋ Transaksi Baru</h3>
+  <div class="mgrid">
+    <label>Kode / MID<input id="nKode" placeholder="37ABCD"></label>
+    <label>Nama<input id="nNama"></label>
+    <label>No. WhatsApp<input id="nPhone" placeholder="08xxxxxxxxxx"></label>
+    <label>Barang<input id="nItem"></label>
+    <label>Harga Net (Rp)<input id="nNet" type="number"></label>
+    <label>Tanggal transaksi<input id="nTgl" type="date"></label>
+    <label>DP (Rp, opsional)<input id="nDp" type="number"></label>
+    <label>Jatuh tempo (tgl)<input id="nJT" type="number" value="30"></label>
+    <label>Angsuran / bulan (Rp)<input id="nAng" type="number"></label>
+    <label>Tenor (bulan)<input id="nTenor" type="number"></label>
+  </div>
+  <button class="btn-copy" onclick="genJadwal()">⚙️ Buat Jadwal Otomatis</button>
+  <label>Jadwal (satu baris: tanggal = nominal, boleh diedit)<textarea id="nJadwal" rows="6" placeholder="30Okt26 = 275000"></textarea></label>
+  <div class="action-row"><button class="btn-login" style="flex:1;margin:0" onclick="saveNew()">💾 Simpan</button><button class="btn-copy" onclick="closeNew()">Batal</button></div>
+</div></div>
+<div id="editModal" class="modal"><div class="modal-box">
+  <h3>✏️ Edit Data Customer</h3>
+  <div class="mgrid">
+    <label>Kode (kunci pencarian)<input id="eKode"></label>
+    <label>MID (tampil di teks WA)<input id="eMid"></label>
+    <label class="full">Nama<input id="eNama"></label>
+    <label class="full">No. WhatsApp<input id="ePhone" placeholder="08xxxxxxxxxx"></label>
+    <label class="full">Barang<input id="eItem"></label>
+    <label>Harga Net<input id="eNet"></label>
+    <label>Tgl Mulai<input id="eTgl"></label>
+    <label>Angsuran<input id="eTag"></label>
+    <label>Jatuh Tempo<input id="eJt"></label>
+    <label class="full">Baris tambahan (Dp, Mfe, dll — satu baris per entri)<textarea id="eExtra" rows="2"></textarea></label>
+    <label class="full">Catatan bawah (mis. Benefit THR)<textarea id="eCatatan" rows="2"></textarea></label>
+  </div>
+  <div class="action-row"><button class="btn-login" style="flex:1;margin:0" onclick="saveEdit()">💾 Simpan</button><button class="btn-copy" onclick="closeEdit()">Batal</button></div>
+</div></div>
+<div id="payModal" class="modal"><div class="modal-box">
+  <h3 id="payTitle">Edit Cicilan</h3>
+  <div class="mgrid">
+    <label class="full">Tanggal / label (mis. 30Okt26)<input id="pLabel"></label>
+    <label>Nominal (Rp)<input id="pNominal" type="number"></label>
+    <label>Status<select id="pStatus"><option value="proses">⏳ Proses</option><option value="lunas">✓ Lunas</option><option value="dp">DP</option></select></label>
+  </div>
+  <div class="action-row"><button class="btn-login" style="flex:1;margin:0" onclick="savePay()">💾 Simpan</button><button class="btn-copy" id="pDel" onclick="delPay()">🗑 Hapus</button><button class="btn-copy" onclick="closePay()">Batal</button></div>
+</div></div>
 </div><!-- end #appContent -->
 
 <script>
-// ─── PASSWORD (SHA-256 Hash) ───────────────────────────────
-// Yang tersimpan di sini adalah HASH dari password, bukan password aslinya.
-// Untuk ganti password:
-//   1. Buka browser console (F12)
-//   2. Ketik: hashPassword('passwordbaru').then(h => console.log(h))
-//   3. Copy hasil hash, tempel di bawah menggantikan string yang ada.
-//
-// Hash di bawah ini = SHA-256 dari "ishop123"
-const APP_PASSWORD_HASH = 'e0bc60c82713f64ef8a57c0c40d02ce24fd0141d5cc3086259c19b1e62a62bea';
+if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(console.error));
+</script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+// ═══ KONFIGURASI — ganti dengan milik project Supabase kamu ═══
+// Dashboard Supabase → Project Settings → API
+const SUPABASE_URL = 'https://prrjfejyltyuqltsdfvi.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_-u2PtsD4ybc-CAPV0cxdpQ_2NEe6KTO';   // BUKAN service_role!
+const REKENING = 'BCA : 4995141451 atas nama _MAD IDRUS_';
+// ══════════════════════════════════════════════════════════════
 
-const SESSION_KEY = 'ishop_auth';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const BLN = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+const BLN_FULL = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+let DATA = {}, currentKey = null, currentFilter = 'all';
 
-async function hashPassword(pw) {
-  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pw));
-  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+// ─── AUTH ─────────────────────────────────────────────────
+async function boot() {
+  const { data } = await sb.auth.getSession();
+  data.session ? enterApp() : showLogin();
 }
-
-function checkSession() {
-  return sessionStorage.getItem(SESSION_KEY) === 'ok';
-}
+function showLogin() { $('loginScreen').style.display = 'flex'; $('appContent').style.display = 'none'; }
+function enterApp() { $('loginScreen').style.display = 'none'; $('appContent').style.display = 'block'; loadData(); }
 
 async function doLogin() {
-  const val = document.getElementById('loginInput').value;
-  const hash = await hashPassword(val);
-  if (hash === APP_PASSWORD_HASH) {
-    sessionStorage.setItem(SESSION_KEY, 'ok');
-    document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('appContent').style.display = 'block';
-    loadCSV();
-  } else {
-    const err = document.getElementById('loginError');
-    err.style.display = 'block';
-    err.style.animation = 'none';
-    void err.offsetWidth;
-    err.style.animation = 'shake .3s ease';
-    document.getElementById('loginInput').value = '';
-    document.getElementById('loginInput').focus();
+  const btn = document.querySelector('.btn-login'); btn.disabled = true;
+  const { error } = await sb.auth.signInWithPassword({ email: $('loginEmail').value.trim(), password: $('loginInput').value });
+  btn.disabled = false;
+  if (error) {
+    const e = $('loginError');
+    e.textContent = '❌ ' + (/invalid/i.test(error.message) ? 'Email atau password salah.' : error.message);
+    e.style.display = 'block'; e.style.animation = 'none'; void e.offsetWidth; e.style.animation = 'shake .3s ease';
+    $('loginInput').value = ''; return;
   }
+  $('loginError').style.display = 'none'; $('loginInput').value = '';
+  enterApp();
 }
-
+async function doLogout() { await sb.auth.signOut(); DATA = {}; currentKey = null; showLogin(); }
 function toggleLoginEye() {
-  const inp = document.getElementById('loginInput');
-  const btn = document.getElementById('loginEyeBtn');
-  if (inp.type === 'password') { inp.type = 'text'; btn.textContent = '🙈'; }
-  else { inp.type = 'password'; btn.textContent = '👁'; }
+  const inp = $('loginInput'), btn = $('loginEyeBtn');
+  if (inp.type === 'password') { inp.type = 'text'; btn.textContent = '🙈'; } else { inp.type = 'password'; btn.textContent = '👁'; }
 }
+sb.auth.onAuthStateChange(ev => { if (ev === 'SIGNED_OUT') showLogin(); });
 
-// Cek session saat load — kalau sudah login langsung masuk
-if (checkSession()) {
-  document.getElementById('loginScreen').style.display = 'none';
-  document.getElementById('appContent').style.display = 'block';
-  window.addEventListener('DOMContentLoaded', loadCSV);
-  if (document.readyState !== 'loading') loadCSV();
+// ─── DATA ─────────────────────────────────────────────────
+function setStatus(html, hide) {
+  const el = $('loadStatus'); el.style.opacity = 1; el.innerHTML = html;
+  if (hide) setTimeout(() => el.style.opacity = 0, 3000);
 }
-// ──────────────────────────────────────────────────────────
-
-let DATA = {};
-let DATA_TAG = {};
-let DATA_PHONE = {};
-let csvLoaded = false;
-
-async function loadCSV() {
-  // Try to load from same directory (GitHub Pages)
-  const csvUrl = 'sts_kredit.csv';
-  try {
-    const resp = await fetch(csvUrl);
-    if (!resp.ok) throw new Error('HTTP ' + resp.status);
-    const text = await resp.text();
-    parseCSV(text);
-    csvLoaded = true;
-    buildGrid();
-    showLoadStatus('ok');
-  } catch(e) {
-    showLoadStatus('error', e.message);
-    console.error('CSV load failed:', e);
-  }
-}
-
-function parseCSV(text) {
+async function loadData() {
+  setStatus('⏳ Memuat data dari Supabase...');
+  const { data, error } = await sb.from('kredit').select('*, cicilan(*)').order('urut');
+  if (error) { setStatus(`<span style="color:var(--red)">⚠ Gagal memuat: ${esc(error.message)}</span>`); return; }
   DATA = {};
-  DATA_TAG = {};
-  DATA_PHONE = {};
-
-  // RFC 4180 multi-column parser
-  function parseRows(txt) {
-    const rows = [];
-    let cols = [], inQuote = false, cur = '';
-    for (let i = 0; i < txt.length; i++) {
-      const ch = txt[i];
-      if (ch === '"') {
-        if (inQuote && txt[i+1] === '"') { cur += '"'; i++; }
-        else { inQuote = !inQuote; }
-      } else if (ch === ',' && !inQuote) {
-        cols.push(cur); cur = '';
-      } else if ((ch === '\n' || ch === '\r') && !inQuote) {
-        if (ch === '\r' && txt[i+1] === '\n') i++;
-        cols.push(cur); cur = '';
-        rows.push(cols); cols = [];
-      } else {
-        cur += ch;
-      }
-    }
-    if (cur.trim() || cols.length) { cols.push(cur); rows.push(cols); }
-    return rows;
-  }
-
-  const rows = parseRows(text);
-
-  // Skip header row (row 0)
-  for (let r = 1; r < rows.length; r++) {
-    const cols = rows[r];
-    if (!cols.length) continue;
-    const key = cols[0].trim().replace(/^"|"$/g, '');
-    if (!key) continue;
-
-    let val = (cols[1] || '').trim();
-    if (val.startsWith('"') && val.endsWith('"')) val = val.slice(1, -1);
-
-    // Kolom D (index 3) = nomor WhatsApp
-    const rawPhone = (cols[3] || '').trim().replace(/^"|"$/g, '');
-    const phone = rawPhone.replace(/[\s\-]/g, ''); // hapus spasi dan strip
-
-    if (key.endsWith('TAG')) {
-      if (!DATA_TAG[key]) DATA_TAG[key] = val;
-    } else {
-      if (!DATA[key]) DATA[key] = val;
-    }
-
-    // Simpan nomor HP untuk key dasar (tanpa TAG)
-    if (phone) {
-      const baseKey = key.endsWith('TAG') ? key.slice(0, -3) : key;
-      if (!DATA_PHONE[baseKey]) DATA_PHONE[baseKey] = phone;
-    }
-  }
+  data.forEach(k => { k.pays = (k.cicilan || []).sort((a, b) => a.no - b.no); DATA[k.kode] = k; });
+  buildGrid();
+  setStatus(`<span style="color:var(--green)">✓ ${data.length} member dimuat</span>`, true);
+  if (currentKey && DATA[currentKey]) renderCard(currentKey);
+  else { currentKey = null; $('memberCard').style.display = 'none'; }
 }
 
-function showLoadStatus(state, msg) {
-  const el = document.getElementById('loadStatus');
-  if (!el) return;
-  if (state === 'ok') {
-    const cnt = Object.keys(DATA).length;
-    el.innerHTML = `<span style="color:var(--green)">✓ ${cnt} member dimuat dari CSV</span>`;
-    setTimeout(() => el.style.opacity = '0', 3000);
-  } else {
-    el.innerHTML = `<span style="color:var(--red)">⚠ Gagal memuat CSV: ${msg}. Pastikan file sts_kredit.csv ada di folder yang sama.</span>`;
-  }
+const formatRp = n => 'Rp. ' + Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+const calcSisa = pays => pays.filter(p => p.status === 'proses').reduce((s, p) => s + Number(p.nominal), 0);
+
+// ─── TEKS WHATSAPP (dibangun dari data terstruktur) ───────
+function buildTeks(k) {
+  const lunas = k.status === 'lunas', sisa = calcSisa(k.pays);
+  const hasNominal = k.pays.some(p => p.nominal > 0);
+  const tline = (!hasNominal && k.ttag_line) ? k.ttag_line
+    : `_${k.ttag || 'T.Tag'} : ${lunas ? 'Rp. 0_ *Lunas*' : formatRp(sisa) + '_'}`;
+  const pay = k.pays.map(p => p.nominal > 0
+    ? (p.status === 'proses' ? `${p.no}. ${p.label} = ${formatRp(p.nominal)} (Proses)` : `${p.no}. ~${p.label} = ${formatRp(p.nominal)}~ (Lunas)`)
+    : `${p.no}. ${p.label}`);
+  return ['*Ishop Member Detail*', 'MID : ' + (k.mid || k.kode), 'Nama : ' + k.nama, tline, '--------------------',
+    'IDB : ' + k.item, 'Net : ' + k.net, 'Tgl : ' + k.tgl, ...(k.extra ? k.extra.split('\n') : []),
+    'Tag : ' + k.tag_info, ...(k.jt ? ['J.T : ' + k.jt] : []), '--------------------',
+    k.detail_label || 'Detail Pembayaran (Tag) :', ...pay, ...(k.catatan ? [k.catatan] : [])].join('\n');
+}
+const buildTagih = k => `Assalamualaikum ...\nMau ngingetin hari ini / besok ada tagihan ya, Pembayaran boleh *Cash* atau *Transfer* ke\n${REKENING}\nterimakasih\nLampiran tagihan ⬇️ :\n\n` + buildTeks(k);
+
+function waUrl(phone, teks) {
+  let n = String(phone || '').replace(/[\s\-\(\)]/g, '');
+  if (n.startsWith('+')) n = n.slice(1);
+  if (n.startsWith('08')) n = '62' + n.slice(1);
+  return n.length > 6 ? `https://wa.me/${n}?text=${encodeURIComponent(teks)}` : `https://wa.me/?text=${encodeURIComponent(teks)}`;
 }
 
-// ─── PARSERS ──────────────────────────────────────────────
-function parseName(raw) { const m = raw.match(/Nama\s*:\s*(.+)/); return m ? m[1].trim() : '-'; }
-function parseMid(raw)  { const m = raw.match(/MID\s*:\s*(\S+)/);  return m ? m[1].trim() : '-'; }
-function parseItem(raw) { const m = raw.match(/IDB\s*:\s*(.+)/);   return m ? m[1].trim() : '-'; }
-function parseNet(raw)  { const m = raw.match(/Net\s*:\s*(.+)/);   return m ? m[1].trim() : '-'; }
-function parseTgl(raw)  { const m = raw.match(/Tgl\s*:\s*(.+)/);   return m ? m[1].trim() : '-'; }
-function parseTag(raw)  { const m = raw.match(/Tag\s*:\s*(.+)/);   return m ? m[1].trim() : '-'; }
-function parseJT(raw)   { const m = raw.match(/J\.T\s*:\s*(.+)/);  return m ? m[1].trim() : null; }
-function parseSisa(raw) {
-  const matches = [...raw.matchAll(/_T\.Tag[\w\d\s]*:\s*([^_]+)_/g)];
-  if (!matches.length) return null;
-  const last = matches[matches.length-1][1].trim();
-  if (last.match(/0[,.]?\s*$/) || last.includes('0_ *L')) return null;
-  return last;
-}
-
-function getStatus(raw) {
-  const u = raw.toUpperCase();
-  if (u.includes('*LUNAS*') || raw.includes('*Lunas*') || raw.includes('Rp. 0_ *Lunas') ||
-      raw.includes('Rp.0_ *Lunas') || raw.includes('Rp. 0 _ *Lunas') ||
-      raw.match(/T\.Tag[\w\d\s]*:\s*Rp\.?\s*0[^\d].*\*[Ll]unas\*/)) return 'lunas';
-  return 'aktif';
-}
-
-function parsePayments(raw) {
-  return raw.split('\n').reduce((acc, line) => {
-    const m = line.match(/^\s*(\d+[\d.]*)\s*[.)]\s*(.+)/);
-    if (!m) return acc;
-    const rest = m[2];
-    if (!rest.includes('Rp') && !rest.includes('rp')) return acc;
-    const isLunas = rest.includes('~') || /lunas/i.test(rest);
-    const isDp = /\bdp\b/i.test(rest);
-    let date = rest.replace(/[~*]/g,'').split('=')[0].replace(/^[-→>▸\s]+/,'').trim();
-    const amtM = rest.match(/Rp\.?\s*([\d.,]+(?:\s*[KkM])?)/);
-    const amount = amtM ? 'Rp. '+amtM[1] : '';
-    // Parse numeric value for sisa calculation - fix: hapus koma (ribuan) bukan ganti jadi titik
-    let numVal = 0;
-    if (amtM) {
-      let v = amtM[1].replace(/,/g, ''); // hapus koma pemisah ribuan
-      if (/[Kk]$/.test(v)) { numVal = parseFloat(v) * 1000; }
-      else if (/M$/.test(v)) { numVal = parseFloat(v) * 1000000; }
-      else { numVal = parseFloat(v) || 0; }
-    }
-    let status = isLunas ? 'lunas' : isDp ? 'dp' : 'proses';
-    acc.push({ num:m[1], date, amount, status, numVal });
-    return acc;
-  }, []);
-}
-
-// ─── STATE: edited payment statuses per key ────────────────
-const editedStatus = {}; // { key: { idx: 'lunas'|'proses' } }
-
-function getCurrentPays(key) {
-  const raw = DATA[key];
-  const pays = parsePayments(raw);
-  if (editedStatus[key]) {
-    Object.keys(editedStatus[key]).forEach(i => {
-      if (pays[i]) pays[i].status = editedStatus[key][i];
-    });
-  }
-  return pays;
-}
-
-function calcSisa(pays) {
-  return pays.filter(p => p.status === 'proses').reduce((s, p) => s + p.numVal, 0);
-}
-
-function formatRp(n) {
-  // Format: Rp. 792,000 — gunakan koma sebagai pemisah ribuan (gaya WA)
-  return 'Rp. ' + Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-}
-
-// ─── DISPLAY ──────────────────────────────────────────────
-let currentKey = null;
-
+// ─── TAMPILAN KARTU ───────────────────────────────────────
 function cekStatus(code) {
-  const q = (code || document.getElementById('searchInput').value).trim().toUpperCase();
-  document.getElementById('autocomplete').classList.remove('open');
-
-  let key = DATA[q] ? q : Object.keys(DATA).find(k => k.toUpperCase() === q);
-  if (!key && q.length > 2) {
-    key = Object.keys(DATA).find(k => parseName(DATA[k]).toUpperCase().includes(q));
-  }
-
-  const empty = document.getElementById('emptyState');
-  const card  = document.getElementById('memberCard');
-
-  if (!key) { empty.style.display='block'; card.style.display='none'; return; }
-  empty.style.display='none'; card.style.display='block';
-
-  currentKey = key;
-  renderCard(key);
-  card.scrollIntoView({ behavior:'smooth', block:'nearest' });
+  const q = (code || $('searchInput').value).trim().toUpperCase();
+  $('autocomplete').classList.remove('open');
+  let key = Object.keys(DATA).find(k => k.toUpperCase() === q);
+  if (!key && q.length > 2) key = Object.keys(DATA).find(k => DATA[k].nama.toUpperCase().includes(q));
+  if (!key) { $('emptyState').style.display = 'block'; $('memberCard').style.display = 'none'; return; }
+  $('emptyState').style.display = 'none'; $('memberCard').style.display = 'block';
+  currentKey = key; renderCard(key);
+  $('memberCard').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 function renderCard(key) {
-  const raw  = DATA[key];
-  const name = parseName(raw);
-  const mid  = parseMid(raw);
-  const item = parseItem(raw);
-  const net  = parseNet(raw);
-  const tgl  = parseTgl(raw);
-  const tag  = parseTag(raw);
-  const jt   = parseJT(raw);
-  const st   = getStatus(raw);
-  const pays = getCurrentPays(key);
-
-  // Avatar
-  const initials = name.split(' ').slice(0,2).map(w=>w[0]||'').join('').toUpperCase() || '?';
-  document.getElementById('heroAvatar').textContent = initials;
-  document.getElementById('heroName').textContent = name;
-  document.getElementById('heroMid').textContent = mid;
-
-  const badge = document.getElementById('heroBadge');
-  if (st === 'lunas') {
-    badge.innerHTML = '✓ LUNAS';
-    badge.className = 'status-badge badge-lunas';
-  } else {
-    badge.innerHTML = '⚡ AKTIF';
-    badge.className = 'status-badge badge-aktif';
-  }
-
-  // Sisa calculated from proses rows
-  const sisaCalc = calcSisa(pays);
-  const sisaRaw  = parseSisa(raw);
-
-  // Tiles
-  const tiles = [
-    { l:'Barang / Item', v: item },
-    { l:'Harga Net',     v: net,  cls:'accent' },
-    { l:'Tgl Mulai',    v: tgl },
-    { l:'Angsuran',     v: tag },
-    ...(jt ? [{ l:'Jatuh Tempo', v: jt }] : []),
-    ...(sisaRaw ? [{ l:'Sisa (raw)', v: sisaRaw, cls:'warn' }] : []),
-  ];
-  document.getElementById('infoTiles').innerHTML = tiles.map(t =>
-    `<div class="tile"><div class="tile-label">${t.l}</div><div class="tile-value ${t.cls||''}">${t.v}</div></div>`
-  ).join('');
-
-  // Sisa box
-  const pl = document.getElementById('payList');
-  let sisaHtml = '';
-  if (sisaCalc > 0) {
-    const prosesCount = pays.filter(p => p.status === 'proses').length;
-    sisaHtml = `<div class="sisa-box">
-      <div>
-        <div class="sisa-label">Sisa Tagihan (${prosesCount} angsuran)</div>
-      </div>
-      <div class="sisa-value">${formatRp(sisaCalc)}</div>
-    </div>`;
-  }
-
-  // Payments with toggle button
-  const paysHtml = pays.length
-    ? pays.map((p, i) => `
-        <div class="pay-row" id="pr-${i}">
-          <span class="pay-num">${p.num}.</span>
-          <div class="pay-main">
-            <span class="pay-date">${p.date}</span>
-            <span class="pay-amount">${p.amount}</span>
-          </div>
-          <button class="pay-tag-btn tag-${p.status}" onclick="togglePayStatus('${key}',${i})" title="Klik untuk ganti status">
-            ${p.status==='lunas'?'✓ Lunas':p.status==='dp'?'DP':'⏳ Proses'}
-          </button>
-        </div>`).join('')
-    : '<div class="pay-row"><span style="color:var(--text3);font-size:12px">Tidak ada data pembayaran terstruktur</span></div>';
-
-  pl.innerHTML = sisaHtml + paysHtml;
-
-  // Generate teks yang reflect status edit (untuk waBtn & rawBox)
-  const editedTeks = generateEditedTeks(key, pays);
-  document.getElementById('rawBox').textContent = editedTeks;
-
-  // Ambil nomor WA dari DATA_PHONE
-  const phone = getWaPhone(key);
-
-  // Update tombol "Kirim via WhatsApp" → langsung ke nomor nasabah
-  const waBtn = document.getElementById('waBtn');
-  waBtn.href = buildWaUrl(phone, editedTeks);
-
-  const cb = document.getElementById('copyBtn');
-  cb.dataset.raw = editedTeks; cb.textContent = '📋 Salin Teks'; cb.classList.remove('ok');
+  const k = DATA[key]; if (!k) return;
+  $('heroAvatar').textContent = k.nama.split(' ').slice(0, 2).map(w => w[0] || '').join('').toUpperCase() || '?';
+  $('heroName').textContent = k.nama; $('heroMid').textContent = k.mid || k.kode;
+  const b = $('heroBadge'), L = k.status === 'lunas';
+  b.innerHTML = L ? '✓ LUNAS' : '⚡ AKTIF'; b.className = 'status-badge ' + (L ? 'badge-lunas' : 'badge-aktif');
+  const tiles = [['Barang / Item', k.item], ['Harga Net', k.net, 'accent'], ['Tgl Mulai', k.tgl], ['Angsuran', k.tag_info], ['Jatuh Tempo', k.jt],
+    ['No. WhatsApp', k.phone || '— belum diisi', k.phone ? '' : 'warn']].filter(t => t[1]);
+  $('infoTiles').innerHTML = tiles.map(t => `<div class="tile"><div class="tile-label">${t[0]}</div><div class="tile-value ${t[2] || ''}">${esc(t[1])}</div></div>`).join('');
+  const sisa = calcSisa(k.pays), n = k.pays.filter(p => p.status === 'proses').length;
+  const sisaHtml = sisa > 0 ? `<div class="sisa-box"><div class="sisa-label">Sisa Tagihan (${n} angsuran)</div><div class="sisa-value">${formatRp(sisa)}</div></div>` : '';
+  const rows = k.pays.length ? k.pays.map((p, i) => `<div class="pay-row"><span class="pay-num">${p.no}.</span>
+    <div class="pay-main"><span class="pay-date">${esc(p.label)}</span><span class="pay-amount">${p.nominal > 0 ? formatRp(p.nominal) : ''}</span></div>
+    <button class="pay-edit" onclick="openPay(${i})" title="Edit cicilan">✏️</button>${p.nominal > 0 ? `<button class="pay-tag-btn tag-${p.status}" onclick="togglePay(${i})" title="Klik untuk ganti status">${p.status === 'lunas' ? '✓ Lunas' : p.status === 'dp' ? 'DP' : '⏳ Proses'}</button>` : ''}</div>`).join('')
+    : '<div class="pay-row"><span style="color:var(--text3);font-size:12px">Belum ada jadwal pembayaran</span></div>';
+  $('payList').innerHTML = sisaHtml + rows + '<button class="btn-mini" style="margin:6px 0 0" onclick="openPay(-1)">＋ Tambah Cicilan</button>';
+  const teks = buildTeks(k);
+  $('rawBox').textContent = teks; $('waBtn').href = waUrl(k.phone, teks);
+  const cb = $('copyBtn'); cb.dataset.raw = teks; cb.textContent = '📋 Salin Teks'; cb.classList.remove('ok');
 }
 
-function togglePayStatus(key, idx) {
-  if (!editedStatus[key]) editedStatus[key] = {};
-  const pays = getCurrentPays(key);
-  const cur = pays[idx].status;
-  if (cur === 'proses') {
-    editedStatus[key][idx] = 'lunas';
-  } else if (cur === 'lunas') {
-    editedStatus[key][idx] = 'proses';
+async function togglePay(i) {
+  const k = DATA[currentKey], p = k.pays[i];
+  if (p.status === 'dp') return;
+  const ns = p.status === 'lunas' ? 'proses' : 'lunas';
+  const { error } = await sb.from('cicilan').update({ status: ns, paid_at: ns === 'lunas' ? new Date().toISOString() : null }).eq('id', p.id);
+  if (error) return alert('Gagal menyimpan: ' + error.message);
+  p.status = ns;
+  const st = k.pays.some(x => x.status === 'proses') ? 'aktif' : 'lunas';
+  if (st !== k.status) {
+    const { error: e2 } = await sb.from('kredit').update({ status: st }).eq('id', k.id);
+    if (e2) return alert('Gagal menyimpan status: ' + e2.message);
+    k.status = st;
   }
-  renderCard(key);
+  renderCard(currentKey); buildGrid();
 }
 
-// ─── GENERATE EDITED TEXT (reflect toggle changes) ────────
-function generateEditedTeks(key, pays) {
-  const raw = DATA[key];
-  // Split raw into header (before "Detail Pembayaran") and payment lines
-  const detailIdx = raw.search(/Detail Pembayaran/i);
-  if (detailIdx === -1) return raw;
-
-  const header = raw.substring(0, detailIdx);
-  // Find the "Detail Pembayaran..." label line
-  const detailMatch = raw.substring(detailIdx).match(/^[^\n]*/);
-  const detailLabel = detailMatch ? detailMatch[0] : 'Detail Pembayaran (Tag) :';
-
-  // Rebuild payment lines from parsed pays (with edited statuses)
-  const sisaCalc = calcSisa(pays);
-  
-  // Update T.Tag line in header with calculated sisa
-  let updatedHeader = header;
-  if (sisaCalc === 0) {
-    updatedHeader = header.replace(/_T\.Tag[\w\d\s]*\s*:\s*[^_]+_/g, match => {
-      // Replace last T.Tag with Rp. 0_ *Lunas*
-      return match.replace(/Rp\.[^_]+/, 'Rp. 0_ *Lunas*').replace(/_$/, '');
-    });
-  } else {
-    updatedHeader = header.replace(/_T\.Tag([\w\d\s]*)\s*:\s*[^_]+_/g, (match, tagNum) => {
-      return `_T.Tag${tagNum} : ${formatRp(sisaCalc)}_`;
-    });
-  }
-
-  const payLines = pays.map(p => {
-    const num = p.num + '.';
-    if (p.status === 'lunas') {
-      return `${num} ~${p.date} = ${p.amount}~ (Lunas)`;
-    } else {
-      return `${num} ${p.date} = ${p.amount} (Proses)`;
-    }
-  }).join('\n');
-
-  return `${updatedHeader}${detailLabel}\n${payLines}`;
+async function editPhone() {
+  const k = DATA[currentKey]; if (!k) return;
+  const v = prompt('Nomor WhatsApp (08xx / 628xx):', k.phone || ''); if (v === null) return;
+  const { error } = await sb.from('kredit').update({ phone: v.trim() || null }).eq('id', k.id);
+  if (error) return alert(error.message);
+  k.phone = v.trim() || null; renderCard(currentKey);
+}
+async function hapusMember() {
+  const k = DATA[currentKey]; if (!k || !confirm(`Hapus ${k.nama} (${k.kode}) beserta semua cicilannya?`)) return;
+  const { error } = await sb.from('kredit').delete().eq('id', k.id);
+  if (error) return alert(error.message);
+  currentKey = null; $('memberCard').style.display = 'none'; loadData();
 }
 
-// ─── HELPER: nomor WA & URL ────────────────────────────────
-function getWaPhone(key) {
-  return DATA_PHONE[key] || '';
-}
-
-function buildWaUrl(phone, teks) {
-  // Normalisasi nomor: 08xx → 628xx, 628xx tetap, +628xx → 628xx
-  let num = phone.replace(/[\s\-\(\)]/g, '');
-  if (num.startsWith('+')) num = num.slice(1);
-  if (num.startsWith('08')) num = '62' + num.slice(1);
-  if (num && num.length > 6) {
-    return `https://wa.me/${num}?text=${encodeURIComponent(teks)}`;
-  }
-  // Fallback: tanpa nomor spesifik (pilih kontak manual)
-  return `https://wa.me/?text=${encodeURIComponent(teks)}`;
-}
-
-// ─── TAGIH WA ─────────────────────────────────────────────
-function tagihWA() {
-  if (!currentKey) return;
-  const phone = getWaPhone(currentKey);
-
-  // Use TAG version if available (from CSV TAG rows)
-  const tagKey = currentKey + 'TAG';
-  if (DATA_TAG[tagKey]) {
-    window.open(buildWaUrl(phone, DATA_TAG[tagKey].trim()), '_blank');
-    return;
-  }
-  const raw  = DATA[currentKey];
-  const name = parseName(raw);
-  const mid  = parseMid(raw);
-  const item = parseItem(raw);
-  const net  = parseNet(raw);
-  const tgl  = parseTgl(raw);
-  const tag  = parseTag(raw);
-  const jt   = parseJT(raw);
-  const pays = getCurrentPays(currentKey);
-  const sisaCalc = calcSisa(pays);
-
-  // T.Tag line: ambil nama tag dari raw (misal T.Tag7), update nominalnya
-  const tagMatch = raw.match(/_T\.Tag([\w\d\s]*):\s*[^_]+_/);
-  const tagNum = tagMatch ? tagMatch[1] : '';
-  const sisaLine = sisaCalc > 0
-    ? `_T.Tag${tagNum}: ${formatRp(sisaCalc)}_`
-    : `_T.Tag${tagNum}: Rp. 0_ *Lunas*`;
-
-  // Build payment detail lines — reflect edited statuses
-  const payLines = pays.map(p => {
-    const num = p.num + '.';
-    if (p.status === 'lunas') {
-      return `${num} ~${p.date} = ${p.amount}~ (Lunas)`;
-    } else {
-      return `${num} ${p.date} = ${p.amount} (Proses)`;
-    }
-  }).join('\n');
-
-  const teks =
-`Assalamualaikum ...
-Mau ngingetin hari ini / besok ada tagihan ya, Pembayaran boleh *Cash* atau *Transfer* ke
-BCA : 4995141451 atas nama _MAD IDRUS_
-terimakasih
-Lampiran tagihan ⬇️ :
-
-*Ishop Member Detail*
-MID : ${mid}
-Nama : ${name}
-${sisaLine}
---------------------
-IDB : ${item}
-Net : ${net}
-Tgl : ${tgl}
-Tag : ${tag}${jt ? '\nJ.T : ' + jt : ''}
---------------------
-Detail Pembayaran (Tag) :
-${payLines}`;
-
-  window.open(buildWaUrl(phone, teks.trim()), '_blank');
-}
-
+function tagihWA() { const k = DATA[currentKey]; if (k) window.open(waUrl(k.phone, buildTagih(k)), '_blank'); }
 function toggleRaw() {
-  const box = document.getElementById('rawBox');
-  const arr = document.getElementById('rawArrow');
-  const vis = box.style.display === 'block';
-  box.style.display = vis ? 'none' : 'block';
-  arr.textContent = vis ? '▸' : '▾';
+  const box = $('rawBox'), vis = box.style.display === 'block';
+  box.style.display = vis ? 'none' : 'block'; $('rawArrow').textContent = vis ? '▸' : '▾';
 }
-
 function copyText() {
-  const cb = document.getElementById('copyBtn');
+  const cb = $('copyBtn');
   navigator.clipboard.writeText(cb.dataset.raw).then(() => {
     cb.textContent = '✓ Tersalin!'; cb.classList.add('ok');
     setTimeout(() => { cb.textContent = '📋 Salin Teks'; cb.classList.remove('ok'); }, 2000);
   });
 }
 
-// ─── AUTOCOMPLETE ─────────────────────────────────────────
-const inp = document.getElementById('searchInput');
-const ac  = document.getElementById('autocomplete');
-
+// ─── AUTOCOMPLETE, FILTER, GRID ───────────────────────────
+const inp = $('searchInput'), ac = $('autocomplete');
 inp.addEventListener('input', () => {
   const q = inp.value.trim().toUpperCase();
-  if (q.length < 2) { ac.classList.remove('open'); return; }
-  const hits = Object.keys(DATA).filter(k =>
-    k.toUpperCase().includes(q) || parseName(DATA[k]).toUpperCase().includes(q)
-  ).slice(0, 7);
-  if (!hits.length) { ac.classList.remove('open'); return; }
-  ac.innerHTML = hits.map(k => {
-    const st = getStatus(DATA[k]);
-    const cls = st==='lunas' ? 'tag-lunas' : 'tag-proses';
-    const lbl = st==='lunas' ? '✓ Lunas' : '⚡ Aktif';
-    return `<div class="ac-item" onclick="pickAc('${k}')">
-      <span class="ac-code">${k}</span>
-      <span class="ac-name">${parseName(DATA[k])}</span>
-      <span class="ac-badge ${cls}">${lbl}</span>
-    </div>`;
-  }).join('');
+  if (q.length < 2) return ac.classList.remove('open');
+  const hits = Object.keys(DATA).filter(k => k.toUpperCase().includes(q) || DATA[k].nama.toUpperCase().includes(q)).slice(0, 7);
+  if (!hits.length) return ac.classList.remove('open');
+  ac.innerHTML = hits.map(k => { const L = DATA[k].status === 'lunas';
+    return `<div class="ac-item" data-k="${esc(k)}" onclick="pickAc(this.dataset.k)"><span class="ac-code">${esc(k)}</span><span class="ac-name">${esc(DATA[k].nama)}</span>
+    <span class="ac-badge ${L ? 'tag-lunas' : 'tag-proses'}">${L ? '✓ Lunas' : '⚡ Aktif'}</span></div>`; }).join('');
   ac.classList.add('open');
 });
-
-inp.addEventListener('keydown', e => { if(e.key==='Enter') cekStatus(); });
-document.addEventListener('click', e => { if(!e.target.closest('.search-section')) ac.classList.remove('open'); });
-
-function pickAc(k) {
-  inp.value = k;
-  ac.classList.remove('open');
-  cekStatus(k);
-}
-
-// ─── FILTER ───────────────────────────────────────────────
-let currentFilter = 'all';
+inp.addEventListener('keydown', e => { if (e.key === 'Enter') cekStatus(); });
+document.addEventListener('click', e => { if (!e.target.closest('.search-section')) ac.classList.remove('open'); });
+function pickAc(k) { inp.value = k; ac.classList.remove('open'); cekStatus(k); }
 
 function filterMembers(f) {
   currentFilter = f;
-  document.querySelectorAll('.filter-btn').forEach(b => {
-    b.className = 'filter-btn';
-    const id = b.id.replace('fb-','');
-    if (id === f) b.classList.add('active-'+f);
-  });
-  document.querySelectorAll('.mc').forEach(el => {
-    const st = el.dataset.status;
-    const show = f==='all' || st===f;
-    el.classList.toggle('hidden', !show);
-  });
+  document.querySelectorAll('.filter-btn').forEach(b => { b.className = 'filter-btn'; if (b.id === 'fb-' + f) b.classList.add('active-' + f); });
+  document.querySelectorAll('.mc').forEach(el => el.classList.toggle('hidden', f !== 'all' && el.dataset.status !== f));
 }
-
-// ─── BUILD GRID ───────────────────────────────────────────
 function buildGrid() {
-  const keys = Object.keys(DATA);
-  let cntL = 0, cntA = 0;
-
-  const grid = document.getElementById('membersGrid');
-  grid.innerHTML = keys.map(k => {
-    const raw  = DATA[k];
-    const st   = getStatus(raw);
-    const name = parseName(raw);
-    const item = parseItem(raw);
-    if (st === 'lunas') cntL++; else cntA++;
-    const pillCls = st==='lunas' ? 'lunas' : 'aktif';
-    const pillLbl = st==='lunas' ? '✓ Lunas' : '⚡ Aktif';
-    return `<div class="mc" data-status="${st}" onclick="pickAc('${k}')">
-      <div class="mc-header">
-        <span class="mc-code">${k}</span>
-        <span class="mc-pill ${pillCls}">${pillLbl}</span>
-      </div>
-      <div class="mc-name">${name}</div>
-      <div class="mc-item">${item}</div>
-    </div>`;
+  const keys = Object.keys(DATA); let cL = 0, cA = 0;
+  $('membersGrid').innerHTML = keys.map(k => {
+    const d = DATA[k], L = d.status === 'lunas'; L ? cL++ : cA++;
+    return `<div class="mc" data-status="${d.status}" data-k="${esc(k)}" onclick="pickAc(this.dataset.k)">
+      <div class="mc-header"><span class="mc-code">${esc(k)}</span><span class="mc-pill ${L ? 'lunas' : 'aktif'}">${L ? '✓ Lunas' : '⚡ Aktif'}</span></div>
+      <div class="mc-name">${esc(d.nama)}</div><div class="mc-item">${esc(d.item)}</div></div>`;
   }).join('');
-
-  // Stats
-  document.getElementById('statTotal').textContent = keys.length + ' Member';
-  document.getElementById('statLunas').textContent = cntL + ' Lunas';
-  document.getElementById('statAktif').textContent = cntA + ' Aktif';
-  document.getElementById('cnt-all').textContent   = keys.length;
-  document.getElementById('cnt-lunas').textContent = cntL;
-  document.getElementById('cnt-aktif').textContent = cntA;
+  $('statTotal').textContent = keys.length + ' Member'; $('statLunas').textContent = cL + ' Lunas'; $('statAktif').textContent = cA + ' Aktif';
+  $('cnt-all').textContent = keys.length; $('cnt-lunas').textContent = cL; $('cnt-aktif').textContent = cA;
+  filterMembers(currentFilter);
+  renderDash();
 }
 
-// Load data from CSV (dipanggil setelah login)
-// loadCSV() dipanggil oleh doLogin() atau checkSession() di atas
+// ─── TRANSAKSI BARU ───────────────────────────────────────
+function openNew() {
+  ['nKode','nNama','nPhone','nItem','nNet','nDp','nAng','nTenor','nJadwal'].forEach(id => $(id).value = '');
+  $('nJT').value = 30; $('nTgl').value = new Date().toISOString().slice(0, 10);
+  $('newModal').classList.add('open');
+}
+function closeNew() { $('newModal').classList.remove('open'); }
+function genJadwal() {
+  const [y, m, d] = ($('nTgl').value || '').split('-').map(Number);
+  const n = +$('nTenor').value, a = +$('nAng').value, jt = +$('nJT').value || 30;
+  if (!y || !n || !a) return alert('Isi tanggal, angsuran, dan tenor dulu.');
+  const out = [];
+  for (let i = 1; i <= n; i++) {
+    const t = new Date(y, m - 1 + i, 1), last = new Date(t.getFullYear(), t.getMonth() + 1, 0).getDate();
+    out.push(`${Math.min(jt, last)}${BLN[t.getMonth()]}${String(t.getFullYear()).slice(2)} = ${a}`);
+  }
+  $('nJadwal').value = out.join('\n');
+}
+async function saveNew() {
+  const g = id => $(id).value.trim();
+  const kode = g('nKode').toUpperCase(), nama = g('nNama'), net = +g('nNet'), ang = +g('nAng'), tenor = +g('nTenor'), dp = +g('nDp');
+  const [y, m, d] = g('nTgl').split('-').map(Number);
+  if (!kode || !nama || !g('nItem') || !net || !y) return alert('Kode, nama, barang, harga net, dan tanggal wajib diisi.');
+  if (DATA[kode]) return alert('Kode ' + kode + ' sudah ada.');
+  const jadwal = g('nJadwal').split('\n').map(l => l.match(/^\s*(.+?)\s*=\s*([\d.,]+)/)).filter(Boolean)
+    .map((x, i) => ({ no: i + 1, label: x[1], nominal: parseInt(x[2].replace(/[.,]/g, ''), 10), status: 'proses' }));
+  const dpLabel = `${String(d).padStart(2, '0')}${BLN[m - 1]}${String(y).slice(2)}`;
+  const row = {
+    kode, mid: kode, nama, phone: g('nPhone') || null, item: g('nItem'), net: formatRp(net),
+    tgl: `${String(d).padStart(2, '0')} ${BLN_FULL[m - 1]} ${y}`, tag_info: ang && tenor ? `${formatRp(ang)} x ${tenor}` : '-',
+    jt: g('nJT') ? 'Setiap Tgl ' + g('nJT') : null, ttag: 'T.Tag', status: 'aktif',
+    extra: dp > 0 ? `Dp : ~${dpLabel} = ${formatRp(dp)}~ (Lunas)` : null, detail_label: 'Detail Pembayaran (Tag) :'
+  };
+  const { data: kr, error } = await sb.from('kredit').insert(row).select().single();
+  if (error) return alert('Gagal menyimpan: ' + error.message);
+  if (jadwal.length) {
+    const { error: e2 } = await sb.from('cicilan').insert(jadwal.map(j => ({ ...j, kredit_id: kr.id })));
+    if (e2) return alert('Transaksi tersimpan, tapi jadwal gagal: ' + e2.message);
+  }
+  closeNew(); currentKey = kode; await loadData(); cekStatus(kode);
+}
+
+// ─── EDIT CUSTOMER & CICILAN ──────────────────────────────
+function openEdit() {
+  const k = DATA[currentKey]; if (!k) return;
+  const f = { eKode: k.kode, eMid: k.mid, eNama: k.nama, ePhone: k.phone, eItem: k.item, eNet: k.net, eTgl: k.tgl, eTag: k.tag_info, eJt: k.jt, eExtra: k.extra, eCatatan: k.catatan };
+  for (const id in f) $(id).value = f[id] ?? '';
+  $('editModal').classList.add('open');
+}
+function closeEdit() { $('editModal').classList.remove('open'); }
+async function saveEdit() {
+  const k = DATA[currentKey], v = id => $(id).value.trim(), n = id => v(id) || null;
+  const kode = v('eKode').toUpperCase();
+  if (!kode || !v('eNama')) return alert('Kode dan nama wajib diisi.');
+  if (kode !== k.kode && DATA[kode]) return alert('Kode ' + kode + ' sudah dipakai member lain.');
+  const upd = { kode, mid: v('eMid') || kode, nama: v('eNama'), phone: n('ePhone'), item: v('eItem'), net: v('eNet'), tgl: v('eTgl'), tag_info: v('eTag'), jt: n('eJt'), extra: n('eExtra'), catatan: n('eCatatan') };
+  const { error } = await sb.from('kredit').update(upd).eq('id', k.id);
+  if (error) return alert('Gagal menyimpan: ' + error.message);
+  delete DATA[k.kode]; Object.assign(k, upd); DATA[kode] = k; currentKey = kode;
+  closeEdit(); renderCard(kode); buildGrid();
+}
+
+let editPayIdx = -1;
+function openPay(i) {
+  const k = DATA[currentKey], p = i >= 0 ? k.pays[i] : null; editPayIdx = i;
+  $('payTitle').textContent = p ? `Edit Cicilan ke-${p.no}` : '＋ Tambah Cicilan';
+  $('pLabel').value = p ? p.label : ''; $('pNominal').value = p ? p.nominal : ''; $('pStatus').value = p ? p.status : 'proses';
+  $('pDel').style.display = p ? '' : 'none';
+  $('payModal').classList.add('open');
+}
+function closePay() { $('payModal').classList.remove('open'); }
+async function syncStatus(k) {
+  if (!k.pays.some(p => p.nominal > 0)) return;
+  const st = k.pays.some(p => p.status === 'proses') ? 'aktif' : 'lunas';
+  if (st === k.status) return;
+  const { error } = await sb.from('kredit').update({ status: st }).eq('id', k.id);
+  if (error) alert('Gagal update status: ' + error.message); else k.status = st;
+}
+async function savePay() {
+  const k = DATA[currentKey], label = $('pLabel').value.trim(), status = $('pStatus').value;
+  const nominal = parseInt(String($('pNominal').value).replace(/[.,]/g, ''), 10);
+  if (!label || isNaN(nominal) || nominal < 0) return alert('Tanggal/label dan nominal wajib diisi.');
+  const old = editPayIdx >= 0 ? k.pays[editPayIdx] : null;
+  const body = { label, nominal, status, paid_at: status === 'lunas' ? (old?.paid_at || new Date().toISOString()) : null };
+  if (old) {
+    const { error } = await sb.from('cicilan').update(body).eq('id', old.id);
+    if (error) return alert('Gagal menyimpan: ' + error.message);
+    Object.assign(old, body);
+  } else {
+    const no = k.pays.reduce((m, x) => Math.max(m, x.no), 0) + 1;
+    const { data, error } = await sb.from('cicilan').insert({ ...body, kredit_id: k.id, no }).select().single();
+    if (error) return alert('Gagal menyimpan: ' + error.message);
+    k.pays.push(data);
+  }
+  await syncStatus(k); closePay(); renderCard(currentKey); buildGrid();
+}
+async function delPay() {
+  const k = DATA[currentKey], p = k.pays[editPayIdx];
+  if (!p || !confirm(`Hapus cicilan ke-${p.no} (${p.label})? Nomor berikutnya akan digeser.`)) return;
+  const { error } = await sb.from('cicilan').delete().eq('id', p.id);
+  if (error) return alert('Gagal menghapus: ' + error.message);
+  k.pays.splice(editPayIdx, 1);
+  for (let i = 0; i < k.pays.length; i++) {
+    const x = k.pays[i]; if (x.no === i + 1) continue;
+    const { error: e } = await sb.from('cicilan').update({ no: i + 1 }).eq('id', x.id);
+    if (e) return alert('Gagal mengurutkan ulang: ' + e.message);
+    x.no = i + 1;
+  }
+  await syncStatus(k); closePay(); renderCard(currentKey); buildGrid();
+}
+
+// ─── DASBOR ───────────────────────────────────────────────
+const BLN_IDX = { jan:0, feb:1, mar:2, apr:3, mei:4, jun:5, jul:6, agu:7, agt:7, aug:7, sep:8, okt:9, oct:9, nov:10, des:11, dec:11 };
+let dashY = null, dashM = null;
+
+function parseBulan(label) {                       // "30Okt26" / "Apr23" / "13 Apr 23" → bulan & tahun
+  const m = String(label).match(/([A-Za-z]{3,9})\s*'?(\d{2})(?!\d)/); if (!m) return null;
+  const mo = BLN_IDX[m[1].slice(0, 3).toLowerCase()]; if (mo === undefined) return null;
+  return { y: 2000 + +m[2], m: mo };
+}
+function dashEntries() {                           // semua cicilan + DP sebagai satu daftar
+  const E = [];
+  Object.values(DATA).forEach(k => {
+    k.pays.forEach(p => {
+      if (!(p.nominal > 0)) return;
+      const b = parseBulan(p.label);
+      E.push({ k, no: p.no, paid: p.paid_at, label: p.label, nominal: Number(p.nominal), status: p.status === 'proses' ? 'proses' : 'lunas', ym: b ? b.y * 12 + b.m : null });
+    });
+    (k.extra || '').split('\n').forEach(l => {
+      if (!/^\s*dp\d*\s*:/i.test(l)) return;
+      const am = l.match(/Rp\.?\s*([\d.,]+)\s*([Kk]?)/); if (!am) return;
+      const lb = l.replace(/^[^:]*:/, '').split('=')[0].replace(/[~*]/g, '').trim(), b = parseBulan(lb);
+      E.push({ k, no: 'DP', paid: null, label: 'DP ' + lb, nominal: parseInt(am[1].replace(/[.,]/g, ''), 10) * (am[2] ? 1000 : 1), status: /~|lunas/i.test(l) ? 'lunas' : 'proses', ym: b ? b.y * 12 + b.m : null });
+    });
+  });
+  return E;
+}
+const shortRp = n => n >= 1e6 ? (n / 1e6).toFixed(1).replace('.0', '') + 'jt' : n >= 1e3 ? Math.round(n / 1e3) + 'rb' : n ? String(n) : '';
+function goMember(k) { showTab('cari'); pickAc(k); }
+function showTab(t) {
+  const d = t === 'dash';
+  document.querySelectorAll('.search-section,.result-zone,.members-section').forEach(e => e.style.display = d ? 'none' : '');
+  $('dashView').style.display = d ? 'block' : 'none';
+  $('tab-cari').classList.toggle('active', !d); $('tab-dash').classList.toggle('active', d);
+  if (d) renderDash();
+}
+function setDash(y, m) { if (y !== null) dashY = y; if (m !== null) dashM = m; renderDash(); }
+
+function renderDash() {
+  const el = $('dashView'); if (!el) return;
+  const E = dashEntries(), now = new Date(), curYM = now.getFullYear() * 12 + now.getMonth();
+  if (dashY === null) { dashY = now.getFullYear(); dashM = now.getMonth(); }
+  const sum = a => a.reduce((s, e) => s + e.nominal, 0), rp = formatRp;
+  const lunas = E.filter(e => e.status === 'lunas'), proses = E.filter(e => e.status === 'proses');
+  const overdue = proses.filter(e => e.ym !== null && e.ym < curYM);
+  const thisAll = E.filter(e => e.ym === curYM), thisL = thisAll.filter(e => e.status === 'lunas');
+  const sel = dashY * 12 + dashM, inSel = E.filter(e => e.ym === sel);
+  const selL = inSel.filter(e => e.status === 'lunas'), selP = inSel.filter(e => e.status === 'proses');
+  const pct = inSel.length ? Math.round(sum(selL) / sum(inSel) * 100) : 0;
+  const nMem = new Set(proses.map(e => e.k.kode)).size;
+  const card = (ic, lb, v, s, c) => `<div class="dcard"><div class="dc-l">${ic} ${lb}</div><div class="dc-v ${c || ''}">${v}</div><div class="dc-s">${s}</div></div>`;
+  const byMember = arr => { const m = {}; arr.forEach(e => { const r = (m[e.k.kode] ??= { k: e.k, sum: 0, n: 0 }); r.sum += e.nominal; r.n++; }); return Object.values(m).sort((a, b) => b.sum - a.sum).slice(0, 8); };
+  const mlist = arr => arr.length ? arr.map(r => `<div class="drow" data-k="${esc(r.k.kode)}" onclick="goMember(this.dataset.k)"><div><b>${esc(r.k.nama)}</b><span>${esc(r.k.kode)} · ${r.n} cicilan</span></div><div class="amt">${rp(r.sum)}</div></div>`).join('') : '<div class="dempty">Tidak ada 🎉</div>';
+  const years = [...new Set(E.filter(e => e.ym !== null).map(e => Math.floor(e.ym / 12)).concat(now.getFullYear(), dashY))].sort();
+  const bars = Array.from({ length: 12 }, (_, i) => { const a = E.filter(e => e.ym === dashY * 12 + i); return { i, L: sum(a.filter(e => e.status === 'lunas')), P: sum(a.filter(e => e.status === 'proses')) }; });
+  const mx = Math.max(1, ...bars.map(b => b.L + b.P));
+  const chart = bars.map(b => `<div class="bar ${b.i === dashM ? 'sel' : ''}" onclick="setDash(null,${b.i})" title="${BLN_FULL[b.i]} ${dashY}\nDiterima ${rp(b.L)}\nBelum ${rp(b.P)}"><div class="bv"><div class="bp" style="height:${b.P / mx * 100}%"></div><div class="bl" style="height:${b.L / mx * 100}%"></div></div><div class="bn">${BLN[b.i]}</div><div class="bt">${shortRp(b.L + b.P) || '-'}</div></div>`).join('');
+  const rows = [...selP, ...selL].map(e => `<div class="drow" data-k="${esc(e.k.kode)}" onclick="goMember(this.dataset.k)"><div><b>${esc(e.k.nama)}</b><span>${esc(e.k.kode)} · ${esc(e.label)}</span></div><div class="amt">${rp(e.nominal)}</div><span class="pay-tag ${e.status === 'lunas' ? 'tag-lunas' : 'tag-proses'}">${e.status === 'lunas' ? '✓ Lunas' : '⏳ Proses'}</span></div>`).join('');
+
+  el.innerHTML = `
+  <div class="dash-cards">
+    ${card('💰', 'Sisa Seluruh Hutang', rp(sum(proses)), `${proses.length} cicilan · ${nMem} member masih aktif`, 'a')}
+    ${card('✅', 'Total Sudah Diterima', rp(sum(lunas)), `${lunas.length} pembayaran (termasuk DP)`, 'g')}
+    ${card('📅', 'Pemasukan ' + BLN_FULL[now.getMonth()] + ' ' + now.getFullYear(), rp(sum(thisL)), `dari target ${rp(sum(thisAll))} · ${thisL.length}/${thisAll.length} cicilan`, 'c')}
+    ${card('⚠️', 'Tunggakan (lewat bulan jatuh tempo)', rp(sum(overdue)), `${overdue.length} cicilan · ${new Set(overdue.map(e => e.k.kode)).size} member`, overdue.length ? 'r' : 'g')}
+  </div>
+
+  <h2>Rekap per Bulan</h2>
+  <div class="dpanel">
+    <div class="dsel">
+      <select onchange="setDash(null,+this.value)">${BLN_FULL.map((n, i) => `<option value="${i}" ${i === dashM ? 'selected' : ''}>${n}</option>`).join('')}</select>
+      <select onchange="setDash(+this.value,null)">${years.map(y => `<option ${y === dashY ? 'selected' : ''}>${y}</option>`).join('')}</select>
+    </div>
+    <div class="dash-cards">
+      ${card('✅', 'Diterima', rp(sum(selL)), `${selL.length} cicilan lunas`, 'g')}
+      ${card('⏳', 'Belum Diterima', rp(sum(selP)), `${selP.length} cicilan proses`, 'a')}
+      ${card('🎯', 'Target Bulan Ini', rp(sum(inSel)), `${inSel.length} cicilan · ${pct}% tercapai`, 'c')}
+    </div>
+    <div class="dprog"><div style="width:${pct}%"></div></div>
+    <div class="dc-s" style="margin-bottom:18px">${pct}% dari target ${BLN_FULL[dashM]} ${dashY} sudah diterima</div>
+    <div class="bars">${chart}</div>
+    <div class="dlegend"><span><i style="background:var(--green)"></i>Diterima</span><span><i style="background:var(--amber)"></i>Belum diterima</span><span>Klik batang untuk pilih bulan · tahun ${dashY}</span></div>
+  </div>
+
+  <h2>Cicilan ${BLN_FULL[dashM]} ${dashY} (${inSel.length})</h2>
+  <div class="dpanel">${rows || '<div class="dempty">Tidak ada cicilan di bulan ini.</div>'}</div>
+
+  <div class="dcols">
+    <div><h2>Tunggakan Terbesar</h2><div class="dpanel">${mlist(byMember(overdue))}</div></div>
+    <div><h2>Sisa Hutang Terbesar</h2><div class="dpanel">${mlist(byMember(proses))}</div></div>
+  </div>
+  <div class="dnote">Pemasukan dihitung per <b>bulan jatuh tempo</b> (tanggal/label di tiap cicilan), hanya cicilan berstatus Lunas, ditambah DP. Tunggakan = cicilan berstatus Proses yang bulan jatuh temponya sudah lewat. Data tanpa nominal (mis. tagihan TrueCaller) tidak dihitung.</div>`;
+}
+
+// ─── UNDUH EXCEL ──────────────────────────────────────────
+function unduhExcel() {
+  if (!window.XLSX) return alert('Library Excel belum termuat. Cek koneksi internet lalu coba lagi.');
+  const E = dashEntries(), now = new Date(), curYM = now.getFullYear() * 12 + now.getMonth();
+  const sum = a => a.reduce((s, e) => s + e.nominal, 0);
+  const lunas = E.filter(e => e.status === 'lunas'), proses = E.filter(e => e.status === 'proses');
+  const overdue = proses.filter(e => e.ym !== null && e.ym < curYM);
+  const thisAll = E.filter(e => e.ym === curYM), members = Object.values(DATA);
+  const bulanIni = BLN_FULL[now.getMonth()] + ' ' + now.getFullYear();
+  const ymLabel = ym => BLN_FULL[ym % 12] + ' ' + Math.floor(ym / 12);
+  const wb = XLSX.utils.book_new();
+  const add = (name, aoa, widths, numCols) => {
+    const ws = XLSX.utils.aoa_to_sheet(aoa); ws['!cols'] = widths.map(w => ({ wch: w }));
+    const r = XLSX.utils.decode_range(ws['!ref']);
+    for (let R = 0; R <= r.e.r; R++) numCols.forEach(C => { const c = ws[XLSX.utils.encode_cell({ r: R, c: C })]; if (c && typeof c.v === 'number') c.z = '#,##0'; });
+    XLSX.utils.book_append_sheet(wb, ws, name);
+  };
+
+  // 1. Ringkasan + rekap per bulan
+  const perBulan = {};
+  E.filter(e => e.ym !== null).forEach(e => { const r = (perBulan[e.ym] ??= { L: 0, P: 0 }); e.status === 'lunas' ? r.L += e.nominal : r.P += e.nominal; });
+  add('Ringkasan', [
+    ['iShop Kredit — Ringkasan'], ['Dibuat', now.toLocaleString('id-ID')], [],
+    ['Sisa Seluruh Hutang', sum(proses)], ['Total Sudah Diterima (termasuk DP)', sum(lunas)],
+    ['Pemasukan ' + bulanIni, sum(thisAll.filter(e => e.status === 'lunas'))], ['Target ' + bulanIni, sum(thisAll)],
+    ['Tunggakan', sum(overdue)], ['Jumlah Member', members.length],
+    ['Member Aktif', members.filter(m => m.status !== 'lunas').length], ['Member Lunas', members.filter(m => m.status === 'lunas').length], [],
+    ['Rekap per Bulan (berdasarkan bulan jatuh tempo)'], ['Bulan', 'Diterima', 'Belum Diterima', 'Target'],
+    ...Object.keys(perBulan).map(Number).sort((a, b) => a - b).map(ym => [ymLabel(ym), perBulan[ym].L, perBulan[ym].P, perBulan[ym].L + perBulan[ym].P])
+  ], [44, 18, 18, 18], [1, 2, 3]);
+
+  // 2. Nasabah
+  add('Nasabah', [
+    ['Kode', 'MID', 'Nama', 'No. WhatsApp', 'Barang', 'Harga Net', 'Tgl Mulai', 'Angsuran', 'Jatuh Tempo', 'Status', 'Jml Cicilan', 'Cicilan Lunas', 'Cicilan Proses', 'Sudah Dibayar (Rp)', 'Sisa Tagihan (Rp)'],
+    ...members.map(k => {
+      const mine = E.filter(e => e.k === k), np = k.pays.filter(p => p.nominal > 0);
+      return [k.kode, k.mid || k.kode, k.nama, k.phone || '', k.item || '', k.net || '', k.tgl || '', k.tag_info || '', k.jt || '', k.status === 'lunas' ? 'Lunas' : 'Aktif',
+        np.length, np.filter(p => p.status !== 'proses').length, np.filter(p => p.status === 'proses').length, sum(mine.filter(e => e.status === 'lunas')), sum(mine.filter(e => e.status === 'proses'))];
+    })
+  ], [16, 16, 24, 16, 26, 16, 16, 18, 20, 8, 11, 13, 14, 18, 17], [13, 14]);
+
+  // 3. Semua cicilan
+  add('Cicilan', [
+    ['Kode', 'Nama', 'No', 'Tanggal / Label', 'Bulan Jatuh Tempo', 'Nominal (Rp)', 'Status', 'Tgl Dibayar'],
+    ...E.map(e => [e.k.kode, e.k.nama, e.no, e.label, e.ym !== null ? Math.floor(e.ym / 12) + '-' + String(e.ym % 12 + 1).padStart(2, '0') : '', e.nominal,
+      e.status === 'lunas' ? 'Lunas' : 'Proses', e.paid ? new Date(e.paid).toLocaleDateString('id-ID') : ''])
+  ], [16, 24, 6, 22, 18, 16, 9, 14], [5]);
+
+  // 4. Tunggakan
+  const tg = {};
+  overdue.forEach(e => { const r = (tg[e.k.kode] ??= { k: e.k, n: 0, sum: 0, old: e }); r.n++; r.sum += e.nominal; if (e.ym < r.old.ym) r.old = e; });
+  add('Tunggakan', [
+    ['Kode', 'Nama', 'No. WhatsApp', 'Jml Cicilan Tertunggak', 'Total Tunggakan (Rp)', 'Cicilan Tertua'],
+    ...Object.values(tg).sort((a, b) => b.sum - a.sum).map(r => [r.k.kode, r.k.nama, r.k.phone || '', r.n, r.sum, r.old.label])
+  ], [16, 24, 16, 22, 20, 18], [4]);
+
+  XLSX.writeFile(wb, 'ishop-kredit-' + now.toISOString().slice(0, 10) + '.xlsx');
+}
+
+// ─── UNDUH PDF ────────────────────────────────────────────
+function unduhPDF() {
+  if (!window.jspdf || typeof window.jspdf.jsPDF.API.autoTable !== 'function') return alert('Library PDF belum termuat. Cek koneksi internet lalu coba lagi.');
+  const E = dashEntries(), now = new Date(), curYM = now.getFullYear() * 12 + now.getMonth();
+  const sum = a => a.reduce((s, e) => s + e.nominal, 0), rp = formatRp;
+  const lunas = E.filter(e => e.status === 'lunas'), proses = E.filter(e => e.status === 'proses');
+  const overdue = proses.filter(e => e.ym !== null && e.ym < curYM);
+  const thisAll = E.filter(e => e.ym === curYM), members = Object.values(DATA);
+  const bulanIni = BLN_FULL[now.getMonth()] + ' ' + now.getFullYear();
+  const doc = new window.jspdf.jsPDF({ unit: 'pt', format: 'a4' });
+  const W = doc.internal.pageSize.getWidth(), H = doc.internal.pageSize.getHeight();
+  let y = 48;
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(17); doc.text('iShop Kredit - Laporan Ringkasan', 40, y);
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(110); doc.text('Dibuat: ' + now.toLocaleString('id-ID'), 40, y + 16); doc.setTextColor(0);
+  y += 36;
+  const section = (title, head, body, cols) => {
+    if (y > H - 120) { doc.addPage(); y = 48; }
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(11); doc.text(title, 40, y);
+    doc.autoTable({ startY: y + 8, head: [head], body, theme: 'striped', margin: { left: 40, right: 40 }, styles: { fontSize: 8, cellPadding: 3.5 },
+      headStyles: { fillColor: [99, 102, 241] }, columnStyles: cols || {} });
+    y = doc.lastAutoTable.finalY + 22;
+  };
+
+  section('Ringkasan', ['Keterangan', 'Nilai'], [
+    ['Sisa Seluruh Hutang', rp(sum(proses))], ['Total Sudah Diterima (termasuk DP)', rp(sum(lunas))],
+    ['Pemasukan ' + bulanIni, rp(sum(thisAll.filter(e => e.status === 'lunas')))], ['Target ' + bulanIni, rp(sum(thisAll))],
+    ['Tunggakan', rp(sum(overdue)) + '  (' + overdue.length + ' cicilan)'],
+    ['Member', members.length + ' total / ' + members.filter(m => m.status !== 'lunas').length + ' aktif / ' + members.filter(m => m.status === 'lunas').length + ' lunas']
+  ], { 1: { halign: 'right' } });
+
+  const pb = {}; E.filter(e => e.ym !== null).forEach(e => { const r = (pb[e.ym] ??= { L: 0, P: 0 }); e.status === 'lunas' ? r.L += e.nominal : r.P += e.nominal; });
+  section('Rekap per Bulan (berdasarkan bulan jatuh tempo)', ['Bulan', 'Diterima', 'Belum Diterima', 'Target'],
+    Object.keys(pb).map(Number).sort((a, b) => a - b).map(ym => [BLN_FULL[ym % 12] + ' ' + Math.floor(ym / 12), rp(pb[ym].L), rp(pb[ym].P), rp(pb[ym].L + pb[ym].P)]),
+    { 1: { halign: 'right' }, 2: { halign: 'right' }, 3: { halign: 'right' } });
+
+  const tg = {}; overdue.forEach(e => { const r = (tg[e.k.kode] ??= { k: e.k, n: 0, s: 0, old: e }); r.n++; r.s += e.nominal; if (e.ym < r.old.ym) r.old = e; });
+  const tgl = Object.values(tg).sort((a, b) => b.s - a.s);
+  if (tgl.length) section('Tunggakan', ['Nama', 'Kode', 'No. WA', 'Cicilan', 'Total', 'Tertua'],
+    tgl.map(r => [r.k.nama, r.k.kode, r.k.phone || '-', r.n, rp(r.s), r.old.label]), { 3: { halign: 'center' }, 4: { halign: 'right' } });
+  else { doc.setFont('helvetica', 'bold'); doc.setFontSize(11); doc.text('Tunggakan: tidak ada', 40, y); y += 24; }
+
+  const aktif = members.filter(m => m.status !== 'lunas').map(k => {
+    const mine = E.filter(e => e.k === k);
+    return { k, paid: sum(mine.filter(e => e.status === 'lunas')), left: sum(mine.filter(e => e.status === 'proses')) };
+  }).sort((a, b) => b.left - a.left);
+  section('Daftar Nasabah Aktif (' + aktif.length + ')', ['Kode', 'Nama', 'Barang', 'Angsuran', 'Sudah Dibayar', 'Sisa Tagihan'],
+    aktif.map(r => [r.k.kode, r.k.nama, r.k.item || '-', r.k.tag_info || '-', rp(r.paid), rp(r.left)]), { 4: { halign: 'right' }, 5: { halign: 'right' } });
+
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(110);
+  doc.setFontSize(7.5);
+  const n = doc.getNumberOfPages();
+  for (let i = 1; i <= n; i++) { doc.setPage(i); doc.text('iShop Kredit - Halaman ' + i + ' / ' + n, W - 40, H - 22, { align: 'right' }); }
+  doc.save('ishop-kredit-' + now.toISOString().slice(0, 10) + '.pdf');
+}
+
+boot();
 </script>
 </body>
 </html>
