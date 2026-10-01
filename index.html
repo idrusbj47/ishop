@@ -786,6 +786,10 @@ footer strong { color: var(--text2); }
 .modal input:focus,.modal textarea:focus{border-color:rgba(99,102,241,.6)}
 .modal .btn-copy{margin:4px 0 12px}
 @media(max-width:520px){.mgrid{grid-template-columns:1fr}}
+.pay-edit{background:none;border:1px solid var(--border2);border-radius:8px;cursor:pointer;padding:4px 7px;font-size:12px;flex-shrink:0;opacity:.6}
+.pay-edit:hover{opacity:1;background:var(--surface3)}
+.modal select{width:100%;margin-top:4px;background:var(--surface2);border:1px solid var(--border2);border-radius:10px;padding:10px 12px;color:var(--text);font-size:13px}
+.full{grid-column:1/-1}
 </style>
 </head>
 <body>
@@ -887,6 +891,7 @@ footer strong { color: var(--text2); }
           📨 Tagih via WA
         </button>
         <button class="btn-copy" id="copyBtn" onclick="copyText()">📋 Salin Teks</button>
+        <button class="btn-copy" onclick="openEdit()">✏️ Edit Data</button>
         <button class="btn-copy" onclick="editPhone()">📞 No. WA</button>
         <button class="btn-copy" onclick="hapusMember()">🗑 Hapus</button>
       </div>
@@ -933,6 +938,32 @@ footer strong { color: var(--text2); }
   <button class="btn-copy" onclick="genJadwal()">⚙️ Buat Jadwal Otomatis</button>
   <label>Jadwal (satu baris: tanggal = nominal, boleh diedit)<textarea id="nJadwal" rows="6" placeholder="30Okt26 = 275000"></textarea></label>
   <div class="action-row"><button class="btn-login" style="flex:1;margin:0" onclick="saveNew()">💾 Simpan</button><button class="btn-copy" onclick="closeNew()">Batal</button></div>
+</div></div>
+<div id="editModal" class="modal"><div class="modal-box">
+  <h3>✏️ Edit Data Customer</h3>
+  <div class="mgrid">
+    <label>Kode (kunci pencarian)<input id="eKode"></label>
+    <label>MID (tampil di teks WA)<input id="eMid"></label>
+    <label class="full">Nama<input id="eNama"></label>
+    <label class="full">No. WhatsApp<input id="ePhone" placeholder="08xxxxxxxxxx"></label>
+    <label class="full">Barang<input id="eItem"></label>
+    <label>Harga Net<input id="eNet"></label>
+    <label>Tgl Mulai<input id="eTgl"></label>
+    <label>Angsuran<input id="eTag"></label>
+    <label>Jatuh Tempo<input id="eJt"></label>
+    <label class="full">Baris tambahan (Dp, Mfe, dll — satu baris per entri)<textarea id="eExtra" rows="2"></textarea></label>
+    <label class="full">Catatan bawah (mis. Benefit THR)<textarea id="eCatatan" rows="2"></textarea></label>
+  </div>
+  <div class="action-row"><button class="btn-login" style="flex:1;margin:0" onclick="saveEdit()">💾 Simpan</button><button class="btn-copy" onclick="closeEdit()">Batal</button></div>
+</div></div>
+<div id="payModal" class="modal"><div class="modal-box">
+  <h3 id="payTitle">Edit Cicilan</h3>
+  <div class="mgrid">
+    <label class="full">Tanggal / label (mis. 30Okt26)<input id="pLabel"></label>
+    <label>Nominal (Rp)<input id="pNominal" type="number"></label>
+    <label>Status<select id="pStatus"><option value="proses">⏳ Proses</option><option value="lunas">✓ Lunas</option><option value="dp">DP</option></select></label>
+  </div>
+  <div class="action-row"><button class="btn-login" style="flex:1;margin:0" onclick="savePay()">💾 Simpan</button><button class="btn-copy" id="pDel" onclick="delPay()">🗑 Hapus</button><button class="btn-copy" onclick="closePay()">Batal</button></div>
 </div></div>
 </div><!-- end #appContent -->
 
@@ -1051,9 +1082,9 @@ function renderCard(key) {
   const sisaHtml = sisa > 0 ? `<div class="sisa-box"><div class="sisa-label">Sisa Tagihan (${n} angsuran)</div><div class="sisa-value">${formatRp(sisa)}</div></div>` : '';
   const rows = k.pays.length ? k.pays.map((p, i) => `<div class="pay-row"><span class="pay-num">${p.no}.</span>
     <div class="pay-main"><span class="pay-date">${esc(p.label)}</span><span class="pay-amount">${p.nominal > 0 ? formatRp(p.nominal) : ''}</span></div>
-    ${p.nominal > 0 ? `<button class="pay-tag-btn tag-${p.status}" onclick="togglePay(${i})" title="Klik untuk ganti status">${p.status === 'lunas' ? '✓ Lunas' : p.status === 'dp' ? 'DP' : '⏳ Proses'}</button>` : ''}</div>`).join('')
+    <button class="pay-edit" onclick="openPay(${i})" title="Edit cicilan">✏️</button>${p.nominal > 0 ? `<button class="pay-tag-btn tag-${p.status}" onclick="togglePay(${i})" title="Klik untuk ganti status">${p.status === 'lunas' ? '✓ Lunas' : p.status === 'dp' ? 'DP' : '⏳ Proses'}</button>` : ''}</div>`).join('')
     : '<div class="pay-row"><span style="color:var(--text3);font-size:12px">Belum ada jadwal pembayaran</span></div>';
-  $('payList').innerHTML = sisaHtml + rows;
+  $('payList').innerHTML = sisaHtml + rows + '<button class="btn-mini" style="margin:6px 0 0" onclick="openPay(-1)">＋ Tambah Cicilan</button>';
   const teks = buildTeks(k);
   $('rawBox').textContent = teks; $('waBtn').href = waUrl(k.phone, teks);
   const cb = $('copyBtn'); cb.dataset.raw = teks; cb.textContent = '📋 Salin Teks'; cb.classList.remove('ok');
@@ -1176,6 +1207,75 @@ async function saveNew() {
     if (e2) return alert('Transaksi tersimpan, tapi jadwal gagal: ' + e2.message);
   }
   closeNew(); currentKey = kode; await loadData(); cekStatus(kode);
+}
+
+// ─── EDIT CUSTOMER & CICILAN ──────────────────────────────
+function openEdit() {
+  const k = DATA[currentKey]; if (!k) return;
+  const f = { eKode: k.kode, eMid: k.mid, eNama: k.nama, ePhone: k.phone, eItem: k.item, eNet: k.net, eTgl: k.tgl, eTag: k.tag_info, eJt: k.jt, eExtra: k.extra, eCatatan: k.catatan };
+  for (const id in f) $(id).value = f[id] ?? '';
+  $('editModal').classList.add('open');
+}
+function closeEdit() { $('editModal').classList.remove('open'); }
+async function saveEdit() {
+  const k = DATA[currentKey], v = id => $(id).value.trim(), n = id => v(id) || null;
+  const kode = v('eKode').toUpperCase();
+  if (!kode || !v('eNama')) return alert('Kode dan nama wajib diisi.');
+  if (kode !== k.kode && DATA[kode]) return alert('Kode ' + kode + ' sudah dipakai member lain.');
+  const upd = { kode, mid: v('eMid') || kode, nama: v('eNama'), phone: n('ePhone'), item: v('eItem'), net: v('eNet'), tgl: v('eTgl'), tag_info: v('eTag'), jt: n('eJt'), extra: n('eExtra'), catatan: n('eCatatan') };
+  const { error } = await sb.from('kredit').update(upd).eq('id', k.id);
+  if (error) return alert('Gagal menyimpan: ' + error.message);
+  delete DATA[k.kode]; Object.assign(k, upd); DATA[kode] = k; currentKey = kode;
+  closeEdit(); renderCard(kode); buildGrid();
+}
+
+let editPayIdx = -1;
+function openPay(i) {
+  const k = DATA[currentKey], p = i >= 0 ? k.pays[i] : null; editPayIdx = i;
+  $('payTitle').textContent = p ? `Edit Cicilan ke-${p.no}` : '＋ Tambah Cicilan';
+  $('pLabel').value = p ? p.label : ''; $('pNominal').value = p ? p.nominal : ''; $('pStatus').value = p ? p.status : 'proses';
+  $('pDel').style.display = p ? '' : 'none';
+  $('payModal').classList.add('open');
+}
+function closePay() { $('payModal').classList.remove('open'); }
+async function syncStatus(k) {
+  if (!k.pays.some(p => p.nominal > 0)) return;
+  const st = k.pays.some(p => p.status === 'proses') ? 'aktif' : 'lunas';
+  if (st === k.status) return;
+  const { error } = await sb.from('kredit').update({ status: st }).eq('id', k.id);
+  if (error) alert('Gagal update status: ' + error.message); else k.status = st;
+}
+async function savePay() {
+  const k = DATA[currentKey], label = $('pLabel').value.trim(), status = $('pStatus').value;
+  const nominal = parseInt(String($('pNominal').value).replace(/[.,]/g, ''), 10);
+  if (!label || isNaN(nominal) || nominal < 0) return alert('Tanggal/label dan nominal wajib diisi.');
+  const old = editPayIdx >= 0 ? k.pays[editPayIdx] : null;
+  const body = { label, nominal, status, paid_at: status === 'lunas' ? (old?.paid_at || new Date().toISOString()) : null };
+  if (old) {
+    const { error } = await sb.from('cicilan').update(body).eq('id', old.id);
+    if (error) return alert('Gagal menyimpan: ' + error.message);
+    Object.assign(old, body);
+  } else {
+    const no = k.pays.reduce((m, x) => Math.max(m, x.no), 0) + 1;
+    const { data, error } = await sb.from('cicilan').insert({ ...body, kredit_id: k.id, no }).select().single();
+    if (error) return alert('Gagal menyimpan: ' + error.message);
+    k.pays.push(data);
+  }
+  await syncStatus(k); closePay(); renderCard(currentKey); buildGrid();
+}
+async function delPay() {
+  const k = DATA[currentKey], p = k.pays[editPayIdx];
+  if (!p || !confirm(`Hapus cicilan ke-${p.no} (${p.label})? Nomor berikutnya akan digeser.`)) return;
+  const { error } = await sb.from('cicilan').delete().eq('id', p.id);
+  if (error) return alert('Gagal menghapus: ' + error.message);
+  k.pays.splice(editPayIdx, 1);
+  for (let i = 0; i < k.pays.length; i++) {
+    const x = k.pays[i]; if (x.no === i + 1) continue;
+    const { error: e } = await sb.from('cicilan').update({ no: i + 1 }).eq('id', x.id);
+    if (e) return alert('Gagal mengurutkan ulang: ' + e.message);
+    x.no = i + 1;
+  }
+  await syncStatus(k); closePay(); renderCard(currentKey); buildGrid();
 }
 
 boot();
