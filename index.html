@@ -1828,7 +1828,7 @@ let DATA = {}, currentKey = null, currentFilter = 'all';
 
 // ─── AUTH ─────────────────────────────────────────────────
 const bioOn = () => { try { return !!localStorage.getItem('ishop-bio-cred'); } catch (e) { return false; } };
-function showLock() { const i = $('loginInfo'); i.textContent = '🔒 Aplikasi terkunci. Ketuk ikon di samping Masuk untuk membuka.'; i.style.display = 'block'; }
+function showLock() { const i = $('loginInfo'); i.innerHTML = '🔒 Aplikasi terkunci. Ketuk ikon di samping Masuk, atau masuk dengan password.<br><a href="#" onclick="bioOff();return false" style="color:#047857;font-weight:600">Matikan masuk cepat di perangkat ini</a>'; i.style.display = 'block'; }
 async function boot() {
   const { data } = await sb.auth.getSession();
   if (data.session && bioOn()) { showLogin(); showLock(); return; }
@@ -2761,6 +2761,7 @@ document.addEventListener('input',function(e){
       timeout:60000,attestation:'none'}});
     localStorage.setItem(K,b64(c.rawId));
   }
+  window.bioOff=function(){try{localStorage.removeItem(K)}catch(e){}$('loginInfo').style.display='none';refresh();};
   window.toggleBio=async function(){
     var btn=$('bioBtn');btn.disabled=true;bmsg('');
     try{
@@ -2769,21 +2770,26 @@ document.addEventListener('input',function(e){
     }catch(e){bmsg(/NotAllowed|cancel|abort/i.test(e.name+e.message)?'Dibatalkan.':e.message);}
     btn.disabled=false;refresh();
   };
+  var hasSess=function(){try{return Object.keys(localStorage).some(function(k){return /^sb-.*-auth-token/.test(k)})}catch(e){return false}};
   async function unlock(){
     var btn=$('lgPk'),er=$('loginError');btn.disabled=true;er.style.display='none';
     try{
       await navigator.credentials.get({publicKey:{challenge:rnd(32),userVerification:'required',timeout:60000,
         allowCredentials:[{type:'public-key',id:unb64(localStorage.getItem(K)),transports:['internal']}]}});
       var s=(await sb.auth.getSession()).data.session;
-      if(!s){er.textContent='❌ Sesi sudah berakhir. Masuk dengan password sekali lagi.';er.style.display='block';}
+      if(!s){er.innerHTML='❌ Sesi sudah berakhir. Masuk dengan password, atau <a href="#" onclick="passkeyLama();return false">pakai passkey</a>.';er.style.display='block';}
       else{$('loginInfo').style.display='none';touchActive();enterApp();}
     }catch(e){
-      if(!/NotAllowed|cancel|abort/i.test(e.name+e.message)){er.textContent='❌ '+e.message;er.style.display='block';}
+      var cancel=/NotAllowed|cancel|abort/i.test(e.name+e.message);
+      er.innerHTML='❌ '+(cancel?'Face ID dibatalkan atau tidak dikenali.':'Masuk cepat gagal ('+esc((e.name||'error')+': '+(e.message||''))+').')+
+        ' Coba lagi, <a href="#" onclick="passkeyLama();return false">pakai passkey</a>, atau masuk dengan password.';
+      er.style.display='block';
     }
     btn.disabled=false;
   }
   var orig=window.loginPasskey;
-  window.loginPasskey=function(){return bioOn()?unlock():orig.apply(this,arguments);};
+  window.passkeyLama=function(){return orig.apply(this,arguments)};
+  window.loginPasskey=function(){return (bioOn()&&hasSess())?unlock():orig.apply(this,arguments);};
   // tawarkan sekali setelah login password pertama
   var dl=window.doLogin;
   window.doLogin=async function(){
