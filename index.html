@@ -1125,6 +1125,61 @@ header.home-hero h1 .wave{font-style:normal;font-size:.8em}
 body.detail-open .home-actions{display:none!important}
 .members-section{max-width:520px;margin-top:34px;padding:0 18px}
 @media(max-width:360px){.hh-tile b{font-size:26px}.hs-foot{grid-template-columns:1fr}.ha-row .btn-mini{font-size:11px}}
+
+/* ===== VIEW PER TAB ===== */
+body.v-home .members-section,body.v-home #dashView{display:none!important}
+body.v-members header.home-hero,body.v-members .search-section,body.v-members .home-actions,body.v-members .result-zone{display:none!important}
+body.v-report header.home-hero,body.v-report .home-actions{display:none!important}
+body.v-report #dashView{padding-top:calc(16px + env(safe-area-inset-top,0px))}
+body.v-members{background:radial-gradient(90% 40% at 50% 0%,rgba(37,99,235,.26),transparent 70%),#050913}
+
+/* ===== DATA NASABAH ===== */
+.members-section{max-width:520px;margin:0 auto;padding:calc(16px + env(safe-area-inset-top,0px)) 16px 10px}
+.mem-head{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.mh-btn{width:42px;height:42px;flex-shrink:0;display:grid;place-items:center;cursor:pointer;color:var(--text);
+  background:#0e1730;border:1px solid rgba(59,130,246,.5);border-radius:50%;box-shadow:0 0 14px rgba(59,130,246,.25);transition:transform .15s}
+.mh-btn:active{transform:scale(.95)}
+.mh-title{flex:1;min-width:0}.mh-title h2{font-size:20px;font-weight:700;line-height:1.2}.mh-title p{font-size:13px;color:#9fb3d3;margin-top:2px}
+.filter-bar.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:4px;margin:0 0 14px;border-radius:18px;
+  background:rgba(10,16,32,.9);border:1px solid rgba(59,130,246,.25)}
+.filter-bar.seg .filter-btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:10px 4px;border-radius:14px;font-size:14px;font-weight:600;
+  background:transparent;border:1px solid transparent;color:#cbd5e1;white-space:nowrap;font-family:inherit}
+.filter-bar.seg .filter-btn .count{padding:2px 8px;border-radius:8px;font-size:12px;background:rgba(148,163,184,.14)}
+.filter-bar.seg .filter-btn.active-all{background:linear-gradient(160deg,rgba(37,99,235,.65),rgba(30,64,175,.4));border-color:rgba(96,165,250,.75);color:#fff;box-shadow:0 0 16px rgba(59,130,246,.4)}
+.filter-bar.seg .filter-btn.active-lunas{background:rgba(16,185,129,.15);border-color:rgba(16,185,129,.6);color:#34d399;box-shadow:0 0 14px rgba(16,185,129,.25)}
+.filter-bar.seg .filter-btn.active-aktif{background:rgba(245,158,11,.14);border-color:rgba(245,158,11,.6);color:#fbbf24;box-shadow:0 0 14px rgba(245,158,11,.22)}
+.mem-sort{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;font-size:14px;color:#7dd3fc;font-weight:600}
+.mem-sort select{background:rgba(10,16,32,.92);color:#e2e8f0;border:1px solid rgba(148,163,184,.3);border-radius:12px;padding:8px 10px;font-family:inherit;font-size:12.5px;outline:none}
+
+.members-grid{display:flex;flex-direction:column;gap:12px;grid-template-columns:none}
+.mc{position:relative;padding:14px 14px 12px 18px;border-radius:16px;overflow:hidden;cursor:pointer;
+  background:linear-gradient(160deg,rgba(16,26,48,.95),rgba(9,14,26,.95));border:1px solid rgba(148,163,184,.2);transition:transform .15s,box-shadow .2s,border-color .2s}
+.mc::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;height:auto;opacity:1;inset:0 auto 0 0;background:#f59e0b}
+.mc.is-lunas{border-color:rgba(16,185,129,.35)}.mc.is-lunas::before{background:#10b981}
+.mc.is-aktif{border-color:rgba(245,158,11,.35)}
+.mc:hover{transform:none;box-shadow:0 0 18px rgba(59,130,246,.18);border-color:rgba(59,130,246,.5)}
+.mc:active{transform:scale(.99)}
+.mc-top{display:flex;align-items:center;gap:12px}
+.mc-ava{width:50px;height:60px;flex-shrink:0;border-radius:12px;display:grid;place-items:center;font-size:17px;font-weight:800;color:#fff;
+  background:linear-gradient(160deg,#1e3a8a,#0e7490);border:1px solid rgba(96,165,250,.35)}
+.mc.is-aktif .mc-ava{background:linear-gradient(160deg,#1e3a8a,#5b21b6)}
+.mc-info{flex:1;min-width:0}
+.mc-code{display:block;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--cyan);font-weight:600;letter-spacing:.03em}
+.mc-name{font-size:16.5px;font-weight:700;color:#fff;margin:2px 0;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mc-item{font-size:13px;color:#9fb3d3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mc-pill{align-self:flex-start;padding:6px 12px;border-radius:12px;font-size:13px;font-weight:600;white-space:nowrap}
+.mc-pill.lunas{background:rgba(16,185,129,.12);color:#34d399;border:1px solid rgba(16,185,129,.5)}
+.mc-pill.aktif{background:rgba(245,158,11,.12);color:#fbbf24;border:1px solid rgba(245,158,11,.55)}
+.mc-foot{display:flex;align-items:center;gap:10px;margin-top:11px;padding-top:10px;border-top:1px solid rgba(148,163,184,.14);font-size:12.5px;color:#9fb3d3}
+.mc-date{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mc-prog{display:flex;flex-direction:column;align-items:flex-start;line-height:1.15}.mc-prog b{color:#fff;font-size:13px}.mc-prog small{font-size:11px;color:#8197ba}
+.mc-seg{display:flex;gap:3px;align-items:center}
+.mc-seg i{width:9px;height:7px;border-radius:3px;background:#1b2740}
+.mc-seg i.f{background:#10b981;box-shadow:0 0 6px rgba(16,185,129,.7)}
+.mc.is-aktif .mc-seg i.f{background:#f59e0b;box-shadow:0 0 6px rgba(245,158,11,.6)}
+@media(max-width:360px){.mc-seg i{width:7px}.mc-ava{width:42px;height:52px}}
+body.detail-open .result-zone{display:block!important}
+body.detail-open #dashView{display:none!important}
 </style>
 </head>
 <body>
@@ -1280,18 +1335,25 @@ body.detail-open .home-actions{display:none!important}
 
 <!-- ALL MEMBERS -->
 <div class="members-section">
-  <div class="filter-bar">
-    <span class="filter-label">Filter</span>
+  <div class="mem-head">
+    <button class="dh-btn mh-btn" type="button" aria-label="Kembali ke Beranda" onclick="document.querySelector('#bnav [data-n=home]').click()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>
+    <div class="mh-title"><h2>Data Nasabah</h2><p>Kelola dan pantau status kredit</p></div>
+    <button class="dh-btn mh-btn" type="button" aria-label="Cari nasabah" onclick="document.querySelector('#bnav [data-n=home]').click();setTimeout(function(){document.getElementById('searchInput').focus()},350)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></button>
+  </div>
+  <div class="filter-bar seg">
     <button class="filter-btn active-all" id="fb-all" onclick="filterMembers('all')">
       🗂 Semua <span class="count" id="cnt-all">—</span>
     </button>
-    <div class="filter-divider"></div>
     <button class="filter-btn" id="fb-lunas" onclick="filterMembers('lunas')">
       ✅ Lunas <span class="count" id="cnt-lunas">—</span>
     </button>
     <button class="filter-btn" id="fb-aktif" onclick="filterMembers('aktif')">
-      ⚡ Masih Aktif <span class="count" id="cnt-aktif">—</span>
+      ⚡ Aktif <span class="count" id="cnt-aktif">—</span>
     </button>
+  </div>
+  <div class="mem-sort">
+    <span id="memCount">0 Nasabah</span>
+    <select id="memSort" aria-label="Urutkan"><option value="asli">Urut: Awal</option><option value="balik">Urut: Akhir</option><option value="nama">Urut: Nama A–Z</option></select>
   </div>
   <div class="members-grid" id="membersGrid"></div>
 </div>
@@ -1543,9 +1605,16 @@ function buildGrid() {
   const keys = Object.keys(DATA); let cL = 0, cA = 0;
   $('membersGrid').innerHTML = keys.map(k => {
     const d = DATA[k], L = d.status === 'lunas'; L ? cL++ : cA++;
-    return `<div class="mc" data-status="${d.status}" data-k="${esc(k)}" onclick="pickAc(this.dataset.k)">
-      <div class="mc-header"><span class="mc-code">${esc(k)}</span><span class="mc-pill ${L ? 'lunas' : 'aktif'}">${L ? '✓ Lunas' : '⚡ Aktif'}</span></div>
-      <div class="mc-name">${esc(d.nama)}</div><div class="mc-item">${esc(d.item)}</div></div>`;
+    const ps = d.pays.filter(p => p.nominal > 0), tot = ps.length || d.pays.length, done = (ps.length ? ps : d.pays).filter(p => p.status !== 'proses').length;
+    const lastPaid = d.pays.map(p => p.paid_at).filter(Boolean).sort().pop(), dt = lastPaid ? new Date(lastPaid) : null;
+    const foot = L ? (dt && !isNaN(dt) ? `Lunas pada ${dt.getDate()} ${BLN_FULL[dt.getMonth()]} ${dt.getFullYear()}` : 'Lunas') : (d.jt ? `Jatuh tempo ${d.jt}` : 'Belum lunas');
+    const seg = Array.from({ length: Math.min(tot, 12) }, (_, n) => `<i class="${n < Math.round(done / (tot || 1) * Math.min(tot, 12)) ? 'f' : ''}"></i>`).join('');
+    const ini = d.nama.split(' ').slice(0, 2).map(w => w[0] || '').join('').toUpperCase();
+    return `<div class="mc ${L ? 'is-lunas' : 'is-aktif'}" data-status="${d.status}" data-k="${esc(k)}" onclick="pickAc(this.dataset.k)">
+      <div class="mc-top"><div class="mc-ava">${esc(ini)}</div>
+        <div class="mc-info"><span class="mc-code">${esc(k)}</span><div class="mc-name">${esc(d.nama)}</div><div class="mc-item">${esc(d.item)}</div></div>
+        <span class="mc-pill ${L ? 'lunas' : 'aktif'}">${L ? '✓ Lunas' : '⚡ Aktif'}</span></div>
+      <div class="mc-foot"><span class="mc-date">📅 ${esc(foot)}</span><span class="mc-prog"><b>${done}/${tot}</b><small>Cicilan</small></span><span class="mc-seg">${seg}</span></div></div>`;
   }).join('');
   $('statTotal').textContent = keys.length + ' Member'; $('statLunas').textContent = cL + ' Lunas'; $('statAktif').textContent = cA + ' Aktif';
   $('cnt-all').textContent = keys.length; $('cnt-lunas').textContent = cL; $('cnt-aktif').textContent = cA;
@@ -1928,6 +1997,38 @@ new MutationObserver(sync).observe(c,{attributes:true,attributeFilter:['style']}
   }
   render();
   new MutationObserver(render).observe($('statTotal'),{childList:true,characterData:true,subtree:true});
+})();
+</script>
+<script>
+// pemisahan tampilan per tab (hanya tampilan)
+(function(){
+  var $=function(i){return document.getElementById(i)},cur='home';
+  function setView(v){cur=v;document.body.classList.remove('v-home','v-members','v-report');document.body.classList.add('v-'+v);}
+  var orig=window.showTab;
+  window.showTab=function(t){orig(t);setView(t==='dash'?'report':(cur==='members'?'members':'home'));};
+  document.getElementById('bnav').addEventListener('click',function(e){
+    var b=e.target.closest('button');if(!b)return;var n=b.dataset.n;
+    if(n==='members'){setView('members');window.scrollTo({top:0});}
+    else if(n==='home'){setView('home');}
+  },true);
+  setView('home');
+  // jumlah + sortir daftar
+  var grid=$('membersGrid'),busy=false;
+  function count(){var n=0;grid.querySelectorAll('.mc').forEach(function(c){if(!c.classList.contains('hidden'))n++});$('memCount').textContent=n+' Nasabah';}
+  function sort(){
+    if(busy)return;busy=true;var v=$('memSort').value,cs=[].slice.call(grid.querySelectorAll('.mc'));
+    if(!grid._orig||grid._origN!==cs.length){grid._orig=cs.slice();grid._origN=cs.length;}
+    var base=grid._orig.slice();
+    if(v==='balik')base.reverse();
+    if(v==='nama')base.sort(function(a,b){return a.querySelector('.mc-name').textContent.localeCompare(b.querySelector('.mc-name').textContent)});
+    base.forEach(function(c){grid.appendChild(c)});count();busy=false;if(typeof mo!=='undefined')mo.takeRecords();
+  }
+  $('memSort').addEventListener('change',sort);
+  var mo=new MutationObserver(function(m){
+    if(m.some(function(x){return x.type==='childList'}))grid._orig=null;
+    sort();mo.takeRecords();
+  });
+  mo.observe(grid,{childList:true,attributes:true,attributeFilter:['class'],subtree:true});
 })();
 </script>
 </body>
