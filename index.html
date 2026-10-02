@@ -1773,7 +1773,10 @@ html,body{touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adju
   <label>Ulangi password baru<input type="password" id="pfNew2" autocomplete="new-password"></label>
   <div class="pf-msg" id="pfMsg"></div>
   <button type="button" class="pf-save" id="pfSave" onclick="gantiPassword()">Simpan Password</button>
-  <div id="pkSec"><div class="pf-sec">Face ID / Sidik Jari (Passkey)</div>
+  <div id="bioSec" style="display:none"><div class="pf-sec">Masuk Cepat (Face ID / Sidik Jari)</div>
+    <div class="pk-empty" id="bioStat"></div><div class="pf-msg" id="bioMsg"></div>
+    <button type="button" class="pf-save" id="bioBtn" onclick="toggleBio()"></button></div>
+  <div id="pkSec" style="display:none"><div class="pf-sec">Face ID / Sidik Jari (Passkey)</div>
     <div id="pkList" class="pk-list"></div>
     <div class="pf-msg" id="pkMsg"></div>
     <button type="button" class="pf-save" id="pkAdd" onclick="daftarPasskey()">＋ Daftarkan di perangkat ini</button></div>
@@ -1824,8 +1827,11 @@ const BLN_FULL = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agus
 let DATA = {}, currentKey = null, currentFilter = 'all';
 
 // ─── AUTH ─────────────────────────────────────────────────
+const bioOn = () => { try { return !!localStorage.getItem('ishop-bio-cred'); } catch (e) { return false; } };
+function showLock() { const i = $('loginInfo'); i.textContent = '🔒 Aplikasi terkunci. Ketuk ikon di samping Masuk untuk membuka.'; i.style.display = 'block'; }
 async function boot() {
   const { data } = await sb.auth.getSession();
+  if (data.session && bioOn()) { showLogin(); showLock(); return; }
   if (data.session && sessionExpired()) { await sb.auth.signOut({ scope: 'local' }); showLogin(); return; }
   if (data.session) touchActive();
   data.session ? enterApp() : showLogin();
@@ -2667,7 +2673,7 @@ document.addEventListener('input',function(e){
   ['click','keydown','touchstart','scroll','pointerdown'].forEach(function(t){window.addEventListener(t,act,{passive:true,capture:true})});
   async function check(){
     if($('appContent').style.display!=='block')return;
-    if(sessionExpired()){await doLogout();var e=$('loginError');e.textContent='⏱ Sesi berakhir karena lama tidak aktif. Silakan masuk lagi.';e.style.display='block';}
+    if(sessionExpired()){if(bioOn()){showLogin();showLock();return;}await doLogout();var e=$('loginError');e.textContent='⏱ Sesi berakhir karena lama tidak aktif. Silakan masuk lagi.';e.style.display='block';}
   }
   document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')check();});
   setInterval(check,60000);
@@ -2726,6 +2732,72 @@ document.addEventListener('input',function(e){
     ?'<svg '+A+'><path d="M4 8V6a2 2 0 012-2h2M16 4h2a2 2 0 012 2v2M20 16v2a2 2 0 01-2 2h-2M8 20H6a2 2 0 01-2-2v-2"/><path d="M9 9.5V11M15 9.5V11M12 9.5v3.5h-1M9 15.5c.8 1 1.8 1.5 3 1.5s2.2-.5 3-1.5"/></svg>'
     :'<svg '+A+'><path d="M12 11v3.5c0 2.2-.6 4.2-1.8 6M8 12a4 4 0 018 0v2c0 1.6-.3 3.1-.9 4.5M5 10a7 7 0 0114 0v2.5M3.5 16c.9-1.3 1.5-3 1.5-4.5"/></svg>';
   b.setAttribute('aria-label',ios?'Masuk dengan Face ID':'Masuk dengan sidik jari');
+})();
+</script>
+<script>
+// Masuk cepat: Face ID / sidik jari sebagai kunci lokal untuk sesi yang sudah tersimpan.
+// Langsung memindai wajah (tanpa pilihan akun); credential id disimpan di perangkat ini.
+(function(){
+  var $=function(i){return document.getElementById(i)},K='ishop-bio-cred',ASK='ishop-bio-asked';
+  var b64=function(buf){return btoa(String.fromCharCode.apply(null,new Uint8Array(buf))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')};
+  var unb64=function(s){s=s.replace(/-/g,'+').replace(/_/g,'/');while(s.length%4)s+='=';return Uint8Array.from(atob(s),function(c){return c.charCodeAt(0)})};
+  var rnd=function(n){return crypto.getRandomValues(new Uint8Array(n))};
+  var supported=false;
+  if(window.PublicKeyCredential&&PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable)
+    PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable().then(function(v){supported=!!v;refresh()}).catch(function(){});
+  function bmsg(t,ok){var e=$('bioMsg');e.textContent=t;e.className='pf-msg'+(t?(ok?' ok':' err'):'');e.style.display=t?'block':'none';}
+  function refresh(){
+    var sec=$('bioSec');if(!sec)return;sec.style.display=supported?'':'none';
+    var on=bioOn();$('bioStat').textContent=on?'Aktif di perangkat ini. Buka aplikasi lalu cukup scan untuk masuk.':'Belum aktif. Aktifkan agar masuk cukup dengan scan, tanpa mengetik password.';
+    $('bioBtn').textContent=on?'Matikan masuk cepat':'＋ Aktifkan di perangkat ini';
+  }
+  async function enable(){
+    var s=(await sb.auth.getSession()).data.session;if(!s)throw new Error('Masuk dulu dengan password.');
+    var c=await navigator.credentials.create({publicKey:{
+      challenge:rnd(32),rp:{name:'iShop Kredit'},
+      user:{id:rnd(16),name:s.user.email,displayName:s.user.email},
+      pubKeyCredParams:[{type:'public-key',alg:-7},{type:'public-key',alg:-257}],
+      authenticatorSelection:{authenticatorAttachment:'platform',userVerification:'required',residentKey:'discouraged'},
+      timeout:60000,attestation:'none'}});
+    localStorage.setItem(K,b64(c.rawId));
+  }
+  window.toggleBio=async function(){
+    var btn=$('bioBtn');btn.disabled=true;bmsg('');
+    try{
+      if(bioOn()){localStorage.removeItem(K);bmsg('Masuk cepat dimatikan.',true);}
+      else{await enable();bmsg('✓ Masuk cepat aktif.',true);}
+    }catch(e){bmsg(/NotAllowed|cancel|abort/i.test(e.name+e.message)?'Dibatalkan.':e.message);}
+    btn.disabled=false;refresh();
+  };
+  async function unlock(){
+    var btn=$('lgPk'),er=$('loginError');btn.disabled=true;er.style.display='none';
+    try{
+      await navigator.credentials.get({publicKey:{challenge:rnd(32),userVerification:'required',timeout:60000,
+        allowCredentials:[{type:'public-key',id:unb64(localStorage.getItem(K)),transports:['internal']}]}});
+      var s=(await sb.auth.getSession()).data.session;
+      if(!s){er.textContent='❌ Sesi sudah berakhir. Masuk dengan password sekali lagi.';er.style.display='block';}
+      else{$('loginInfo').style.display='none';touchActive();enterApp();}
+    }catch(e){
+      if(!/NotAllowed|cancel|abort/i.test(e.name+e.message)){er.textContent='❌ '+e.message;er.style.display='block';}
+    }
+    btn.disabled=false;
+  }
+  var orig=window.loginPasskey;
+  window.loginPasskey=function(){return bioOn()?unlock():orig.apply(this,arguments);};
+  // tawarkan sekali setelah login password pertama
+  var dl=window.doLogin;
+  window.doLogin=async function(){
+    await dl.apply(this,arguments);
+    try{
+      if($('appContent').style.display==='block'&&supported&&!bioOn()&&!localStorage.getItem(ASK)){
+        localStorage.setItem(ASK,'1');
+        if(confirm('Aktifkan masuk cepat dengan Face ID / sidik jari di perangkat ini?'))await window.toggleBio();
+      }
+    }catch(e){}
+  };
+  var op=window.openProfile;
+  if(op)window.openProfile=async function(){await op.apply(this,arguments);bmsg('');refresh();};
+  refresh();
 })();
 </script>
 </body>
