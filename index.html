@@ -1657,12 +1657,13 @@ html[data-theme="light"] .mc.is-aktif .mc-seg i.f{background:#f59e0b;box-shadow:
     <label>Nama<input id="nNama"></label>
     <label>No. WhatsApp<input id="nPhone" placeholder="08xxxxxxxxxx"></label>
     <label>Barang<input id="nItem"></label>
-    <label>Harga Net (Rp)<input id="nNet" type="number"></label>
+    <label>Harga Net (Rp)<input id="nNet" type="text" inputmode="numeric" class="money"></label>
     <label>Tanggal transaksi<input id="nTgl" type="date"></label>
-    <label>DP (Rp, opsional)<input id="nDp" type="number"></label>
+    <label>DP (Rp, opsional)<input id="nDp" type="text" inputmode="numeric" class="money"></label>
     <label>Jatuh tempo (tgl)<input id="nJT" type="number" value="30"></label>
-    <label>Angsuran / bulan (Rp)<input id="nAng" type="number"></label>
+    <label>Angsuran / bulan (Rp)<input id="nAng" type="text" inputmode="numeric" class="money"></label>
     <label>Tenor (bulan)<input id="nTenor" type="number"></label>
+    <label>Fee / bulan (Rp)<input id="nFee" type="text" inputmode="numeric" class="money" placeholder="50,000"></label>
   </div>
   <button class="btn-copy" onclick="genJadwal()">⚙️ Buat Jadwal Otomatis</button>
   <label>Jadwal (satu baris: tanggal = nominal, boleh diedit)<textarea id="nJadwal" rows="6" placeholder="30Okt26 = 275000"></textarea></label>
@@ -1680,6 +1681,7 @@ html[data-theme="light"] .mc.is-aktif .mc-seg i.f{background:#f59e0b;box-shadow:
     <label>Tgl Mulai<input id="eTgl"></label>
     <label>Angsuran<input id="eTag"></label>
     <label>Jatuh Tempo<input id="eJt"></label>
+    <label>Fee / bulan (Rp)<input id="eFee" type="text" inputmode="numeric" class="money" placeholder="50,000"></label>
     <label class="full">Baris tambahan (Dp, Mfe, dll — satu baris per entri)<textarea id="eExtra" rows="2"></textarea></label>
     <label class="full">Catatan bawah (mis. Benefit THR)<textarea id="eCatatan" rows="2"></textarea></label>
   </div>
@@ -1701,7 +1703,7 @@ html[data-theme="light"] .mc.is-aktif .mc-seg i.f{background:#f59e0b;box-shadow:
   <h3 id="payTitle">Edit Cicilan</h3>
   <div class="mgrid">
     <label class="full">Tanggal / label (mis. 30Okt26)<input id="pLabel"></label>
-    <label>Nominal (Rp)<input id="pNominal" type="number"></label>
+    <label>Nominal (Rp)<input id="pNominal" type="text" inputmode="numeric" class="money"></label>
     <label>Status<select id="pStatus"><option value="proses">⏳ Proses</option><option value="lunas">✓ Lunas</option><option value="dp">DP</option></select></label>
   </div>
   <div class="action-row"><button class="btn-login" style="flex:1;margin:0" onclick="savePay()">💾 Simpan</button><button class="btn-copy" id="pDel" onclick="delPay()">🗑 Hapus</button><button class="btn-copy" onclick="closePay()">Batal</button></div>
@@ -1832,7 +1834,7 @@ function renderCard(key) {
   $('heroName').textContent = k.nama; $('heroMid').textContent = k.mid || k.kode;
   const b = $('heroBadge'), L = k.status === 'lunas';
   b.innerHTML = L ? '✓ LUNAS' : '⚡ AKTIF'; b.className = 'status-badge ' + (L ? 'badge-lunas' : 'badge-aktif');
-  const tiles = [['Barang / Item', k.item], ['Harga Net', k.net, 'accent'], ['Tgl Mulai', k.tgl], ['Angsuran', k.tag_info], ['Jatuh Tempo', k.jt],
+  const tiles = [['Barang / Item', k.item], ['Harga Net', k.net, 'accent'], ['Tgl Mulai', k.tgl], ['Angsuran', k.tag_info], ['Jatuh Tempo', k.jt], ['Fee / Bulan', k.fee > 0 ? formatRp(k.fee) : null, 'accent'],
     ['No. WhatsApp', k.phone || '— belum diisi', k.phone ? '' : 'warn']].filter(t => t[1]);
   const TI = {'Barang / Item': '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5v8l9 5 9-5V8z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg>', 'Harga Net': '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4l-7.2 7.2a2 2 0 01-2.8 0L3 13V3h10l7.6 7.6a2 2 0 010 2.8z"/><circle cx="8" cy="8" r="1.3"/></svg>', 'Tgl Mulai': '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="3"/><path d="M3 10h18M8 2.5v4M16 2.5v4"/></svg>', 'Angsuran': '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2V3z"/><path d="M9 8h6M9 12h6"/></svg>', 'Jatuh Tempo': '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="3"/><path d="M3 10h18M8 2.5v4M16 2.5v4M12 13.5v3l2 1"/></svg>', 'No. WhatsApp': '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 01-2.2 2 19.8 19.8 0 01-8.6-3.1 19.5 19.5 0 01-6-6A19.8 19.8 0 012.1 4.2 2 2 0 014.1 2h3a2 2 0 012 1.7c.1 1 .4 1.9.7 2.8a2 2 0 01-.5 2.1L8.1 9.9a16 16 0 006 6l1.3-1.3a2 2 0 012.1-.4c.9.3 1.8.6 2.8.7a2 2 0 011.7 2z"/></svg>'};
   $('infoTiles').innerHTML = tiles.map(t => `<div class="tile"><span class="tile-ico">${TI[t[0]] || '•'}</span><div class="tile-label">${t[0]}</div><div class="tile-value ${t[2] || ''}">${esc(t[1])}</div></div>`).join('');
@@ -1935,14 +1937,14 @@ function buildGrid() {
 
 // ─── TRANSAKSI BARU ───────────────────────────────────────
 function openNew() {
-  ['nKode','nNama','nPhone','nItem','nNet','nDp','nAng','nTenor','nJadwal'].forEach(id => $(id).value = '');
+  ['nKode','nNama','nPhone','nItem','nNet','nDp','nAng','nTenor','nFee','nJadwal'].forEach(id => $(id).value = '');
   $('nJT').value = 30; $('nTgl').value = new Date().toISOString().slice(0, 10);
   $('newModal').classList.add('open');
 }
 function closeNew() { $('newModal').classList.remove('open'); }
 function genJadwal() {
   const [y, m, d] = ($('nTgl').value || '').split('-').map(Number);
-  const n = +$('nTenor').value, a = +$('nAng').value, jt = +$('nJT').value || 30;
+  const n = +$('nTenor').value, a = unN($('nAng').value), jt = +$('nJT').value || 30;
   if (!y || !n || !a) return alert('Isi tanggal, angsuran, dan tenor dulu.');
   const out = [];
   for (let i = 1; i <= n; i++) {
@@ -1953,7 +1955,7 @@ function genJadwal() {
 }
 async function saveNew() {
   const g = id => $(id).value.trim();
-  const kode = g('nKode').toUpperCase(), nama = g('nNama'), net = +g('nNet'), ang = +g('nAng'), tenor = +g('nTenor'), dp = +g('nDp');
+  const kode = g('nKode').toUpperCase(), nama = g('nNama'), net = unN(g('nNet')), ang = unN(g('nAng')), tenor = +g('nTenor'), dp = unN(g('nDp')), fee = unN(g('nFee'));
   const [y, m, d] = g('nTgl').split('-').map(Number);
   if (!kode || !nama || !g('nItem') || !net || !y) return alert('Kode, nama, barang, harga net, dan tanggal wajib diisi.');
   if (DATA[kode]) return alert('Kode ' + kode + ' sudah ada.');
@@ -1966,6 +1968,7 @@ async function saveNew() {
     jt: g('nJT') ? 'Setiap Tgl ' + g('nJT') : null, ttag: 'T.Tag', status: 'aktif',
     extra: dp > 0 ? `Dp : ~${dpLabel} = ${formatRp(dp)}~ (Lunas)` : null, detail_label: 'Detail Pembayaran (Tag) :'
   };
+  if (fee > 0) row.fee = fee;
   const { data: kr, error } = await sb.from('kredit').insert(row).select().single();
   if (error) return alert('Gagal menyimpan: ' + error.message);
   if (jadwal.length) {
@@ -1978,7 +1981,7 @@ async function saveNew() {
 // ─── EDIT CUSTOMER & CICILAN ──────────────────────────────
 function openEdit() {
   const k = DATA[currentKey]; if (!k) return;
-  const f = { eKode: k.kode, eMid: k.mid, eNama: k.nama, ePhone: k.phone, eItem: k.item, eNet: k.net, eTgl: k.tgl, eTag: k.tag_info, eJt: k.jt, eExtra: k.extra, eCatatan: k.catatan };
+  const f = { eKode: k.kode, eMid: k.mid, eNama: k.nama, ePhone: k.phone, eItem: k.item, eNet: k.net, eTgl: k.tgl, eTag: k.tag_info, eJt: k.jt, eFee: k.fee > 0 ? fmtN(k.fee) : '', eExtra: k.extra, eCatatan: k.catatan };
   for (const id in f) $(id).value = f[id] ?? '';
   $('editModal').classList.add('open');
 }
@@ -1989,6 +1992,7 @@ async function saveEdit() {
   if (!kode || !v('eNama')) return alert('Kode dan nama wajib diisi.');
   if (kode !== k.kode && DATA[kode]) return alert('Kode ' + kode + ' sudah dipakai member lain.');
   const upd = { kode, mid: v('eMid') || kode, nama: v('eNama'), phone: n('ePhone'), item: v('eItem'), net: v('eNet'), tgl: v('eTgl'), tag_info: v('eTag'), jt: n('eJt'), extra: n('eExtra'), catatan: n('eCatatan') };
+  const fee = unN(v('eFee')); if ('fee' in k || fee > 0) upd.fee = fee;
   const { error } = await sb.from('kredit').update(upd).eq('id', k.id);
   if (error) return alert('Gagal menyimpan: ' + error.message);
   delete DATA[k.kode]; Object.assign(k, upd); DATA[kode] = k; currentKey = kode;
@@ -1999,7 +2003,7 @@ let editPayIdx = -1;
 function openPay(i) {
   const k = DATA[currentKey], p = i >= 0 ? k.pays[i] : null; editPayIdx = i;
   $('payTitle').textContent = p ? `Edit Cicilan ke-${p.no}` : '＋ Tambah Cicilan';
-  $('pLabel').value = p ? p.label : ''; $('pNominal').value = p ? p.nominal : ''; $('pStatus').value = p ? p.status : 'proses';
+  $('pLabel').value = p ? p.label : ''; $('pNominal').value = p ? fmtN(p.nominal) : ''; $('pStatus').value = p ? p.status : 'proses';
   $('pDel').style.display = p ? '' : 'none';
   $('payModal').classList.add('open');
 }
@@ -2081,6 +2085,12 @@ function showTab(t) {
 }
 function setDash(y, m) { if (y !== null) dashY = y; if (m !== null) dashM = m; renderDash(); }
 
+function feeEntries() {                           // fee = keuntungan per cicilan lunas (bukan DP)
+  const o = [];
+  Object.values(DATA).forEach(k => { const f = Number(k.fee) || 0; if (!f) return;
+    k.pays.forEach(p => { if (p.status !== 'lunas' || !(p.nominal > 0)) return; const b = parseBulan(p.label); o.push({ k, f, ym: b ? b.y * 12 + b.m : null }); }); });
+  return o;
+}
 function renderDash() {
   const el = $('dashView'); if (!el) return;
   const E = dashEntries(), now = new Date(), curYM = now.getFullYear() * 12 + now.getMonth();
@@ -2093,6 +2103,7 @@ function renderDash() {
   const selL = inSel.filter(e => e.status === 'lunas'), selP = inSel.filter(e => e.status === 'proses');
   const pct = inSel.length ? Math.round(sum(selL) / sum(inSel) * 100) : 0;
   const nMem = new Set(proses.map(e => e.k.kode)).size;
+  const FE = feeEntries(), fs = a => a.reduce((s, e) => s + e.f, 0), feeThis = FE.filter(e => e.ym === curYM), feeSel = FE.filter(e => e.ym === sel);
   const card = (ic, lb, v, s, c) => `<div class="dcard"><div class="dc-l">${ic} ${lb}</div><div class="dc-v ${c || ''}">${v}</div><div class="dc-s">${s}</div></div>`;
   const byMember = arr => { const m = {}; arr.forEach(e => { const r = (m[e.k.kode] ??= { k: e.k, sum: 0, n: 0 }); r.sum += e.nominal; r.n++; }); return Object.values(m).sort((a, b) => b.sum - a.sum).slice(0, 8); };
   const mlist = arr => arr.length ? arr.map(r => `<div class="drow" data-k="${esc(r.k.kode)}" onclick="goMember(this.dataset.k)"><div><b>${esc(r.k.nama)}</b><span>${esc(r.k.kode)} · ${r.n} cicilan</span></div><div class="amt">${rp(r.sum)}</div></div>`).join('') : '<div class="dempty">Tidak ada 🎉</div>';
@@ -2108,6 +2119,8 @@ function renderDash() {
     ${card('✅', 'Total Sudah Diterima', rp(sum(lunas)), `${lunas.length} pembayaran (termasuk DP)`, 'g')}
     ${card('📅', 'Pemasukan ' + BLN_FULL[now.getMonth()] + ' ' + now.getFullYear(), rp(sum(thisL)), `dari target ${rp(sum(thisAll))} · ${thisL.length}/${thisAll.length} cicilan`, 'c')}
     ${card('⚠️', 'Tunggakan (lewat bulan jatuh tempo)', rp(sum(overdue)), `${overdue.length} cicilan · ${new Set(overdue.map(e => e.k.kode)).size} member`, overdue.length ? 'r' : 'g')}
+    ${card('💎', 'Total Fee (Keuntungan)', rp(fs(FE)), `${FE.length} cicilan lunas`, 'g')}
+    ${card('💎', 'Fee ' + BLN_FULL[now.getMonth()] + ' ' + now.getFullYear(), rp(fs(feeThis)), `${feeThis.length} cicilan lunas bulan ini`, 'c')}
   </div>
 
   <h2>Rekap per Bulan</h2>
@@ -2120,6 +2133,7 @@ function renderDash() {
       ${card('✅', 'Diterima', rp(sum(selL)), `${selL.length} cicilan lunas`, 'g')}
       ${card('⏳', 'Belum Diterima', rp(sum(selP)), `${selP.length} cicilan proses`, 'a')}
       ${card('🎯', 'Target Bulan Ini', rp(sum(inSel)), `${inSel.length} cicilan · ${pct}% tercapai`, 'c')}
+      ${card('💎', 'Fee / Keuntungan', rp(fs(feeSel)), `${feeSel.length} cicilan lunas × fee nasabah`, 'g')}
     </div>
     <div class="dprog"><div style="width:${pct}%"></div></div>
     <div class="dc-s" style="margin-bottom:18px">${pct}% dari target ${BLN_FULL[dashM]} ${dashY} sudah diterima</div>
@@ -2134,7 +2148,7 @@ function renderDash() {
     <div><h2>Tunggakan Terbesar</h2><div class="dpanel">${mlist(byMember(overdue))}</div></div>
     <div><h2>Sisa Hutang Terbesar</h2><div class="dpanel">${mlist(byMember(proses))}</div></div>
   </div>
-  <div class="dnote">Pemasukan dihitung per <b>bulan jatuh tempo</b> (tanggal/label di tiap cicilan), hanya cicilan berstatus Lunas, ditambah DP. Tunggakan = cicilan berstatus Proses yang bulan jatuh temponya sudah lewat. Data tanpa nominal (mis. tagihan TrueCaller) tidak dihitung.</div>`;
+  <div class="dnote">Pemasukan dihitung per <b>bulan jatuh tempo</b> (tanggal/label di tiap cicilan), hanya cicilan berstatus Lunas, ditambah DP. Tunggakan = cicilan berstatus Proses yang bulan jatuh temponya sudah lewat. Data tanpa nominal (mis. tagihan TrueCaller) tidak dihitung. <b>Fee</b> = fee per bulan tiap nasabah × jumlah cicilan lunas pada bulan itu (DP tidak dihitung).</div>`;
 }
 
 // ─── UNDUH EXCEL ──────────────────────────────────────────
@@ -2476,6 +2490,18 @@ new MutationObserver(sync).observe(c,{attributes:true,attributeFilter:['style']}
   $('bnav').addEventListener('click',function(e){var b=e.target.closest('button');if(b&&b.dataset.n==='tagih')setTimeout(load,0)});
   new MutationObserver(render).observe($('statTotal'),{childList:true,characterData:true,subtree:true});
 })();
+</script>
+<script>
+// input nominal: pemisah ribuan otomatis (1,000)
+function fmtN(v){var d=String(v==null?'':v).replace(/\D/g,'');return d?d.replace(/\B(?=(\d{3})+(?!\d))/g,','):'';}
+function unN(v){return +String(v||'').replace(/\D/g,'')||0;}
+document.addEventListener('input',function(e){
+  var t=e.target;if(!t.classList||!t.classList.contains('money'))return;
+  var pos=t.selectionStart,n=t.value.slice(0,pos).replace(/\D/g,'').length;
+  t.value=fmtN(t.value);
+  var c=0,i=0;for(;i<t.value.length&&c<n;i++)if(/\d/.test(t.value[i]))c++;
+  try{t.setSelectionRange(i,i)}catch(x){}
+});
 </script>
 <script>
 (function(){
