@@ -824,6 +824,155 @@ footer strong { color: var(--text2); }
 .drow .amt{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--cyan);white-space:nowrap}
 .dempty{color:var(--text3);font-size:13px;padding:14px 4px}
 .dnote{font-size:11px;color:var(--text3);margin-top:28px;line-height:1.6}
+
+/* =====================================================================
+   DETAIL NASABAH — REDESIGN (dark futuristic finance)
+   Override-only: semua selector di-scope ke #memberCard
+   ===================================================================== */
+#memberCard{
+  --d-bg:#070b14; --d-surface:#0c111b; --d-surface2:#101827;
+  --d-border:rgba(148,163,184,.18); --d-muted:#718096;
+  --d-cyan:#22d3ee; --d-blue:#3b82f6; --d-purple:#6366f1;
+  --d-green:#10b981; --d-amber:#f59e0b; --d-danger:#ef4444;
+  max-width:540px; margin:0 auto; padding:18px 18px 28px;
+  background:transparent; border:none; border-radius:0; box-shadow:none; overflow:visible;
+  font-family:'Plus Jakarta Sans','Inter','Sora',sans-serif;
+  animation:dFade .25s ease-out;
+}
+@keyframes dFade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.result-zone{max-width:580px;padding:0 4px}
+
+/* header */
+#memberCard .detail-head{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+#memberCard .dh-btn{
+  width:42px;height:42px;flex-shrink:0;display:grid;place-items:center;cursor:pointer;
+  background:var(--d-surface2);border:1px solid rgba(59,130,246,.35);border-radius:14px;color:var(--text);
+  box-shadow:0 0 14px rgba(59,130,246,.14);transition:transform .15s,box-shadow .2s,border-color .2s}
+#memberCard .dh-btn:hover{border-color:var(--d-cyan);box-shadow:0 0 18px rgba(34,211,238,.25)}
+#memberCard .dh-btn:active{transform:scale(.96)}
+#memberCard .dh-title{flex:1;min-width:0}
+#memberCard .dh-title h2{font-size:18px;font-weight:700;line-height:1.2;letter-spacing:-.01em}
+#memberCard .dh-title p{font-size:12.5px;color:var(--d-muted);margin-top:2px}
+
+/* hero profil */
+#memberCard .card-hero{
+  padding:20px;border-radius:22px;border:1px solid rgba(59,130,246,.4);border-bottom:1px solid rgba(59,130,246,.4);
+  background:radial-gradient(120% 140% at 100% 100%,rgba(34,211,238,.16),transparent 55%),
+             linear-gradient(145deg,#0f1c3a 0%,#0a1224 100%);
+  box-shadow:0 0 26px rgba(59,130,246,.2),inset 0 1px 0 rgba(255,255,255,.05);margin-bottom:14px}
+#memberCard .card-hero::before{background:rgba(34,211,238,.12)}
+#memberCard .hero-top{flex-wrap:nowrap}
+#memberCard .hero-left{gap:16px;align-items:center;min-width:0;width:100%}
+#memberCard .hero-avatar{
+  width:72px;height:72px;border-radius:20px;font-size:28px;letter-spacing:-.02em;
+  background:linear-gradient(135deg,#6366f1 0%,#3b82f6 50%,#22d3ee 100%);
+  box-shadow:0 6px 20px rgba(59,130,246,.4)}
+#memberCard .hero-text{display:flex;flex-direction:column;align-items:flex-start;gap:7px;min-width:0}
+#memberCard .hero-name{font-size:clamp(20px,6vw,25px);font-weight:800;letter-spacing:-.02em;line-height:1.15;margin:0;word-break:break-word}
+#memberCard .hero-mid{font-size:12.5px;padding:3px 10px;border-radius:8px;letter-spacing:.04em}
+#memberCard .status-badge{padding:5px 13px;font-size:12px;letter-spacing:.06em;gap:5px}
+#memberCard .badge-aktif{background:rgba(245,158,11,.12);color:var(--d-amber);border:1px solid rgba(245,158,11,.45)}
+#memberCard .badge-lunas{background:rgba(16,185,129,.12);color:var(--d-green);border:1px solid rgba(16,185,129,.45)}
+
+/* informasi kredit */
+#memberCard .info-tiles{
+  display:block;margin:0 0 26px;padding:4px 18px;background:var(--d-surface);
+  border:1px solid var(--d-border);border-radius:20px}
+#memberCard .tile{
+  display:grid;grid-template-columns:22px minmax(92px,.9fr) 1.4fr;align-items:center;column-gap:12px;
+  padding:14px 0;background:transparent;border-bottom:1px solid rgba(148,163,184,.12)}
+#memberCard .tile:last-child{border-bottom:none}
+#memberCard .tile-ico{font-size:16px;text-align:center;filter:saturate(.9)}
+#memberCard .tile-label{margin:0;font-size:11px;letter-spacing:1.2px;color:#5f7391;font-weight:600}
+#memberCard .tile-value{font-size:15px;font-weight:600;text-align:left;word-break:break-word}
+#memberCard .tile-value.accent{color:var(--d-cyan);font-size:16px;font-weight:600}
+#memberCard .tile-value.warn{font-family:inherit;font-size:14px}
+
+/* section label */
+#memberCard .card-body{padding:0}
+#memberCard .section-label{font-size:12px;letter-spacing:1.5px;color:#6b86b3;margin:0 0 14px}
+#memberCard .section-label::after{background:linear-gradient(90deg,rgba(59,130,246,.3),transparent)}
+#memberCard .section-label.sub{margin:24px 0 12px}
+
+/* sisa tagihan */
+#memberCard .sisa-box{
+  padding:16px 18px;margin:0;border-radius:18px;gap:14px;
+  border:1px solid rgba(245,158,11,.6);
+  background:linear-gradient(135deg,rgba(245,158,11,.1),rgba(245,158,11,.03));
+  box-shadow:0 0 18px rgba(245,158,11,.1)}
+#memberCard .sisa-label{font-size:11.5px;letter-spacing:1.5px;color:#c9a35a;line-height:1.5}
+#memberCard .sisa-label small{display:block;font-size:11px;letter-spacing:1.2px;color:#8a7650;font-weight:600}
+#memberCard .sisa-value{font-size:clamp(24px,7.5vw,30px);font-weight:700;color:#fbbf24;letter-spacing:-.01em;white-space:nowrap}
+#memberCard .sisa-box.is-lunas{
+  justify-content:center;border-color:rgba(16,185,129,.6);
+  background:linear-gradient(135deg,rgba(16,185,129,.12),rgba(16,185,129,.03));box-shadow:0 0 18px rgba(16,185,129,.12)}
+#memberCard .sisa-box.is-lunas .sisa-label{font-size:15px;font-weight:700;color:var(--d-green);letter-spacing:2px}
+
+/* daftar angsuran */
+#memberCard .pay-list{gap:10px;margin-bottom:18px}
+#memberCard .pay-row,#memberCard .pay-row:nth-child(even){
+  position:relative;gap:12px;padding:12px 12px 12px 18px;background:var(--d-surface2);
+  border:1px solid var(--d-border);border-radius:16px;overflow:hidden}
+#memberCard .pay-row::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--d-amber)}
+#memberCard .pay-row.st-lunas{border-color:rgba(16,185,129,.28)}
+#memberCard .pay-row.st-lunas::before{background:var(--d-green)}
+#memberCard .pay-row.st-dp::before{background:var(--d-purple)}
+#memberCard .pay-row:hover{background:#142036;border-color:rgba(59,130,246,.35)}
+#memberCard .pay-num{color:#64748b;font-size:13px;min-width:22px}
+#memberCard .pay-main{gap:3px}
+#memberCard .pay-date{font-size:15px;font-weight:600;min-width:0;flex:none}
+#memberCard .pay-amount{font-size:14px;font-weight:600;color:var(--d-cyan)}
+#memberCard .pay-edit{width:34px;height:34px;display:grid;place-items:center;padding:0;border-radius:10px;opacity:.85;background:rgba(255,255,255,.03)}
+#memberCard .pay-tag-btn{padding:7px 12px;min-width:84px;font-size:12px;border-radius:100px;border:1px solid transparent;font-family:inherit}
+#memberCard .pay-tag-btn.tag-lunas{background:rgba(16,185,129,.12);color:var(--d-green);border-color:rgba(16,185,129,.45)}
+#memberCard .pay-tag-btn.tag-proses{background:rgba(245,158,11,.1);color:var(--d-amber);border-color:rgba(245,158,11,.4)}
+#memberCard .pay-tag-btn.tag-dp{background:rgba(99,102,241,.12);color:#a5b4fc;border-color:rgba(99,102,241,.4)}
+#memberCard .pay-tag-btn:hover{transform:none;opacity:1;filter:brightness(1.15)}
+#memberCard .pay-tag-btn:active,#memberCard .pay-edit:active{transform:scale(.96)}
+
+/* tambah cicilan */
+#memberCard .add-cicil{
+  display:flex;align-items:center;justify-content:center;width:100%;margin:2px 0 0;padding:13px;
+  border:1px solid rgba(34,211,238,.55);background:transparent;color:var(--text);border-radius:100px;
+  font-size:14px;font-weight:600;transition:box-shadow .2s,transform .15s,background .2s}
+#memberCard .add-cicil:hover{color:var(--text);background:rgba(34,211,238,.06);box-shadow:0 0 16px rgba(34,211,238,.22)}
+#memberCard .add-cicil:active{transform:scale(.98)}
+
+/* accordion teks WA */
+#memberCard .raw-toggle-btn{margin:6px 0 14px;padding:6px 2px;font-size:13.5px;color:#8aa0c0;gap:10px}
+#memberCard .raw-arrow{font-size:11px;color:var(--d-cyan)}
+#memberCard .raw-box{background:var(--d-surface);border-color:var(--d-border);border-radius:14px;margin-bottom:18px;color:#8aa0c0}
+
+/* kirim ke nasabah */
+#memberCard .action-row{flex-direction:column;gap:12px;flex-wrap:nowrap;margin-bottom:12px}
+#memberCard .btn-wa,#memberCard .btn-tagih{
+  flex:none;width:100%;min-width:0;height:60px;padding:0 20px;border-radius:18px;font-size:16px;font-weight:700;
+  font-family:inherit;transition:transform .15s,box-shadow .2s}
+#memberCard .btn-wa{background:linear-gradient(135deg,#10b981,#14b8a6);box-shadow:0 8px 22px rgba(16,185,129,.25)}
+#memberCard .btn-tagih{background:linear-gradient(135deg,#7c3aed,#3b82f6);box-shadow:0 8px 22px rgba(99,102,241,.28)}
+#memberCard .btn-wa:hover,#memberCard .btn-tagih:hover{transform:translateY(-1px)}
+#memberCard .btn-wa:active,#memberCard .btn-tagih:active{transform:scale(.98)}
+
+/* aksi sekunder */
+#memberCard .sec-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#memberCard .sec-grid .btn-copy{
+  width:100%;height:54px;padding:0 10px;border-radius:17px;background:var(--d-surface);
+  border:1px solid var(--d-border);color:var(--text);font-family:inherit;font-size:14.5px;font-weight:600;
+  transition:transform .15s,border-color .2s,background .2s,color .2s}
+#memberCard .sec-grid .btn-copy:hover{background:var(--d-surface2);border-color:rgba(59,130,246,.45)}
+#memberCard .sec-grid .btn-copy:active{transform:scale(.98)}
+#memberCard .sec-grid .btn-copy.btn-del:hover,#memberCard .sec-grid .btn-copy.btn-del:active{
+  border-color:rgba(239,68,68,.6);color:#fca5a5;background:rgba(239,68,68,.08)}
+#memberCard .sec-grid .btn-copy.ok{border-color:var(--d-green);color:var(--d-green)}
+
+@media(max-width:380px){
+  #memberCard{padding:14px 14px 24px}
+  #memberCard .hero-avatar{width:60px;height:60px;font-size:24px}
+  #memberCard .tile{grid-template-columns:20px 1fr;row-gap:2px}
+  #memberCard .tile-value{grid-column:2}
+  #memberCard .sisa-box{flex-wrap:wrap}
+}
+@media(prefers-reduced-motion:reduce){#memberCard{animation:none}}
 </style>
 </head>
 <body>
@@ -899,24 +1048,33 @@ footer strong { color: var(--text2); }
   </div>
 
   <div class="member-card" id="memberCard">
+    <div class="detail-head">
+      <button class="dh-btn" type="button" aria-label="Kembali" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      </button>
+      <div class="dh-title"><h2>Detail Nasabah</h2><p>Kelola informasi dan pembayaran</p></div>
+      <button class="dh-btn" type="button" aria-label="Menu aksi" onclick="document.querySelector('#memberCard .action-row').scrollIntoView({behavior:'smooth',block:'center'})">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="12" cy="19" r="1.8"/></svg>
+      </button>
+    </div>
     <div class="card-hero">
       <div class="hero-top">
         <div class="hero-left">
           <div class="hero-avatar" id="heroAvatar">?</div>
-          <div>
+          <div class="hero-text">
             <div class="hero-name" id="heroName">—</div>
             <div class="hero-mid" id="heroMid">—</div>
+            <div class="status-badge" id="heroBadge">—</div>
           </div>
         </div>
-        <div class="status-badge" id="heroBadge">—</div>
       </div>
-      <div class="info-tiles" id="infoTiles"></div>
     </div>
+    <div class="info-tiles" id="infoTiles"></div>
     <div class="card-body">
       <div class="section-label">Detail Pembayaran</div>
       <div class="pay-list" id="payList"></div>
       <button class="raw-toggle-btn" onclick="toggleRaw()">
-        <span id="rawArrow">▸</span> Lihat teks asli WhatsApp
+        <span id="rawArrow" class="raw-arrow">▸</span> Lihat teks asli WhatsApp
       </button>
       <div class="raw-box" id="rawBox"></div>
       <div class="section-label" style="margin-top:8px">Kirim ke Nasabah</div>
@@ -928,10 +1086,12 @@ footer strong { color: var(--text2); }
         <button class="btn-tagih" onclick="tagihWA()">
           📨 Tagih via WA
         </button>
+      </div>
+      <div class="sec-grid">
         <button class="btn-copy" id="copyBtn" onclick="copyText()">📋 Salin Teks</button>
         <button class="btn-copy" onclick="openEdit()">✏️ Edit Data</button>
-        <button class="btn-copy" onclick="editPhone()">📞 No. WA</button>
-        <button class="btn-copy" onclick="hapusMember()">🗑 Hapus</button>
+        <button class="btn-copy" onclick="editPhone()">☎️ No. WA</button>
+        <button class="btn-copy btn-del" onclick="hapusMember()">🗑️ Hapus</button>
       </div>
     </div>
   </div>
@@ -1017,8 +1177,8 @@ if ('serviceWorker' in navigator) window.addEventListener('load', () => navigato
 <script>
 // ═══ KONFIGURASI — ganti dengan milik project Supabase kamu ═══
 // Dashboard Supabase → Project Settings → API
-const SUPABASE_URL = 'https://prrjfejyltyuqltsdfvi.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_-u2PtsD4ybc-CAPV0cxdpQ_2NEe6KTO';   // BUKAN service_role!
+const SUPABASE_URL = 'https://bpqiejowxcxyeewhoncr.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_3tCR_a01HgzEpH-5uypqGg_s8WvXsa9';   // BUKAN service_role!
 const REKENING = 'BCA : 4995141451 atas nama _MAD IDRUS_';
 // ══════════════════════════════════════════════════════════════
 
@@ -1120,14 +1280,15 @@ function renderCard(key) {
   b.innerHTML = L ? '✓ LUNAS' : '⚡ AKTIF'; b.className = 'status-badge ' + (L ? 'badge-lunas' : 'badge-aktif');
   const tiles = [['Barang / Item', k.item], ['Harga Net', k.net, 'accent'], ['Tgl Mulai', k.tgl], ['Angsuran', k.tag_info], ['Jatuh Tempo', k.jt],
     ['No. WhatsApp', k.phone || '— belum diisi', k.phone ? '' : 'warn']].filter(t => t[1]);
-  $('infoTiles').innerHTML = tiles.map(t => `<div class="tile"><div class="tile-label">${t[0]}</div><div class="tile-value ${t[2] || ''}">${esc(t[1])}</div></div>`).join('');
+  const TI = {"Barang / Item": "📦", "Harga Net": "🏷️", "Tgl Mulai": "📅", "Angsuran": "🧾", "Jatuh Tempo": "⏰", "No. WhatsApp": "☎️"};
+  $('infoTiles').innerHTML = tiles.map(t => `<div class="tile"><span class="tile-ico">${TI[t[0]] || '•'}</span><div class="tile-label">${t[0]}</div><div class="tile-value ${t[2] || ''}">${esc(t[1])}</div></div>`).join('');
   const sisa = calcSisa(k.pays), n = k.pays.filter(p => p.status === 'proses').length;
-  const sisaHtml = sisa > 0 ? `<div class="sisa-box"><div class="sisa-label">Sisa Tagihan (${n} angsuran)</div><div class="sisa-value">${formatRp(sisa)}</div></div>` : '';
-  const rows = k.pays.length ? k.pays.map((p, i) => `<div class="pay-row"><span class="pay-num">${p.no}.</span>
+  const sisaHtml = sisa > 0 ? `<div class="sisa-box"><div class="sisa-label">Sisa Tagihan<small>(${n} angsuran)</small></div><div class="sisa-value">${formatRp(sisa)}</div></div>` : (k.pays.length ? `<div class="sisa-box is-lunas"><div class="sisa-label">✓ Tagihan Lunas</div></div>` : '');
+  const rows = k.pays.length ? k.pays.map((p, i) => `<div class="pay-row st-${p.status}"><span class="pay-num">${p.no}.</span>
     <div class="pay-main"><span class="pay-date">${esc(p.label)}</span><span class="pay-amount">${p.nominal > 0 ? formatRp(p.nominal) : ''}</span></div>
-    <button class="pay-edit" onclick="openPay(${i})" title="Edit cicilan">✏️</button>${p.nominal > 0 ? `<button class="pay-tag-btn tag-${p.status}" onclick="togglePay(${i})" title="Klik untuk ganti status">${p.status === 'lunas' ? '✓ Lunas' : p.status === 'dp' ? 'DP' : '⏳ Proses'}</button>` : ''}</div>`).join('')
+    <button class="pay-edit" onclick="openPay(${i})" title="Edit cicilan">✏️</button>${p.nominal > 0 ? `<button class="pay-tag-btn tag-${p.status}" onclick="togglePay(${i})" title="Klik untuk ganti status">${p.status === 'lunas' ? '✓ Lunas' : p.status === 'dp' ? 'DP' : '⌛ Proses'}</button>` : ''}</div>`).join('')
     : '<div class="pay-row"><span style="color:var(--text3);font-size:12px">Belum ada jadwal pembayaran</span></div>';
-  $('payList').innerHTML = sisaHtml + rows + '<button class="btn-mini" style="margin:6px 0 0" onclick="openPay(-1)">＋ Tambah Cicilan</button>';
+  $('payList').innerHTML = sisaHtml + '<div class="section-label sub">Daftar Angsuran</div>' + rows + '<button class="btn-mini add-cicil" onclick="openPay(-1)">＋ Tambah Cicilan</button>';
   const teks = buildTeks(k);
   $('rawBox').textContent = teks; $('waBtn').href = waUrl(k.phone, teks);
   const cb = $('copyBtn'); cb.dataset.raw = teks; cb.textContent = '📋 Salin Teks'; cb.classList.remove('ok');
