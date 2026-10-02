@@ -1,6 +1,6 @@
 // Service Worker iShop Kredit
 // Naikkan VERSION setiap kali index.html diubah agar cache lama diganti.
-const VERSION = 'v6';
+const VERSION = 'v7';
 const CACHE = 'ishop-' + VERSION;
 const SHELL = ['./', './index.html', './index2.html', './manifest.json', './icon-192.png', './icon-512.png', './apple-touch-icon.png'];
 
