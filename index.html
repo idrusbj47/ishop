@@ -1455,6 +1455,10 @@ html[data-theme="light"] .mc.is-aktif .mc-seg i.f{background:#f59e0b;box-shadow:
 .lg-tile.t4{background:#fff6e6}.lg-tile.t4 svg{color:#f59e0b}
 .lg-foot{display:flex;flex-direction:column;align-items:center;gap:2px;margin-top:18px;font-size:13px;color:#64748b}
 .lg-foot svg{color:#64748b;margin-bottom:2px}.lg-foot small{font-size:11px;color:#94a3b8}
+
+/* kunci zoom: tanpa double-tap zoom & tanpa auto-zoom saat fokus input (iOS) */
+html,body{touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+@supports (-webkit-touch-callout:none){input,select,textarea{font-size:16px!important}}
 </style>
 </head>
 <body>
