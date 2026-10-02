@@ -1180,6 +1180,65 @@ body.v-members{background:radial-gradient(90% 40% at 50% 0%,rgba(37,99,235,.26),
 @media(max-width:360px){.mc-seg i{width:7px}.mc-ava{width:42px;height:52px}}
 body.detail-open .result-zone{display:block!important}
 body.detail-open #dashView{display:none!important}
+
+/* ===== TRANSAKSI ===== */
+.trx-section{display:none;max-width:520px;margin:0 auto;padding:calc(18px + env(safe-area-inset-top,0px)) 16px 10px;position:relative;z-index:5}
+body.v-trx .trx-section{display:block}
+body.v-trx header.home-hero,body.v-trx .search-section,body.v-trx .home-actions,body.v-trx .members-section,body.v-trx #dashView,body.v-trx .result-zone{display:none!important}
+body.v-trx{background:radial-gradient(90% 40% at 50% 0%,rgba(37,99,235,.26),transparent 70%),#050913}
+body.v-home .trx-section,body.v-members .trx-section,body.v-report .trx-section,body.detail-open .trx-section{display:none!important}
+.trx-section .hh-top{margin-bottom:0}
+.trx-section .brand-row{margin:0;padding:6px 16px 6px 6px;background:rgba(14,22,42,.9);border:1px solid rgba(59,130,246,.35);flex:1;box-shadow:0 0 16px rgba(59,130,246,.15)}
+.trx-section .brand-icon{width:38px;height:38px;font-size:17px;background:linear-gradient(135deg,#2563eb,#22d3ee)}
+.trx-section .brand-text{font-size:13px;letter-spacing:.1em;color:#cbd5e1}
+.tx-title{font-size:clamp(32px,9.5vw,42px);font-weight:800;letter-spacing:-.025em;margin:20px 0 2px;line-height:1.1}
+.trx-section .hh-sub{margin:0 0 16px}
+.tx-tabs{display:grid;grid-template-columns:1fr 1.25fr 1fr;gap:6px;margin-bottom:14px}
+.tx-tabs button{display:flex;align-items:center;justify-content:center;gap:6px;padding:10px 4px;border-radius:14px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;white-space:nowrap;
+  color:#cbd5e1;background:rgba(10,16,32,.9);border:1px solid rgba(148,163,184,.25);transition:transform .15s,box-shadow .2s}
+.tx-tabs button span{padding:2px 8px;border-radius:8px;font-size:12px;background:rgba(148,163,184,.15)}
+.tx-tabs button.on{color:#fff;background:linear-gradient(160deg,rgba(37,99,235,.65),rgba(30,64,175,.4));border-color:rgba(96,165,250,.75);box-shadow:0 0 16px rgba(59,130,246,.4)}
+.tx-tabs button:active{transform:scale(.97)}
+.tx-sum{background:linear-gradient(160deg,rgba(16,26,48,.95),rgba(9,14,26,.95));border:1px solid rgba(59,130,246,.3);border-radius:18px;padding:14px;margin-bottom:14px;box-shadow:0 0 20px rgba(37,99,235,.12)}
+.tx-month{background:#0b1220;color:#e2e8f0;border:1px solid rgba(148,163,184,.3);border-radius:10px;padding:7px 10px;font-family:inherit;font-size:12.5px;outline:none;max-width:48%}
+.tx-sum3{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:8px}
+.tx-sum3>div{border-radius:12px;padding:10px 6px;text-align:center;border:1px solid rgba(148,163,184,.18);background:rgba(8,13,24,.7);display:flex;flex-direction:column;gap:4px;justify-content:center}
+.tx-sum3 b{font-size:15px;font-weight:700;white-space:nowrap}
+.tx-sum3 small{font-size:11.5px;color:#9fb3d3}
+.tx-sum3 .s1{border-color:rgba(34,211,238,.4)}.tx-sum3 .s1 b{color:var(--cyan);font-family:'JetBrains Mono',monospace;font-size:clamp(13px,3.9vw,16px)}
+.tx-sum3 .s2{border-color:rgba(16,185,129,.4)}.tx-sum3 .s2 b{color:#34d399;font-size:22px}
+.tx-sum3 .s3{border-color:rgba(245,158,11,.4)}.tx-sum3 .s3 b{color:#fbbf24;font-size:22px}
+.tx-bar{display:grid;grid-template-columns:1fr auto;gap:10px;margin-bottom:12px}
+.tx-new{height:50px;border:none;border-radius:16px;cursor:pointer;color:#fff;font-family:inherit;font-size:15.5px;font-weight:700;
+  background:linear-gradient(90deg,#2563eb,#06b6d4);box-shadow:0 8px 22px rgba(37,99,235,.4);transition:transform .15s}
+.tx-sort{height:50px;padding:0 16px;display:flex;align-items:center;gap:8px;border-radius:16px;cursor:pointer;color:#e2e8f0;font-family:inherit;font-size:14px;font-weight:600;
+  background:rgba(10,16,32,.92);border:1px solid rgba(148,163,184,.3)}
+.tx-new:active,.tx-sort:active{transform:scale(.98)}
+.tx-search{display:flex;align-items:center;gap:10px;padding:0 14px;height:48px;border-radius:15px;margin-bottom:16px;color:#8197ba;
+  background:rgba(10,16,32,.92);border:1px solid rgba(59,130,246,.3)}
+.tx-search:focus-within{box-shadow:0 0 0 1px rgba(34,211,238,.5),0 0 18px rgba(34,211,238,.15)}
+.tx-search input{flex:1;min-width:0;background:transparent;border:none;outline:none;color:#f1f5f9;font-family:inherit;font-size:14px}
+.tx-day{display:flex;align-items:center;justify-content:space-between;margin:14px 2px 8px;font-size:13px;font-weight:700;letter-spacing:1.4px;color:#7ea6e0}
+.tx-day em{font-style:normal;letter-spacing:0;font-weight:600;font-size:11.5px;color:#9fb3d3;padding:4px 10px;border-radius:99px;background:rgba(148,163,184,.12)}
+.tx-row{position:relative;display:flex;align-items:center;gap:12px;padding:11px 12px 11px 16px;margin-bottom:9px;border-radius:14px;overflow:hidden;cursor:pointer;
+  background:linear-gradient(160deg,rgba(16,26,48,.95),rgba(9,14,26,.95));border:1px solid rgba(148,163,184,.2);transition:transform .15s,border-color .2s,box-shadow .2s}
+.tx-row::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:#10b981}
+.tx-row.is-bayar{border-color:rgba(16,185,129,.3)}
+.tx-row.is-baru{border-color:rgba(245,158,11,.3)}.tx-row.is-baru::before{background:#f59e0b}
+.tx-row:hover{border-color:rgba(59,130,246,.5);box-shadow:0 0 16px rgba(59,130,246,.15)}.tx-row:active{transform:scale(.99)}
+.tx-ava{width:44px;height:44px;flex-shrink:0;border-radius:50%;display:grid;place-items:center;font-size:15px;font-weight:800;color:#fff;background:linear-gradient(135deg,#2563eb,#3b82f6)}
+.tx-mid{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.tx-mid b{font-size:15px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tx-mid small{font-size:12px;color:#9fb3d3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tx-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0}
+.tx-right strong{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:var(--cyan)}
+.tx-row.is-baru .tx-right strong{color:#fbbf24}
+.tx-tag{font-size:11px;font-weight:600;padding:3px 9px;border-radius:8px;white-space:nowrap;color:#34d399;background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.45)}
+.tx-row.is-baru .tx-tag{color:#fbbf24;background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.45)}
+.tx-meta{display:flex;align-items:center;gap:8px}.tx-right time{font-size:11.5px;color:#8197ba}
+.tx-chev{font-style:normal;font-size:22px;color:#6b86b3;line-height:1}
+.tx-empty{text-align:center;padding:40px 12px;color:#8197ba;font-size:14px}
+@media(max-width:360px){.tx-tabs button{font-size:11.5px;padding:9px 2px}.tx-sum3 b{font-size:13px}}
 </style>
 </head>
 <body>
@@ -1334,6 +1393,35 @@ body.detail-open #dashView{display:none!important}
 </div>
 
 <!-- ALL MEMBERS -->
+<section class="trx-section" id="trxView">
+  <div class="hh-top">
+    <div class="brand-row"><div class="brand-icon">💳</div><div class="brand-dot"></div><span class="brand-text">iShop Kredit System</span></div>
+    <button class="hh-icon" type="button" onclick="doLogout()" aria-label="Keluar" title="Keluar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg></button>
+  </div>
+  <h1 class="tx-title">Transaksi</h1>
+  <p class="hh-sub">Kelola pembayaran dan cicilan</p>
+  <div class="tx-tabs" id="txTabs">
+    <button type="button" data-t="all" class="on">🗂 Semua <span id="txN-all">0</span></button>
+    <button type="button" data-t="bayar">✅ Pembayaran <span id="txN-bayar">0</span></button>
+    <button type="button" data-t="baru">＋ Baru <span id="txN-baru">0</span></button>
+  </div>
+  <div class="tx-sum">
+    <div class="hs-head"><span class="hs-t"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="3"/><path d="M3 10h18M8 2.5v4M16 2.5v4"/></svg>Ringkasan Transaksi</span>
+      <select id="txMonth" class="tx-month" aria-label="Bulan"></select></div>
+    <div class="tx-sum3">
+      <div class="s1"><b id="txSumTot">Rp. 0</b><small>Total Pembayaran</small></div>
+      <div class="s2"><b id="txSumBayar">0</b><small>Pembayaran</small></div>
+      <div class="s3"><b id="txSumBaru">0</b><small>Transaksi Baru</small></div>
+    </div>
+  </div>
+  <div class="tx-bar">
+    <button type="button" class="tx-new" onclick="openNew()">＋ Transaksi Baru</button>
+    <button type="button" class="tx-sort" id="txSort"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4v16M7 20l-3-3M7 20l3-3M17 20V4M17 4l-3 3M17 4l3 3"/></svg><span id="txSortL">Terbaru</span></button>
+  </div>
+  <label class="tx-search"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><input id="txSearch" type="text" placeholder="Cari nama, kode, atau barang..." autocomplete="off"></label>
+  <div id="txList"></div>
+</section>
+
 <div class="members-section">
   <div class="mem-head">
     <button class="dh-btn mh-btn" type="button" aria-label="Kembali ke Beranda" onclick="document.querySelector('#bnav [data-n=home]').click()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>
@@ -1962,14 +2050,14 @@ new MutationObserver(sync).observe(c,{attributes:true,attributeFilter:['style']}
   function closeDetail(){card.style.display='none';}
   nav.addEventListener('click',function(e){
     var b=e.target.closest('button');if(!b)return;var n=b.dataset.n;
-    if(n==='trx'){openNew();return;}
+    if(n==='trx'){closeDetail();showTab('cari');mark('trx');window.scrollTo({top:0});return;}
     closeDetail();
     if(n==='report'){showTab('dash');window.scrollTo({top:0});mark(n);return;}
     showTab('cari');mark(n);
     if(n==='home')window.scrollTo({top:0,behavior:'smooth'});
     else{var m=document.querySelector('.members-section');if(m)m.scrollIntoView({behavior:'smooth',block:'start'});}
   });
-  new MutationObserver(function(){if(card.style.display==='block')mark('members');}).observe(card,{attributes:true,attributeFilter:['style']});
+  new MutationObserver(function(){if(card.style.display==='block'){var bc=document.body.classList;mark(bc.contains('v-trx')?'trx':bc.contains('v-home')?'home':'members');}}).observe(card,{attributes:true,attributeFilter:['style']});
 })();
 </script>
 <script>
@@ -2003,12 +2091,13 @@ new MutationObserver(sync).observe(c,{attributes:true,attributeFilter:['style']}
 // pemisahan tampilan per tab (hanya tampilan)
 (function(){
   var $=function(i){return document.getElementById(i)},cur='home';
-  function setView(v){cur=v;document.body.classList.remove('v-home','v-members','v-report');document.body.classList.add('v-'+v);}
+  function setView(v){cur=v;document.body.classList.remove('v-home','v-members','v-report','v-trx');document.body.classList.add('v-'+v);}
   var orig=window.showTab;
-  window.showTab=function(t){orig(t);setView(t==='dash'?'report':(cur==='members'?'members':'home'));};
+  window.showTab=function(t){orig(t);setView(t==='dash'?'report':((cur==='members'||cur==='trx')?cur:'home'));};
   document.getElementById('bnav').addEventListener('click',function(e){
     var b=e.target.closest('button');if(!b)return;var n=b.dataset.n;
     if(n==='members'){setView('members');window.scrollTo({top:0});}
+    else if(n==='trx'){setView('trx');}
     else if(n==='home'){setView('home');}
   },true);
   setView('home');
@@ -2029,6 +2118,71 @@ new MutationObserver(sync).observe(c,{attributes:true,attributeFilter:['style']}
     sort();mo.takeRecords();
   });
   mo.observe(grid,{childList:true,attributes:true,attributeFilter:['class'],subtree:true});
+})();
+</script>
+<script>
+// halaman Transaksi: hanya membaca DATA existing (pembayaran = cicilan lunas ber-tanggal)
+(function(){
+  var $=function(i){return document.getElementById(i)};
+  var BL=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+  var tipe='all',desc=true,monthSel=null,q='';
+  var esc2=function(x){return (typeof esc==='function')?esc(x):String(x)};
+  function num(t){var n=parseInt(String(t||'').replace(/[^0-9]/g,''),10);return isNaN(n)?0:n}
+  function build(){
+    var T=[];
+    Object.keys(DATA).forEach(function(kode){var k=DATA[kode];
+      (k.pays||[]).forEach(function(p){
+        if(p.status==='lunas'&&p.paid_at&&p.nominal>0){var d=new Date(p.paid_at);if(!isNaN(d))T.push({t:'bayar',d:d,k:k,kode:kode,amt:Number(p.nominal)})}
+      });
+      if(k.created_at){var d2=new Date(k.created_at);if(!isNaN(d2))T.push({t:'baru',d:d2,k:k,kode:kode,amt:num(k.net)})}
+    });
+    return T;
+  }
+  function ym(d){return d.getFullYear()*12+d.getMonth()}
+  function fillMonths(T){
+    var now=new Date(),set={};set[ym(now)]=1;T.forEach(function(x){set[ym(x.d)]=1});
+    var keys=Object.keys(set).map(Number).sort(function(a,b){return b-a});
+    var sel=$('txMonth');
+    if(monthSel===null)monthSel=ym(now);
+    sel.innerHTML=keys.map(function(v){return '<option value="'+v+'"'+(String(v)===String(monthSel)?' selected':'')+'>'+BL[v%12]+' '+Math.floor(v/12)+'</option>'}).join('')+'<option value="all"'+(monthSel==='all'?' selected':'')+'>Semua bulan</option>';
+  }
+  function render(){
+    try{
+      var T=build();fillMonths(T);
+      var inM=T.filter(function(x){return monthSel==='all'||ym(x.d)===Number(monthSel)});
+      var nb=inM.filter(function(x){return x.t==='bayar'}),nn=inM.filter(function(x){return x.t==='baru'});
+      $('txN-all').textContent=inM.length;$('txN-bayar').textContent=nb.length;$('txN-baru').textContent=nn.length;
+      $('txSumTot').textContent=formatRp(nb.reduce(function(s,x){return s+x.amt},0));
+      $('txSumBayar').textContent=nb.length;$('txSumBaru').textContent=nn.length;
+      var ql=q.trim().toLowerCase();
+      var L=inM.filter(function(x){
+        if(tipe!=='all'&&x.t!==tipe)return false;
+        return !ql||(x.k.nama+' '+x.kode+' '+(x.k.item||'')).toLowerCase().indexOf(ql)>-1;
+      }).sort(function(a,b){return desc?b.d-a.d:a.d-b.d});
+      if(!L.length){$('txList').innerHTML='<div class="tx-empty">Belum ada transaksi'+(tipe==='baru'?' (tanggal pembuatan transaksi belum tersimpan di data)':'')+'.</div>';return;}
+      var groups=[],idx={};
+      L.forEach(function(x){var key=x.d.getFullYear()+'-'+x.d.getMonth()+'-'+x.d.getDate();if(!(key in idx)){idx[key]=groups.length;groups.push({d:x.d,items:[]})}groups[idx[key]].items.push(x)});
+      $('txList').innerHTML=groups.map(function(g){
+        var head=g.d.getDate()+' '+BL[g.d.getMonth()].toUpperCase()+' '+g.d.getFullYear();
+        return '<div class="tx-day"><span>'+head+'</span><em>'+g.items.length+' transaksi</em></div>'+g.items.map(function(x){
+          var ini=x.k.nama.split(' ').slice(0,2).map(function(w){return w[0]||''}).join('').toUpperCase();
+          var hh=('0'+x.d.getHours()).slice(-2)+':'+('0'+x.d.getMinutes()).slice(-2);
+          var b=x.t==='bayar';
+          return '<div class="tx-row '+(b?'is-bayar':'is-baru')+'" data-k="'+esc2(x.kode)+'" onclick="pickAc(this.dataset.k)"><div class="tx-ava">'+esc2(ini)+'</div>'+
+            '<div class="tx-mid"><b>'+esc2(x.k.nama)+'</b><small>'+esc2(x.kode)+(x.k.item?' · '+esc2(x.k.item):'')+'</small></div>'+
+            '<div class="tx-right"><strong>'+(x.amt?formatRp(x.amt):'—')+'</strong><div class="tx-meta"><span class="tx-tag">'+(b?'✓ Pembayaran':'＋ Transaksi Baru')+'</span><time>'+hh+'</time></div></div><i class="tx-chev">›</i></div>';
+        }).join('');
+      }).join('');
+    }catch(e){}
+  }
+  window.renderTrx=render;
+  $('txTabs').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;tipe=b.dataset.t;
+    [].forEach.call($('txTabs').children,function(c){c.classList.toggle('on',c===b)});render();});
+  $('txMonth').addEventListener('change',function(){monthSel=this.value;render()});
+  $('txSearch').addEventListener('input',function(){q=this.value;render()});
+  $('txSort').addEventListener('click',function(){desc=!desc;$('txSortL').textContent=desc?'Terbaru':'Terlama';render()});
+  $('bnav').addEventListener('click',function(e){var b=e.target.closest('button');if(b&&b.dataset.n==='trx')setTimeout(render,0)});
+  new MutationObserver(render).observe($('statTotal'),{childList:true,characterData:true,subtree:true});
 })();
 </script>
 </body>
