@@ -1274,8 +1274,8 @@ html[data-theme="light"] body.detail-open,html[data-theme="light"] body.v-member
   background:radial-gradient(90% 40% at 50% 0%,rgba(59,130,246,.15),transparent 70%),#f3f6fb}
 
 /* chrome umum */
-html[data-theme="light"] header.home-hero .brand-row,html[data-theme="light"] .trx-section .brand-row{background:#fff;border-color:rgba(37,99,235,.22);box-shadow:0 4px 14px rgba(30,64,175,.08)}
-html[data-theme="light"] header.home-hero .brand-text,html[data-theme="light"] .trx-section .brand-text{color:#334155}
+html[data-theme="light"] header.home-hero .brand-row,html[data-theme="light"] .trx-section .brand-row,html[data-theme="light"] .tagih-section .brand-row{background:#fff;border-color:rgba(37,99,235,.22);box-shadow:0 4px 14px rgba(30,64,175,.08)}
+html[data-theme="light"] header.home-hero .brand-text,html[data-theme="light"] .trx-section .brand-text,html[data-theme="light"] .tagih-section .brand-text{color:#334155}
 html[data-theme="light"] .hh-icon,html[data-theme="light"] .mh-btn,html[data-theme="light"] #memberCard .dh-btn{background:#fff;color:#334155;border-color:rgba(37,99,235,.25);box-shadow:0 4px 12px rgba(30,64,175,.08)}
 html[data-theme="light"] .hh-sub,html[data-theme="light"] .mh-title p{color:#64748b}
 
@@ -2415,18 +2415,19 @@ new MutationObserver(sync).observe(c,{attributes:true,attributeFilter:['style']}
 (function(){
   var $=function(i){return document.getElementById(i)};
   var BL=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
-  var f='all',marks={},local=false;
+  var f='all',marks={},local=false,errMsg='';
   function bk(){var n=new Date();return n.getFullYear()+'-'+('0'+(n.getMonth()+1)).slice(-2)}
   async function load(){
     try{
       var r=await sb.from('tagih').select('kode,ditagih_at').eq('bulan',bk());
       if(r.error)throw r.error;
       marks={};r.data.forEach(function(x){marks[x.kode]=x.ditagih_at});local=false;
-    }catch(e){local=true;try{marks=JSON.parse(localStorage.getItem('ishop-tagih-'+bk())||'{}')}catch(x){marks={}}}
+    }catch(e){local=true;errMsg=(e&&e.message)||String(e);try{marks=JSON.parse(localStorage.getItem('ishop-tagih-'+bk())||'{}')}catch(x){marks={}}}
     render();
   }
   async function toggle(kode){
     var on=!marks[kode];
+    if(on&&DATA[kode]){try{window.open(waUrl(DATA[kode].phone,buildTagih(DATA[kode])),'_blank')}catch(e){}}
     if(on)marks[kode]=new Date().toISOString();else delete marks[kode];
     render();
     if(local){try{localStorage.setItem('ishop-tagih-'+bk(),JSON.stringify(marks))}catch(e){}return;}
@@ -2450,7 +2451,7 @@ new MutationObserver(sync).observe(c,{attributes:true,attributeFilter:['style']}
       var A=build(),n=new Date();
       $('tgSub').textContent='Penagihan '+BL[n.getMonth()]+' '+n.getFullYear();
       var nt=$('tgNote');nt.style.display=local?'block':'none';
-      nt.textContent='⚠ Tabel "tagih" belum ada di Supabase — penanda hanya tersimpan di HP ini.';
+      nt.textContent='⚠ Gagal terhubung ke tabel "tagih" ('+errMsg+') — penanda sementara hanya tersimpan di HP ini.';
       var sudah=A.filter(function(x){return x.paid||x.mark}),belum=A.filter(function(x){return !(x.paid||x.mark)});
       $('tgN-all').textContent=A.length;$('tgN-belum').textContent=belum.length;$('tgN-sudah').textContent=sudah.length;
       var L=f==='belum'?belum:f==='sudah'?sudah:belum.concat(sudah);
