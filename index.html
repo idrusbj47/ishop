@@ -220,12 +220,19 @@ header p { color: var(--text2); font-size: 15px; font-weight: 400; }
   background: var(--surface);
   border: 1px solid var(--border2);
   border-radius: 16px;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
+  max-height: min(50vh, 360px);
+  max-height: min(50dvh, 360px);
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
   box-shadow: var(--shadow-lg);
   display: none;
   z-index: 100;
 }
 .autocomplete.open { display: block; }
+.autocomplete::-webkit-scrollbar { width: 4px; }
 .ac-item {
   display: flex;
   align-items: center;
@@ -1982,12 +1989,12 @@ const inp = $('searchInput'), ac = $('autocomplete');
 inp.addEventListener('input', () => {
   const q = inp.value.trim().toUpperCase();
   if (q.length < 2) return ac.classList.remove('open');
-  const hits = Object.keys(DATA).filter(k => k.toUpperCase().includes(q) || DATA[k].nama.toUpperCase().includes(q)).slice(0, 7);
+  const hits = Object.keys(DATA).filter(k => k.toUpperCase().includes(q) || DATA[k].nama.toUpperCase().includes(q)).slice(0, 50);
   if (!hits.length) return ac.classList.remove('open');
   ac.innerHTML = hits.map(k => { const L = DATA[k].status === 'lunas';
     return `<div class="ac-item" data-k="${esc(k)}" onclick="pickAc(this.dataset.k)"><span class="ac-code">${esc(k)}</span><span class="ac-name">${esc(DATA[k].nama)}</span>
     <span class="ac-badge ${L ? 'tag-lunas' : 'tag-proses'}">${L ? '✓ Lunas' : '⚡ Aktif'}</span></div>`; }).join('');
-  ac.classList.add('open');
+  ac.scrollTop = 0; ac.classList.add('open');
 });
 inp.addEventListener('keydown', e => { if (e.key === 'Enter') cekStatus(); });
 document.addEventListener('click', e => { if (!e.target.closest('.search-section')) ac.classList.remove('open'); });
