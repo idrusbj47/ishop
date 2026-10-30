@@ -1527,6 +1527,50 @@ html[data-theme="light"] #fxOv{background:rgba(15,23,42,.18)}
 html[data-theme="light"] #fxOv .fx-card{background:rgba(255,255,255,.88);border-color:rgba(37,99,235,.15);box-shadow:0 24px 60px rgba(30,64,175,.22)}
 html[data-theme="light"] #fxOv .fx-txt{color:#0f172a}
 @media (prefers-reduced-motion:reduce){#fxOv .fx-disc,#fxOv .fx-chk,#fxOv .fx-ring,#fxOv .fx-card{animation-duration:.01s!important;animation-delay:0s!important}}
+
+/* ===== INFO KECIL DETAIL PEMBAYARAN ===== */
+.pay-mini{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 2px 0}
+.pay-mini .pm{display:flex;flex-direction:column;gap:1px;padding:7px 10px;border-radius:11px;background:rgba(148,163,184,.08);border:1px solid rgba(148,163,184,.18);min-width:0}
+.pay-mini .pm span{font-size:9.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#7d8fb0}
+.pay-mini .pm b{font-family:'JetBrains Mono',monospace;font-size:12.5px;font-weight:700;color:#cbd5e1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pay-mini .pm small{font-size:10px;color:#7d8fb0}
+.pay-mini .pm-paid{background:rgba(16,185,129,.08);border-color:rgba(16,185,129,.28)}
+.pay-mini .pm-paid b{color:#34d399}
+html[data-theme="light"] .pay-mini .pm{background:#f1f5f9;border-color:#dbe3ee}
+html[data-theme="light"] .pay-mini .pm b{color:#334155}
+html[data-theme="light"] .pay-mini .pm span,html[data-theme="light"] .pay-mini .pm small{color:#64748b}
+html[data-theme="light"] .pay-mini .pm-paid{background:#ecfdf5;border-color:#a7f3d0}
+html[data-theme="light"] .pay-mini .pm-paid b{color:#047857}
+
+/* ===== NAV: mobile tetap di bawah; desktop jadi sidebar kiri ===== */
+.bn-brand,.bn-foot{display:none}
+@media (min-width:1024px){
+  body{padding-bottom:0!important;padding-left:264px}
+  html body nav#bnav.bnav{
+    left:0;right:auto;top:0;bottom:0;transform:none;width:264px;max-width:none;height:100vh;height:100dvh;
+    display:flex;flex-direction:column;gap:6px;padding:26px 14px 22px;border-radius:0;border:none;
+    border-right:1px solid rgba(96,165,250,.18);
+    background:linear-gradient(180deg,#0b1730 0%,#070e20 55%,#050a17 100%);
+    box-shadow:6px 0 30px rgba(0,0,0,.28);-webkit-backdrop-filter:none;backdrop-filter:none;overflow-y:auto}
+  html body nav#bnav .bn-brand{display:block;padding:0 12px 18px;margin-bottom:14px;border-bottom:1px solid rgba(96,165,250,.28)}
+  html body nav#bnav .bn-brand b{display:block;font-family:'Sora',system-ui,sans-serif;font-size:34px;font-weight:800;line-height:1;letter-spacing:-.02em;color:#f1f5f9}
+  html body nav#bnav .bn-brand b em{font-style:normal;background:linear-gradient(135deg,#60a5fa,#22d3ee);-webkit-background-clip:text;background-clip:text;color:transparent}
+  html body nav#bnav .bn-brand small{display:block;margin-top:8px;font-size:12px;letter-spacing:.04em;color:#7d8fb0}
+  html body nav#bnav button{flex-direction:row;justify-content:flex-start;align-items:center;gap:14px;width:100%;
+    padding:14px 16px;border-radius:14px;font-size:15px;font-weight:600;color:#9fb0cf;text-align:left;
+    background:transparent;border:1px solid transparent;box-shadow:none}
+  html body nav#bnav button svg{width:22px;height:22px;flex:none}
+  html body nav#bnav button:hover:not(.on){background:rgba(148,163,184,.1);color:#e2e8f0}
+  html body nav#bnav button.on{color:#fff;background:linear-gradient(135deg,#2563eb,#0ea5e9);border-color:rgba(147,197,253,.55);
+    box-shadow:0 8px 22px rgba(37,99,235,.4)}
+  html body nav#bnav .bn-foot{display:block;margin-top:auto;padding:22px 12px 0;border-top:1px solid rgba(96,165,250,.18);
+    font-family:'Sora',system-ui,sans-serif;font-size:15px;font-weight:700;line-height:1.5;color:#cbd5e1}
+  /* konten lebih lega di area kanan sidebar */
+  .search-section,.home-actions,.members-section,.trx-section,.tagih-section,header.home-hero>*{max-width:720px}
+  .result-zone{max-width:760px}
+  #memberCard{max-width:720px}
+  #dashView{max-width:1100px;margin-left:auto;margin-right:auto}
+}
 </style>
 </head>
 <body>
@@ -1965,11 +2009,13 @@ function renderCard(key) {
   $('infoTiles').innerHTML = tiles.map(t => `<div class="tile"><span class="tile-ico">${TI[t[0]] || '•'}</span><div class="tile-label">${t[0]}</div><div class="tile-value ${t[2] || ''}">${esc(t[1])}</div></div>`).join('');
   const sisa = calcSisa(k.pays), n = k.pays.filter(p => p.status === 'proses').length;
   const sisaHtml = sisa > 0 ? `<div class="sisa-box"><div class="sisa-label">Sisa Tagihan<small>(${n} angsuran)</small></div><div class="sisa-value">${formatRp(sisa)}</div></div>` : (k.pays.length ? `<div class="sisa-box is-lunas"><div class="sisa-label">✓ Tagihan Lunas</div></div>` : '');
+  const paidP = k.pays.filter(p => p.status === 'lunas' || p.status === 'dp'), paid = paidP.reduce((s, p) => s + Number(p.nominal || 0), 0), totC = paid + sisa;
+  const miniHtml = k.pays.length ? `<div class="pay-mini"><div class="pm pm-paid"><span>Sudah Dibayar</span><b>${formatRp(paid)}</b><small>${paidP.filter(p => p.nominal > 0).length} angsuran</small></div><div class="pm"><span>Total Cicilan</span><b>${formatRp(totC)}</b><small>${k.pays.filter(p => p.nominal > 0).length} angsuran</small></div></div>` : '';
   const rows = k.pays.length ? k.pays.map((p, i) => `<div class="pay-row st-${p.status}"><span class="pay-num">${p.no}.</span>
     <div class="pay-main"><span class="pay-date">${esc(p.label)}</span><span class="pay-amount">${p.nominal > 0 ? formatRp(p.nominal) : ''}</span></div>
     <button class="pay-edit" onclick="openPay(${i})" title="Edit cicilan">✏️</button>${p.nominal > 0 ? `<button class="pay-tag-btn tag-${p.status}" onclick="togglePay(${i})" title="Klik untuk ganti status">${p.status === 'lunas' ? '✓ Lunas' : p.status === 'dp' ? 'DP' : '⌛ Proses'}</button>` : ''}</div>`).join('')
     : '<div class="pay-row"><span style="color:var(--text3);font-size:12px">Belum ada jadwal pembayaran</span></div>';
-  $('payList').innerHTML = sisaHtml + '<div class="section-label sub"><span>Daftar Angsuran</span><button class="btn-mini add-cicil" onclick="openPay(-1)">＋ Tambah Cicilan</button></div>' + rows;
+  $('payList').innerHTML = sisaHtml + miniHtml + '<div class="section-label sub"><span>Daftar Angsuran</span><button class="btn-mini add-cicil" onclick="openPay(-1)">＋ Tambah Cicilan</button></div>' + rows;
   const teks = buildTeks(k);
   $('rawBox').textContent = teks; $('waBtn').href = waUrl(k.phone, teks);
   const cb = $('copyBtn'); cb.dataset.raw = teks; cb.textContent = '📋 Salin Teks'; cb.classList.remove('ok');
@@ -2399,11 +2445,13 @@ function sync(){var o=c.style.display==='block';document.body.classList.toggle('
 new MutationObserver(sync).observe(c,{attributes:true,attributeFilter:['style']});sync();})();
 </script>
 <nav class="bnav" id="bnav" aria-label="Menu utama">
+  <div class="bn-brand"><b>i<em>Shop</em></b><small>Status Kredit Nasabah</small></div>
   <button type="button" data-n="home" class="on"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8v9a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1v-9z"/></svg><span>Beranda</span></button>
   <button type="button" data-n="members"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0113 0"/><circle cx="17.5" cy="9" r="2.5"/><path d="M17 14.5a5 5 0 014.5 5"/></svg><span>Nasabah</span></button>
   <button type="button" data-n="trx"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="3" width="15" height="18" rx="2.5"/><path d="M8.5 8h7M8.5 12h7M8.5 16h4"/></svg><span>Transaksi</span></button>
   <button type="button" data-n="tagih"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16v-5a6 6 0 0112 0v5l1.5 2h-15z"/><path d="M10 21h4"/></svg><span>Tagih</span></button>
   <button type="button" data-n="report"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V11M12 21V4M19 21v-7"/></svg><span>Laporan</span></button>
+  <div class="bn-foot">Kredit rapi,<br>tagihan jelas,<br>data terpercaya.</div>
 </nav>
 <script>
 // navigasi bawah: hanya memanggil fungsi yang sudah ada (showTab, openNew)
