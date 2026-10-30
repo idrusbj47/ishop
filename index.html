@@ -1571,6 +1571,25 @@ html[data-theme="light"] .pay-mini .pm-paid b{color:#047857}
   #memberCard{max-width:720px}
   #dashView{max-width:1100px;margin-left:auto;margin-right:auto}
 }
+
+/* ===== ATUR URUTAN CICILAN ===== */
+.section-label.sub .sl-btns{display:inline-flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+#memberCard .btn-mini.ro-btn{margin:0;padding:6px 12px;font-size:12px;font-weight:600;border-radius:100px;width:auto;display:inline-flex}
+.ro-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:0 0 10px;padding:9px 12px;border-radius:12px;
+  background:rgba(34,211,238,.08);border:1px dashed rgba(34,211,238,.45);font-size:12px;color:var(--text2)}
+.ro-bar .ro-act{display:inline-flex;gap:8px}
+.ro-bar .btn-mini{margin:0;padding:6px 14px;font-size:12px;font-weight:600}
+.ro-bar .ro-save{background:linear-gradient(135deg,#2563eb,#22d3ee);color:#fff;border-color:transparent}
+.ro-row{align-items:center}
+.ro-row .ro-no{width:46px;height:36px;flex:none;text-align:center;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;
+  color:var(--text);background:rgba(148,163,184,.12);border:1px solid rgba(148,163,184,.4);border-radius:10px;outline:none;-moz-appearance:textfield;appearance:textfield}
+.ro-row .ro-no::-webkit-outer-spin-button,.ro-row .ro-no::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.ro-row .ro-no:focus{border-color:#22d3ee;box-shadow:0 0 0 2px rgba(34,211,238,.25)}
+.ro-btns{display:flex;gap:6px;flex:none}
+.ro-btns button{width:36px;height:36px;border-radius:10px;border:1px solid rgba(148,163,184,.4);background:rgba(148,163,184,.12);color:var(--text);font-size:13px;cursor:pointer;display:grid;place-items:center;padding:0}
+.ro-btns button:active:not(:disabled){transform:scale(.94);background:rgba(34,211,238,.2)}
+.ro-btns button:disabled{opacity:.3;cursor:default}
+html[data-theme="light"] .ro-bar{background:#ecfeff;border-color:#67e8f9;color:#155e75}
 </style>
 </head>
 <body>
@@ -1870,6 +1889,7 @@ html[data-theme="light"] .pay-mini .pm-paid b{color:#047857}
     <label class="full">Tanggal / label (mis. 30Okt26)<input id="pLabel"></label>
     <label>Nominal (Rp)<input id="pNominal" type="text" inputmode="numeric" class="money"></label>
     <label>Status<select id="pStatus"><option value="proses">⏳ Proses</option><option value="lunas">✓ Lunas</option><option value="dp">DP</option></select></label>
+    <label class="full">No. urut (isi untuk menyisipkan; cicilan lain otomatis bergeser)<input id="pNo" type="number" inputmode="numeric" min="1"></label>
   </div>
   <div class="action-row"><button class="btn-login" style="flex:1;margin:0" onclick="savePay()">💾 Simpan</button><button class="btn-copy" id="pDel" onclick="delPay()">🗑 Hapus</button><button class="btn-copy" onclick="closePay()">Batal</button></div>
 </div></div>
@@ -2011,11 +2031,19 @@ function renderCard(key) {
   const sisaHtml = sisa > 0 ? `<div class="sisa-box"><div class="sisa-label">Sisa Tagihan<small>(${n} angsuran)</small></div><div class="sisa-value">${formatRp(sisa)}</div></div>` : (k.pays.length ? `<div class="sisa-box is-lunas"><div class="sisa-label">✓ Tagihan Lunas</div></div>` : '');
   const paidP = k.pays.filter(p => p.status === 'lunas' || p.status === 'dp'), paid = paidP.reduce((s, p) => s + Number(p.nominal || 0), 0), totC = paid + sisa;
   const miniHtml = k.pays.length ? `<div class="pay-mini"><div class="pm pm-paid"><span>Sudah Dibayar</span><b>${formatRp(paid)}</b><small>${paidP.filter(p => p.nominal > 0).length} angsuran</small></div><div class="pm"><span>Total Cicilan</span><b>${formatRp(totC)}</b><small>${k.pays.filter(p => p.nominal > 0).length} angsuran</small></div></div>` : '';
+  if (reorderMode && (!reorderDraft || reorderDraft.length !== k.pays.length || reorderDraft.some(x => !k.pays.includes(x)))) { reorderMode = false; reorderDraft = null; }
+  if (reorderMode) {
+    const nn = reorderDraft.length;
+    const roRows = reorderDraft.map((p, i) => `<div class="pay-row st-${p.status} ro-row"><input class="ro-no" type="number" inputmode="numeric" min="1" max="${nn}" value="${i + 1}" onfocus="this.select()" onchange="setDraftPos(${i}, this.value)" aria-label="Nomor urut"><div class="pay-main"><span class="pay-date">${esc(p.label)}</span><span class="pay-amount">${p.nominal > 0 ? formatRp(p.nominal) : ''}</span></div><div class="ro-btns"><button type="button" onclick="moveDraft(${i},-1)" ${i === 0 ? 'disabled' : ''} aria-label="Naik">▲</button><button type="button" onclick="moveDraft(${i},1)" ${i === nn - 1 ? 'disabled' : ''} aria-label="Turun">▼</button></div></div>`).join('');
+    $('payList').innerHTML = sisaHtml + miniHtml + '<div class="section-label sub"><span>Atur Urutan</span></div><div class="ro-bar"><span>Ketik nomor baru atau tekan ▲ ▼</span><span class="ro-act"><button type="button" class="btn-mini" onclick="cancelReorder()">Batal</button><button type="button" class="btn-mini ro-save" onclick="saveReorder()">💾 Simpan Urutan</button></span></div>' + roRows;
+    const teks0 = buildTeks(k); $('rawBox').textContent = teks0; $('waBtn').href = waUrl(k.phone, teks0);
+    return;
+  }
   const rows = k.pays.length ? k.pays.map((p, i) => `<div class="pay-row st-${p.status}"><span class="pay-num">${p.no}.</span>
     <div class="pay-main"><span class="pay-date">${esc(p.label)}</span><span class="pay-amount">${p.nominal > 0 ? formatRp(p.nominal) : ''}</span></div>
     <button class="pay-edit" onclick="openPay(${i})" title="Edit cicilan">✏️</button>${p.nominal > 0 ? `<button class="pay-tag-btn tag-${p.status}" onclick="togglePay(${i})" title="Klik untuk ganti status">${p.status === 'lunas' ? '✓ Lunas' : p.status === 'dp' ? 'DP' : '⌛ Proses'}</button>` : ''}</div>`).join('')
     : '<div class="pay-row"><span style="color:var(--text3);font-size:12px">Belum ada jadwal pembayaran</span></div>';
-  $('payList').innerHTML = sisaHtml + miniHtml + '<div class="section-label sub"><span>Daftar Angsuran</span><button class="btn-mini add-cicil" onclick="openPay(-1)">＋ Tambah Cicilan</button></div>' + rows;
+  $('payList').innerHTML = sisaHtml + miniHtml + '<div class="section-label sub"><span>Daftar Angsuran</span><span class="sl-btns">' + (k.pays.length > 1 ? '<button class="btn-mini ro-btn" onclick="startReorder()">⇅ Urutan</button>' : '') + '<button class="btn-mini add-cicil" onclick="openPay(-1)">＋ Tambah Cicilan</button></span></div>' + rows;
   const teks = buildTeks(k);
   $('rawBox').textContent = teks; $('waBtn').href = waUrl(k.phone, teks);
   const cb = $('copyBtn'); cb.dataset.raw = teks; cb.textContent = '📋 Salin Teks'; cb.classList.remove('ok');
@@ -2035,6 +2063,38 @@ async function togglePay(i) {
     k.status = st;
   }
   renderCard(currentKey); buildGrid(); successFx(ns === 'lunas' ? 'Lunas' : 'Tersimpan');
+}
+
+let reorderMode = false, reorderDraft = null;
+function startReorder() { const k = DATA[currentKey]; if (!k) return; reorderMode = true; reorderDraft = k.pays.slice(); renderCard(currentKey); }
+function cancelReorder() { reorderMode = false; reorderDraft = null; renderCard(currentKey); }
+function moveDraft(i, d) { const j = i + d; if (!reorderDraft || j < 0 || j >= reorderDraft.length) return; const t = reorderDraft[i]; reorderDraft[i] = reorderDraft[j]; reorderDraft[j] = t; renderCard(currentKey); }
+function setDraftPos(i, val) {
+  let v = parseInt(val, 10); const n = reorderDraft.length;
+  if (isNaN(v)) return renderCard(currentKey);
+  v = Math.max(1, Math.min(n, v));
+  if (v - 1 !== i) { const [x] = reorderDraft.splice(i, 1); reorderDraft.splice(v - 1, 0, x); }
+  renderCard(currentKey);
+}
+// simpan urutan baru ke database (2 tahap agar nomor tidak bentrok)
+async function persistOrder(k, ordered) {
+  const ch = ordered.map((p, i) => ({ p, no: i + 1 })).filter(x => x.p.no !== x.no);
+  if (!ch.length) return true;
+  const r1 = await Promise.all(ch.map((x, i) => sb.from('cicilan').update({ no: 100000 + i }).eq('id', x.p.id)));
+  let er = r1.find(r => r.error); if (er) { alert('Gagal menyimpan urutan: ' + er.error.message); return false; }
+  const r2 = await Promise.all(ch.map(x => sb.from('cicilan').update({ no: x.no }).eq('id', x.p.id)));
+  er = r2.find(r => r.error); if (er) { alert('Gagal menyimpan urutan: ' + er.error.message); return false; }
+  ch.forEach(x => { x.p.no = x.no; });
+  k.pays = ordered.slice();
+  return true;
+}
+async function saveReorder() {
+  const k = DATA[currentKey]; if (!k || !reorderDraft) return;
+  const ok = await persistOrder(k, reorderDraft);
+  reorderMode = false; reorderDraft = null;
+  if (!ok) { await loadData(); }
+  renderCard(currentKey); buildGrid();
+  if (ok) successFx('Urutan Tersimpan');
 }
 
 async function editPhone() {
@@ -2176,6 +2236,7 @@ function openPay(i) {
   $('payTitle').textContent = p ? `Edit Cicilan ke-${p.no}` : '＋ Tambah Cicilan';
   $('pLabel').value = p ? p.label : ''; $('pNominal').value = p ? fmtN(p.nominal) : ''; $('pStatus').value = p ? p.status : 'proses';
   $('pDel').style.display = p ? '' : 'none';
+  $('pNo').value = p ? p.no : k.pays.length + 1; $('pNo').max = p ? k.pays.length : k.pays.length + 1;
   $('payModal').classList.add('open');
 }
 function closePay() { $('payModal').classList.remove('open'); }
@@ -2201,6 +2262,15 @@ async function savePay() {
     const { data, error } = await sb.from('cicilan').insert({ ...body, kredit_id: k.id, no }).select().single();
     if (error) return alert('Gagal menyimpan: ' + error.message);
     k.pays.push(data);
+  }
+  const want = parseInt($('pNo').value, 10);
+  if (want >= 1) {
+    const ord = k.pays.slice().sort((a, b) => a.no - b.no), cur = old || ord[ord.length - 1];
+    const from = ord.indexOf(cur), to = Math.min(want, ord.length) - 1;
+    if (from !== to) {
+      ord.splice(from, 1); ord.splice(to, 0, cur);
+      if (!(await persistOrder(k, ord))) { await loadData(); closePay(); renderCard(currentKey); buildGrid(); return; }
+    }
   }
   await syncStatus(k); closePay(); renderCard(currentKey); buildGrid(); successFx('Cicilan Tersimpan');
 }
